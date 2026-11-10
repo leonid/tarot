@@ -60,6 +60,10 @@ const ui: UiMessages = {
   copyShareLink: 'Copy share link',
   linkCopied: 'Link copied.',
   dismiss: 'Dismiss',
+  errorTitle: 'Something went wrong',
+  errorBody:
+    'The reading could not be shown. Starting over clears the current reading. Your saved readings, language and theme are kept.',
+  errorStartOver: 'Start over',
   shareLinkMalformed:
     'This share link could not be read. It may be cut off or damaged. Your current reading is unchanged.',
   shareLinkNewer:

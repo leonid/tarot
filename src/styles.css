@@ -391,3 +391,14 @@ body {
 .interpretation-action p {
   margin: 0;
 }
+
+.app-error {
+  max-width: var(--measure);
+  padding: var(--space-4);
+  border: var(--border-w) solid var(--danger);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.app-error h2 {
+  margin-top: 0;
+}

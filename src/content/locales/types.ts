@@ -59,6 +59,9 @@ export interface UiMessages {
   open: string;
   delete: string;
   dismiss: string;
+  errorTitle: string;
+  errorBody: string;
+  errorStartOver: string;
   /** Shown when a share link cannot be opened; the current reading is kept. */
   shareLinkMalformed: string;
   shareLinkNewer: string;
