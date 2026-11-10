@@ -24,7 +24,7 @@ test('headings and card names use the self-hosted serif in English and Russian',
       .first()
       .evaluate((el) => getComputedStyle(el).fontFamily);
   expect(await family('h1')).toContain('EB Garamond');
-  expect(await family('.slot-card')).toContain('EB Garamond');
+  expect(await family('.card-face-name')).toContain('EB Garamond');
   expect(await family('body')).toContain('JetBrains Sans');
   expect(
     (await loaded(page)).some((f) => /^EB Garamond 600 .*20AC/i.test(f)),
@@ -32,7 +32,7 @@ test('headings and card names use the self-hosted serif in English and Russian',
 
   await page.getByLabel('Language').selectOption('ru');
   await page.getByRole('button', { name: /./ }).first().waitFor();
-  const slot = page.locator('.slot-card').first();
+  const slot = page.locator('.card-face-name').first();
   await expect(slot).toHaveText(/[А-Яа-яЁё]/);
   const faces = await loaded(page);
   expect(faces.some((f) => /^EB Garamond 600 .*45F/i.test(f))).toBe(true);

@@ -34,8 +34,9 @@ describe('locale switching', () => {
     const { container } = render(<App />);
     await userEvent.click(screen.getByText(/Shuffle and deal/));
     await screen.findByText(/Interpretation/);
-    // Seed digits and the option lists' own text are data, not copy.
-    const found = leaks(container).filter((t) => !/^\d+$/.test(t));
+    // Seed digits, card numerals (digits, Roman) and the option lists' own
+    // text are data, not copy.
+    const found = leaks(container).filter((t) => !/^(\d+|[IVX]+)$/.test(t));
     expect(found).toEqual([]);
   });
 
