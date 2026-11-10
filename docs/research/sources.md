@@ -33,6 +33,9 @@ Written 2026-11-10. Decisions on where card content and imagery come from.
 **Set:** the 1909 "Roses & Lilies" first edition, Wikimedia Commons category
 [Rider-Waite tarot deck (Roses & Lilies)](https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck_(Roses_%26_Lilies)).
 
+The owner confirmed this set "for now" on 2026-11-10; the Geldard set below
+stays the alternative if the look is revisited.
+
 Read from the Commons API on 2026-11-10:
 
 - 80 files: the cards, named `RWS1909 - 00 Fool.jpeg` to
