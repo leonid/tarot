@@ -94,6 +94,17 @@ describe('compare (DCAS step 2)', () => {
     expect(outside.relations.some((x) => x.includes('span'))).toBe(false);
   });
 
+  it('treats The World as earth through its Book T element', () => {
+    // The World (Saturn and Earth) strengthens Pentacles and conflicts with Swords.
+    const r = compare(
+      ctx(['major-21-world', 'pentacles-01-ace', 'swords-01-ace']),
+    );
+    expect(r.relations.some((x) => x.startsWith('Conflicting elements'))).toBe(
+      true,
+    );
+    expect(r.relations.join(' ')).toContain('The World and Ace of Swords');
+  });
+
   it('flows through the fallback provider', async () => {
     const out = await fallbackProvider.interpret(
       ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']),

@@ -63,6 +63,6 @@ Written 2026-11-10. Decisions on where card content and imagery come from.
   - **Still unverified:** the decan date ranges (Book T gives none; ours come
     from the guide and are modern conversions). The Fool's attribution was not
     readable in the OCR (we keep Uranus, traditionally Air).
-  - **Open design question:** Book T gives The World Earth and Saturn, and
-    Judgement Spirit and Fire. We encode The World as Saturn only, so it has
-    no element in the Compare step.
+  - **Decided 2026-11-10:** The World is encoded as Saturn with traditional
+    element Earth (Book T: "Earth and Saturn"), so the Compare step treats it
+    as earth. Judgement stays Fire; Book T's "Spirit" has no element here.

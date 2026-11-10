@@ -45,7 +45,7 @@ const majors: Record<string, Correspondence> = {
   'major-18-moon': sign('pisces'),
   'major-19-sun': planet('sun'),
   'major-20-judgement': planet('pluto', 'fire'),
-  'major-21-world': planet('saturn'),
+  'major-21-world': planet('saturn', 'earth'),
 };
 
 /** [card id, sign, decan, ruler, approx dates, Book T title] */

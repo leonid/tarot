@@ -274,7 +274,7 @@ Two naming cautions before the tables:
 | XVIII The Moon | Pisces | mutable water, dream, dissolution |
 | XIX The Sun | Sun | vitality, identity, radiance |
 | XX Judgement | Pluto (trad. Fire) | rebirth, reckoning, collective calling |
-| XXI The World | Saturn | completion, mastery through time |
+| XXI The World | Saturn (trad. Earth) | completion, mastery through time |
 
 ## Table 2 — The 36 decans (numbered Minor Arcana)
 

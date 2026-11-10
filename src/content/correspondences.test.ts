@@ -47,6 +47,12 @@ describe('Major Arcana', () => {
     );
     expect(new Set(planets).size).toBe(10);
   });
+  it("gives The World Book T's Earth alongside Saturn", () => {
+    expect(correspondences['major-21-world']).toMatchObject({
+      planet: 'saturn',
+      traditional: 'earth',
+    });
+  });
   it('gives outer planets their traditional element', () => {
     expect(correspondences['major-00-fool']).toMatchObject({
       traditional: 'air',

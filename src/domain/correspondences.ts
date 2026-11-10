@@ -8,8 +8,9 @@ export type CourtLetter = 'Yod' | 'Heh' | 'Vav' | 'Heh final';
  * docs/research/The Structural Tarot Method, Part IV.
  */
 export type Correspondence =
-  /** Major Arcana attributed to a planet. `traditional` is the older element
-   *  attribution where modern decks substitute an outer planet. */
+  /** Major Arcana attributed to a planet. `traditional` is the Book T element:
+   *  the older element where modern decks substitute an outer planet, or Earth
+   *  alongside Saturn for The World. */
   | { kind: 'planet'; planet: Planet; traditional?: Element }
   /** Major Arcana attributed to a zodiac sign. */
   | { kind: 'sign'; sign: Sign }
