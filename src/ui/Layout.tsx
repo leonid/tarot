@@ -5,9 +5,10 @@ import { meanings } from '../content/meanings';
 import { getDeck } from '../content/decks';
 import { getSpread } from '../content/spreads';
 import { useReadingStore } from '../features/store';
+import { SpreadBoard } from './SpreadBoard';
 
-/** Renders the spread positions with their cards and the interpretation. */
-export function ReadingView() {
+/** Renders the spread board with its cards and the interpretation. */
+export function ReadingView({ droppable = false }: { droppable?: boolean }) {
   const { deckId, spreadId, question, placements } = useReadingStore();
   const deck = getDeck(deckId);
   const spread = getSpread(spreadId);
@@ -29,18 +30,12 @@ export function ReadingView() {
   const complete = placements.length === spread.positions.length;
   return (
     <section>
-      <ol className="slots">
-        {spread.positions.map((pos) => {
-          const placed = placements.find((p) => p.positionId === pos.id);
-          const card = deck.cards.find((c) => c.id === placed?.cardId);
-          return (
-            <li key={pos.id}>
-              <strong>{pos.label}</strong>:{' '}
-              {card ? `${card.name} (${placed?.orientation})` : 'empty'}
-            </li>
-          );
-        })}
-      </ol>
+      <SpreadBoard
+        spread={spread}
+        cards={deck.cards}
+        placements={placements}
+        droppable={droppable}
+      />
       {result && complete && (
         <article className="interpretation">
           <h2>Interpretation</h2>

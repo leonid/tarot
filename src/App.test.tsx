@@ -18,3 +18,14 @@ describe('App', () => {
     );
   });
 });
+
+describe('spread board', () => {
+  it('shows one slot per position of the Celtic Cross', async () => {
+    const { container } = render(<App />);
+    await userEvent.selectOptions(
+      screen.getByLabelText('Spread'),
+      'celtic-cross',
+    );
+    expect(container.querySelectorAll('.slot')).toHaveLength(10);
+  });
+});

@@ -1,0 +1,30 @@
+import { useDraggable } from '@dnd-kit/core';
+import type { Card } from '../../domain/types';
+
+/** Unplaced cards. Each is draggable onto a spread slot. */
+export function CardPalette({ cards }: { cards: readonly Card[] }) {
+  return (
+    <ul className="palette" aria-label="Available cards">
+      {cards.map((c) => (
+        <PaletteCard key={c.id} card={c} />
+      ))}
+    </ul>
+  );
+}
+
+function PaletteCard({ card }: { card: Card }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: card.id,
+    data: { cardId: card.id },
+  });
+  return (
+    <li
+      ref={setNodeRef}
+      className={`palette-card${isDragging ? ' dragging' : ''}`}
+      {...listeners}
+      {...attributes}
+    >
+      {card.name}
+    </li>
+  );
+}

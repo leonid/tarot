@@ -28,7 +28,7 @@ Other scripts: `typecheck`, `lint`, `build`, `format`. CI runs typecheck, lint, 
 ## Roadmap
 
 1. Write base meanings for all 78 cards.
-2. Drag and drop in setup mode, on top of the existing select-based placement.
+2. Polish drag and drop (keyboard sensor, touch testing, card images on the board).
 3. Public-domain card images.
 4. Save readings (localStorage) and share a layout by URL.
 5. LLM interpretation behind a small proxy.

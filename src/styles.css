@@ -27,3 +27,52 @@
 [role='tab'][aria-selected='true'] {
   font-weight: bold;
 }
+.board {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  justify-content: start;
+}
+.slot {
+  min-height: 5rem;
+  padding: 0.4rem;
+  border: 1px dashed gray;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+.slot.filled {
+  border-style: solid;
+}
+.slot.over {
+  outline: 2px solid currentColor;
+}
+.slot.rotated {
+  transform: rotate(90deg) scale(0.8);
+  opacity: 0.85;
+}
+.slot-label {
+  font-weight: bold;
+}
+.palette {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-height: 14rem;
+  overflow: auto;
+}
+.palette-card {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid gray;
+  border-radius: 4px;
+  cursor: grab;
+  touch-action: none;
+  font-size: 0.85rem;
+}
+.palette-card.dragging {
+  opacity: 0.5;
+}
