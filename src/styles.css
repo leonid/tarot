@@ -193,7 +193,8 @@ body {
   overflow-wrap: break-word;
   hyphens: auto;
 }
-.language select {
+.language select,
+.theme select {
   max-width: var(--aside-w);
 }
 @media (max-width: 40em) {
@@ -208,4 +209,10 @@ body {
   .card-face-name {
     font-size: var(--text-md);
   }
+}
+
+.prefs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }

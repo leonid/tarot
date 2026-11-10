@@ -35,3 +35,39 @@ test('data-theme overrides the OS setting', async ({ page }) => {
   );
   expect(bg).toBe('rgb(246, 240, 228)');
 });
+
+const LIGHT_BG = 'rgb(246, 240, 228)';
+const DARK_BG = 'rgb(20, 16, 28)';
+const bgOf = (page: import('@playwright/test').Page) =>
+  page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+
+test('the theme picker overrides the OS and survives a reload', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  expect(await bgOf(page)).toBe(DARK_BG);
+
+  await page.getByLabel('Theme').selectOption('light');
+  expect(await bgOf(page)).toBe(LIGHT_BG);
+  await page.reload();
+  await expect(page.getByLabel('Theme')).toHaveValue('light');
+  expect(await bgOf(page)).toBe(LIGHT_BG);
+
+  await page.getByLabel('Theme').selectOption('system');
+  expect(await bgOf(page)).toBe(DARK_BG);
+});
+
+test('a saved theme is applied before any script bundle runs (no flash)', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.addInitScript(() =>
+    localStorage.setItem('tarot.theme.v1', 'light'),
+  );
+  // Without the app bundle, only the inline script in index.html can set it.
+  await page.route('**/assets/*.js', (route) => route.abort());
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  expect(await bgOf(page)).toBe(LIGHT_BG);
+});

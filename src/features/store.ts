@@ -10,6 +10,8 @@ import { DEFAULT_LOCALE, locales } from '../content/locales';
 
 export type Mode = 'simulate' | 'setup';
 
+import { applyTheme, readTheme, saveTheme, type Theme } from '../ui/theme';
+
 const LOCALE_KEY = 'tarot.locale.v1';
 
 function initialLocale(): string {
@@ -29,6 +31,7 @@ function initialLocale(): string {
 interface State {
   mode: Mode;
   locale: string;
+  theme: Theme;
   deckId: string;
   spreadId: string;
   question: string;
@@ -37,6 +40,7 @@ interface State {
   seed?: number;
   setMode: (m: Mode) => void;
   setLocale: (code: string) => void;
+  setTheme: (theme: Theme) => void;
   setDeck: (id: string) => void;
   setSpread: (id: string) => void;
   setQuestion: (q: string) => void;
@@ -51,6 +55,7 @@ interface State {
 export const useReadingStore = create<State>((set, get) => ({
   mode: 'simulate',
   locale: initialLocale(),
+  theme: readTheme(),
   deckId: decks[0]!.id,
   spreadId: spreads[1]!.id,
   question: '',
@@ -64,6 +69,11 @@ export const useReadingStore = create<State>((set, get) => ({
       // Not persisting the choice is harmless.
     }
     set({ locale });
+  },
+  setTheme: (theme) => {
+    saveTheme(theme);
+    applyTheme(theme);
+    set({ theme });
   },
   setMode: (mode) => set({ mode, placements: [], seed: undefined }),
   setDeck: (deckId) => set({ deckId, placements: [], seed: undefined }),

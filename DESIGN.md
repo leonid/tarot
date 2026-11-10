@@ -14,7 +14,7 @@ Direction in one line: **a quiet reading room, not a fortune-teller's shop.** Th
 
 ## Tokens
 
-All tokens are CSS custom properties on `:root`, redefined for dark under `@media (prefers-color-scheme: dark)` and for an explicit override on `:root[data-theme]` (a manual toggle is task D6). Components reference **semantic** tokens only; raw hex lives in one file.
+All tokens are CSS custom properties on `:root`, redefined for dark under `@media (prefers-color-scheme: dark)` and for an explicit override on `:root[data-theme]` (the manual picker, built in D6: System, Light or Dark, saved under `tarot.theme.v1`; "System" removes the attribute; an inline script in `index.html` applies a saved choice before first paint). Components reference **semantic** tokens only; raw hex lives in one file.
 
 ### Colour (provisional)
 

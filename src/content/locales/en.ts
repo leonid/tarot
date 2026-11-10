@@ -11,6 +11,10 @@ const pairs = (list: readonly (readonly [string, string])[]) =>
 const ui: UiMessages = {
   appTitle: 'Tarot',
   language: 'Language',
+  theme: 'Theme',
+  themeSystem: 'System',
+  themeLight: 'Light',
+  themeDark: 'Dark',
   modeSimulate: 'Simulate',
   modeSetup: 'Setup',
 

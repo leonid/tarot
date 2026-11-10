@@ -6,6 +6,10 @@ import type { ProviderStrings } from '../../domain/strings';
 export interface UiMessages {
   appTitle: string;
   language: string;
+  theme: string;
+  themeSystem: string;
+  themeLight: string;
+  themeDark: string;
   modeSimulate: string;
   modeSetup: string;
 

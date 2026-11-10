@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      // Apply a saved theme before first paint so there is no flash. Keep the
+      // key in step with THEME_KEY in src/ui/theme.ts.
+      try {
+        var t = localStorage.getItem('tarot.theme.v1');
+        if (t === 'light' || t === 'dark')
+          document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tarot</title>

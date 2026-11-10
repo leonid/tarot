@@ -73,6 +73,10 @@ const orientationName: Record<Orientation, string> = {
 const ui: UiMessages = {
   appTitle: 'Таро',
   language: 'Язык',
+  theme: 'Тема',
+  themeSystem: 'Как в системе',
+  themeLight: 'Светлая',
+  themeDark: 'Тёмная',
   modeSimulate: 'Симуляция',
   modeSetup: 'Расклад вручную',
 
