@@ -4,9 +4,11 @@ import type { Planet, Sign, ZodiacPoint } from '../domain/zodiac';
 
 /**
  * Book T attributions for all 78 RWS cards, transcribed from Part IV of
- * docs/research/The Structural Tarot Method and checked against the standard
- * Golden Dawn tables. Structural tests (correspondences.test.ts) guard the
- * decan rulers, the 2-3-4 / 5-6-7 / 8-9-10 sign rule and the court spans.
+ * docs/research/The Structural Tarot Method, then checked against an OCR
+ * copy of Book T itself (see docs/research/sources.md). Where the guide's
+ * titles differ from Book T, Book T wins. Structural tests
+ * (correspondences.test.ts) guard the decan rulers, the 2-3-4 / 5-6-7 / 8-9-10
+ * sign rule and the court spans.
  *
  * Strength/Justice follow the RWS numbering (VIII / XI); the attributions
  * (Strength-Leo, Justice-Libra) are the same in the Golden Dawn order.
@@ -138,10 +140,17 @@ const decanRows: readonly DecanRow[] = [
     3,
     'mars',
     'Mar 10-19',
-    'Lord of Perfected Happiness',
+    'Lord of Perfected Success',
   ],
   // Swords (air)
-  ['swords-02-two', 'libra', 1, 'moon', 'Sep 23-Oct 2', 'Lord of Peace'],
+  [
+    'swords-02-two',
+    'libra',
+    1,
+    'moon',
+    'Sep 23-Oct 2',
+    'Lord of Peace Restored',
+  ],
   ['swords-03-three', 'libra', 2, 'saturn', 'Oct 3-12', 'Lord of Sorrow'],
   [
     'swords-04-four',
@@ -158,7 +167,7 @@ const decanRows: readonly DecanRow[] = [
     2,
     'mercury',
     'Jan 30-Feb 8',
-    'Lord of Science',
+    'Lord of Earned Success',
   ],
   [
     'swords-07-seven',
@@ -174,9 +183,16 @@ const decanRows: readonly DecanRow[] = [
     1,
     'jupiter',
     'May 21-30',
-    'Lord of Interference',
+    'Lord of Shortened Force',
   ],
-  ['swords-09-nine', 'gemini', 2, 'mars', 'May 31-Jun 9', 'Lord of Despair'],
+  [
+    'swords-09-nine',
+    'gemini',
+    2,
+    'mars',
+    'May 31-Jun 9',
+    'Lord of Despair and Cruelty',
+  ],
   ['swords-10-ten', 'gemini', 3, 'sun', 'Jun 10-20', 'Lord of Ruin'],
   // Pentacles (earth)
   [
@@ -195,7 +211,14 @@ const decanRows: readonly DecanRow[] = [
     'Jan 1-10',
     'Lord of Material Works',
   ],
-  ['pentacles-04-four', 'capricorn', 3, 'sun', 'Jan 11-19', 'Lord of Power'],
+  [
+    'pentacles-04-four',
+    'capricorn',
+    3,
+    'sun',
+    'Jan 11-19',
+    'Lord of Earthly Power',
+  ],
   [
     'pentacles-05-five',
     'taurus',

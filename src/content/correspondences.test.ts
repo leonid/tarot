@@ -96,6 +96,18 @@ describe('decans follow the Golden Dawn rules', () => {
   });
 });
 
+describe('Book T titles', () => {
+  it('uses the Book T wording where the guide differed', () => {
+    const title = (id: string) => (correspondences[id] as Decan).title;
+    expect(title('cups-10-ten')).toBe('Lord of Perfected Success');
+    expect(title('swords-02-two')).toBe('Lord of Peace Restored');
+    expect(title('swords-06-six')).toBe('Lord of Earned Success');
+    expect(title('swords-08-eight')).toBe('Lord of Shortened Force');
+    expect(title('swords-09-nine')).toBe('Lord of Despair and Cruelty');
+    expect(title('pentacles-04-four')).toBe('Lord of Earthly Power');
+  });
+});
+
 describe('court cards', () => {
   const courts = entries.flatMap(([id, v]) =>
     v.kind === 'court' ? [{ id, ...(v as Court) }] : [],
