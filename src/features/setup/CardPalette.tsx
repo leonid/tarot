@@ -1,5 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
 import type { Card } from '../../domain/types';
+import { CardFace } from '../../ui/CardFace';
 import { useI18n } from '../../ui/i18n';
 
 /** Unplaced cards. Each is draggable onto a spread slot. */
@@ -26,7 +27,7 @@ function PaletteCard({ card }: { card: Card }) {
       {...listeners}
       {...attributes}
     >
-      {card.name}
+      <CardFace card={card} compact />
     </li>
   );
 }

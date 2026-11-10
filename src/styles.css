@@ -46,6 +46,28 @@ body {
 .interpretation {
   max-width: var(--measure);
 }
+.reading {
+  display: block;
+}
+/* Two columns from 56em: the board, and the interpretation beside it, sticky
+   so a long reading stays next to its cards. */
+@media (min-width: 56em) {
+  .app {
+    max-width: var(--content-wide);
+  }
+  .reading {
+    display: grid;
+    grid-template-columns: auto minmax(0, var(--aside-w));
+    gap: var(--space-6);
+    align-items: start;
+  }
+  .reading > .interpretation {
+    position: sticky;
+    top: var(--space-4);
+    max-height: calc(100vh - var(--space-6));
+    overflow: auto;
+  }
+}
 .board {
   display: grid;
   gap: var(--space-2);
@@ -152,6 +174,17 @@ body {
   max-height: var(--palette-max-h);
   overflow: auto;
 }
+.card-face.compact {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+.card-face.compact .card-face-top {
+  min-height: 0;
+}
+.card-face.compact .card-face-name {
+  font-size: var(--text-md);
+}
 .palette-card {
   padding: var(--space-1) var(--space-2);
   background: var(--surface);
@@ -164,4 +197,25 @@ body {
 .palette-card.dragging {
   opacity: 0.5;
   box-shadow: var(--lift);
+}
+.slot,
+.card-face-name {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.language select {
+  max-width: var(--aside-w);
+}
+@media (max-width: 40em) {
+  .slot {
+    padding: var(--space-1);
+    font-size: var(--text-xs);
+  }
+  .slot-hinge {
+    padding: 0 var(--space-1);
+    letter-spacing: 0;
+  }
+  .card-face-name {
+    font-size: var(--text-md);
+  }
 }

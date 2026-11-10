@@ -39,15 +39,20 @@ export function faceNumber(card: Card): string {
 export function CardFace({
   card,
   orientation = 'upright',
+  compact = false,
 }: {
   card: Card;
   orientation?: PlacedCard['orientation'];
+  /** One line (numeral, mark, name), for the palette. */
+  compact?: boolean;
 }) {
   const { t } = useI18n();
   const reversed = orientation === 'reversed';
   const num = faceNumber(card);
   return (
-    <span className={`card-face${reversed ? ' reversed' : ''}`}>
+    <span
+      className={`card-face${reversed ? ' reversed' : ''}${compact ? ' compact' : ''}`}
+    >
       <span className="card-face-top">
         {num && <span className="card-face-num">{num}</span>}
         {card.suit && <SuitIcon suit={card.suit} />}

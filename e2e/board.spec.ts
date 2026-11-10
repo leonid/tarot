@@ -41,3 +41,35 @@ test('a reversed card shows the word', async ({ page }) => {
     page.locator('.card-face.reversed .card-face-rev').first(),
   ).toHaveText('(reversed)');
 });
+
+for (const width of [360, 600, 1280]) {
+  test(`no horizontal page scroll at ${width}px, Celtic Cross included`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/');
+    await page.getByLabel('Spread').selectOption('celtic-cross');
+    await page.getByRole('button', { name: 'Shuffle and deal' }).click();
+    await expect(page.locator('.board .slot.filled')).toHaveCount(10);
+    const m = await page.evaluate(() => ({
+      scroll: document.documentElement.scrollWidth,
+      client: document.documentElement.clientWidth,
+      board: document.querySelector('.board')!.getBoundingClientRect().right,
+      aside: document.querySelector('.interpretation')!.getBoundingClientRect(),
+      boardRect: document.querySelector('.board')!.getBoundingClientRect(),
+    }));
+    expect(m.scroll).toBeLessThanOrEqual(m.client);
+    expect(m.board).toBeLessThanOrEqual(m.client);
+    // Two columns from 56em (896px), one column below.
+    const sideBySide = m.aside.left >= m.boardRect.right;
+    expect(sideBySide).toBe(width >= 900);
+    await page.screenshot({ path: testInfo.outputPath(`w${width}.png`) });
+  });
+}
+
+test('setup palette cards use the card face', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('tab', { name: 'Setup' }).click();
+  const first = page.locator('.palette-card').first();
+  await expect(first.locator('.card-face-name')).toBeVisible();
+});

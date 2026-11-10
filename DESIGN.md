@@ -71,7 +71,7 @@ Derived from what is in `src/` today; names are the proposed shared components i
 | Tabs                | `role="tablist"` (mode)             | selected, focus                                                   | Selected is bold today; needs an indicator that is not weight alone  |
 | Slot                | `ui/SpreadBoard.tsx`                | empty, filled, drag-over, rotated, hinge                          | The rotated slot rotates its label too (plan gap 8); fix in D4       |
 | CardFace            | text only                           | image or typographic fallback; upright, reversed; loading         | One component for slot, palette and history; image optional per deck |
-| PaletteCard         | `features/setup/CardPalette.tsx`    | idle, dragging, placed (hidden)                                   | Drag handle on touch (M3.11)                                         |
+| PaletteCard         | `features/setup/CardPalette.tsx`    | idle, dragging, placed (hidden)                                   | Uses compact `CardFace` (D7). Drag handle on touch (M3.11)           |
 | Chip / Badge        | `.slot-hinge`                       | hinge, element (fire/water/air/earth), provider (rules / AI)      | Colour never alone                                                   |
 | InterpretationPanel | `ui/Layout.tsx`                     | loading, ready, error with fallback                               | Shows provider label (M4)                                            |
 | StatusNote          | `<small role="status">`             | info, success, error                                              | Live region                                                          |
@@ -86,11 +86,15 @@ Gap analysis: there is no DS library to compare against, so nothing needs a Gap 
 - Board: the grid from the spread's `x`/`y` stays; card size is a token (`--card-w`), scaled by viewport so the 10-card Celtic Cross fits at 360px width (plan A3).
 - Setup: palette below the board on phones, as a side drawer on wide screens; "Place with menus" becomes a visible alternative, not a collapsed `details` (plan M3.9).
 
-| Breakpoint   | Change                                                                      |
-| ------------ | --------------------------------------------------------------------------- |
-| below 40rem  | one column, card width ~4.25rem, palette as a scroll strip with drag handle |
-| 40 to 56rem  | one column, larger cards                                                    |
-| 56rem and up | two columns: board and sticky interpretation                                |
+**Built in D7** (breakpoints are `em` in `src/styles.css` and `tokens.css`, because a media query cannot read a token and the token test bans raw `rem` outside `tokens.css`):
+
+| Breakpoint   | Change                                                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| up to 40em   | one column; `--card-w` 4.75rem (four Celtic Cross columns fit 360px); smaller slot padding and text                                  |
+| 40em to 56em | one column, `--card-w` 7rem                                                                                                          |
+| 56em and up  | page widens to `--content-wide`; board and interpretation side by side, interpretation sticky and scrolling on its own (`--aside-w`) |
+
+Not built yet: the palette as a side drawer on wide screens and as a scroll strip on phones (M3.11); the palette is still a wrapping list, now of compact `CardFace`s.
 
 ## Imagery rule
 

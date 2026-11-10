@@ -56,6 +56,8 @@
 
   /* Layout */
   --content-max: 52rem;
+  --content-wide: 76rem;
+  --aside-w: 26rem;
   --slot-min-h: 5rem;
   --card-w: 7rem;
   --palette-max-h: 14rem;
@@ -111,6 +113,12 @@
   :root {
     --dur-fast: 0ms;
     --dur-slow: 0ms;
+  }
+}
+/* Phones: smaller cards so the 4-column Celtic Cross fits 360px. */
+@media (max-width: 40em) {
+  :root {
+    --card-w: 4.75rem;
   }
 }
 @media (pointer: coarse) {

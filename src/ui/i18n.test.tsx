@@ -43,7 +43,8 @@ describe('locale switching', () => {
   it('leaves no English on screen in setup mode', async () => {
     useReadingStore.setState({ locale: 'en-XA', mode: 'setup' });
     const { container } = render(<App />);
-    expect(leaks(container)).toEqual([]);
+    const found = leaks(container).filter((t) => !/^(\d+|[IVX]+)$/.test(t));
+    expect(found).toEqual([]);
   });
 
   it('ignores an unknown locale code', () => {

@@ -37,7 +37,7 @@ export function ReadingView({ droppable = false }: { droppable?: boolean }) {
   if (!deck || !spread) return null;
   const complete = placements.length === spread.positions.length;
   return (
-    <section>
+    <section className="reading">
       <SpreadBoard
         spread={spread}
         cards={deck.cards}
@@ -46,7 +46,7 @@ export function ReadingView({ droppable = false }: { droppable?: boolean }) {
         hingeCardId={complete ? result?.hingeCardId : undefined}
       />
       {result && complete && (
-        <article className="interpretation">
+        <aside className="interpretation" aria-label={t.interpretation}>
           <h2>{t.interpretation}</h2>
           {result.cards.map((c) => (
             <p key={c.positionId}>{c.note}</p>
@@ -64,7 +64,7 @@ export function ReadingView({ droppable = false }: { droppable?: boolean }) {
           )}
           <p>{result.summary}</p>
           <p>{result.advice}</p>
-        </article>
+        </aside>
       )}
     </section>
   );
