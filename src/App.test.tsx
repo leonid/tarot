@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { encodeShared } from './domain/share';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { App } from './App';
@@ -27,5 +28,27 @@ describe('spread board', () => {
       'celtic-cross',
     );
     expect(container.querySelectorAll('.slot')).toHaveLength(10);
+  });
+});
+
+describe('shared links', () => {
+  it('opens a reading from the URL hash', async () => {
+    const hash = encodeShared({
+      v: 1,
+      mode: 'setup',
+      question: 'shared question',
+      deckId: 'rws-78',
+      spreadId: 'single',
+      placements: [
+        { positionId: 'card', cardId: 'major-00-fool', orientation: 'upright' },
+      ],
+    });
+    location.hash = `#r=${hash}`;
+    const { container } = render(<App />);
+    await screen.findByDisplayValue('shared question');
+    expect(container.querySelector('[data-position="card"]')).toHaveTextContent(
+      'The Fool',
+    );
+    location.hash = '';
   });
 });

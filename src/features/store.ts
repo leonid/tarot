@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { deal } from '../domain/deal';
 import { randomSeed } from '../domain/rng';
 import type { Orientation, PlacedCard } from '../domain/types';
+import type { SharedReading } from '../domain/share';
 import { getDeck, decks } from '../content/decks';
 import { getSpread, spreads } from '../content/spreads';
 
@@ -24,6 +25,7 @@ interface State {
   place: (positionId: string, cardId: string, o?: Orientation) => void;
   clearPosition: (positionId: string) => void;
   reset: () => void;
+  loadShared: (r: SharedReading) => void;
 }
 
 export const useReadingStore = create<State>((set, get) => ({
@@ -61,4 +63,16 @@ export const useReadingStore = create<State>((set, get) => ({
       placements: s.placements.filter((p) => p.positionId !== positionId),
     })),
   reset: () => set({ placements: [], seed: undefined }),
+  loadShared: (r) => {
+    // Ignore readings that point at decks or spreads we no longer ship.
+    if (!getDeck(r.deckId) || !getSpread(r.spreadId)) return;
+    set({
+      mode: r.mode,
+      deckId: r.deckId,
+      spreadId: r.spreadId,
+      question: r.question,
+      placements: r.placements,
+      seed: r.seed,
+    });
+  },
 }));
