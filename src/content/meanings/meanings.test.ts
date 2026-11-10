@@ -1,17 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { majorArcana, rwsDeck } from '../decks/rws';
+import { rwsDeck } from '../decks/rws';
 import { meanings } from '.';
 
-/** Suits and groups whose meanings are fully written. */
-const complete = [
-  { group: 'major', cards: majorArcana },
-  { group: 'wands', cards: rwsDeck.cards.filter((c) => c.suit === 'wands') },
-  { group: 'cups', cards: rwsDeck.cards.filter((c) => c.suit === 'cups') },
-  { group: 'swords', cards: rwsDeck.cards.filter((c) => c.suit === 'swords') },
-];
-
-describe.each(complete)('$group meanings', ({ cards }) => {
-  it.each(cards.map((c) => [c.name, c.id] as const))(
+describe('every card has base meanings', () => {
+  it.each(rwsDeck.cards.map((c) => [c.name, c.id] as const))(
     '%s is complete',
     (_name, id) => {
       const m = meanings[id];
