@@ -43,6 +43,7 @@ export function ReadingView({ droppable = false }: { droppable?: boolean }) {
         cards={deck.cards}
         placements={placements}
         droppable={droppable}
+        hingeCardId={complete ? result?.hingeCardId : undefined}
       />
       {result && complete && (
         <article className="interpretation">
@@ -55,6 +56,12 @@ export function ReadingView({ droppable = false }: { droppable?: boolean }) {
               <em>{r}</em>
             </p>
           ))}
+          {result.hingeCardId && (
+            <p>
+              <strong>Hinge:</strong>{' '}
+              {deck.cards.find((c) => c.id === result.hingeCardId)?.name}
+            </p>
+          )}
           <p>{result.summary}</p>
           <p>{result.advice}</p>
         </article>

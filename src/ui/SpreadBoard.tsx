@@ -7,6 +7,8 @@ interface Props {
   placements: readonly PlacedCard[];
   /** When true, slots accept dragged cards (must be inside a DndContext). */
   droppable?: boolean;
+  /** Card the Compare step found most connected to the others. */
+  hingeCardId?: string;
 }
 
 /** Lays positions out on a grid using their x/y coordinates. */
@@ -15,6 +17,7 @@ export function SpreadBoard({
   cards,
   placements,
   droppable = false,
+  hingeCardId,
 }: Props) {
   const cols = Math.max(...spread.positions.map((p) => p.x)) + 1;
   return (
@@ -25,7 +28,12 @@ export function SpreadBoard({
       {spread.positions.map((pos) => {
         const placed = placements.find((p) => p.positionId === pos.id);
         const card = cards.find((c) => c.id === placed?.cardId);
-        const props = { pos, card, orientation: placed?.orientation };
+        const props = {
+          pos,
+          card,
+          orientation: placed?.orientation,
+          hinge: !!card && card.id === hingeCardId,
+        };
         return droppable ? (
           <DroppableSlot key={pos.id} {...props} />
         ) : (
@@ -42,13 +50,14 @@ interface SlotProps {
   orientation?: PlacedCard['orientation'];
   setRef?: (el: HTMLElement | null) => void;
   over?: boolean;
+  hinge?: boolean;
 }
 
-function Slot({ pos, card, orientation, setRef, over }: SlotProps) {
+function Slot({ pos, card, orientation, setRef, over, hinge }: SlotProps) {
   return (
     <div
       ref={setRef}
-      className={`slot${card ? ' filled' : ''}${over ? ' over' : ''}${pos.rotated ? ' rotated' : ''}`}
+      className={`slot${card ? ' filled' : ''}${over ? ' over' : ''}${pos.rotated ? ' rotated' : ''}${hinge ? ' hinge' : ''}`}
       style={{ gridColumn: pos.x + 1, gridRow: pos.y + 1 }}
       data-position={pos.id}
     >
@@ -57,6 +66,11 @@ function Slot({ pos, card, orientation, setRef, over }: SlotProps) {
         {card ? card.name : 'empty'}
         {card && orientation === 'reversed' ? ' (reversed)' : ''}
       </span>
+      {hinge && (
+        <span className="slot-hinge" title="Most connected to the other cards">
+          Hinge
+        </span>
+      )}
     </div>
   );
 }

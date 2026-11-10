@@ -53,6 +53,18 @@
   transform: rotate(90deg) scale(0.8);
   opacity: 0.85;
 }
+.slot.hinge {
+  border: 2px solid currentColor;
+}
+.slot-hinge {
+  align-self: flex-start;
+  padding: 0 0.4rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 .slot-label {
   font-weight: bold;
 }
