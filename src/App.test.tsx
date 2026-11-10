@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { encodeShared } from './domain/share';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
@@ -90,6 +90,50 @@ describe('shared links', () => {
       location.hash = '';
     },
   );
+
+  it('removes an opened link from the address bar', async () => {
+    location.hash = `#r=${link(good)}`;
+    render(<App />);
+    await screen.findByDisplayValue('from a link');
+    expect(location.hash).toBe('');
+  });
+
+  it('keeps a bad link in the address bar until the message is dismissed', async () => {
+    location.hash = '#r=garbage';
+    render(<App />);
+    expect(location.hash).toBe('#r=garbage');
+    await userEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+    expect(location.hash).toBe('');
+  });
+
+  it('opens a link pasted into a page that is already loaded', async () => {
+    render(<App />);
+    await userEvent.type(screen.getByLabelText('Question'), 'mine');
+    act(() => {
+      location.hash = `#r=${link(good)}`;
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    await screen.findByDisplayValue('from a link');
+    expect(location.hash).toBe('');
+
+    act(() => {
+      location.hash = `#r=${link({ ...good, question: 'second' })}`;
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    await screen.findByDisplayValue('second');
+  });
+
+  it('ignores a hash that is not a share link', async () => {
+    render(<App />);
+    await userEvent.type(screen.getByLabelText('Question'), 'mine');
+    act(() => {
+      location.hash = '#elsewhere';
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    expect(screen.getByLabelText('Question')).toHaveValue('mine');
+    expect(location.hash).toBe('#elsewhere');
+    location.hash = '';
+  });
 
   it('shows no message for a good link', () => {
     location.hash = `#r=${link(good)}`;

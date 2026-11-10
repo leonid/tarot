@@ -46,6 +46,8 @@ test('a bad share link shows a dismissible message and the app still works', asy
   await expect(page.locator('.board .slot.filled').first()).toBeVisible();
   await expect(alert).toBeVisible();
 
+  await expect(page).toHaveURL(/#r=garbage$/);
   await alert.getByRole('button', { name: 'Dismiss' }).click();
   await expect(alert).toHaveCount(0);
+  await expect(page).not.toHaveURL(/#r=/);
 });

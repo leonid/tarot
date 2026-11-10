@@ -86,5 +86,17 @@ test('a copied share link opens the same reading in a fresh browser', async ({
   await expect(fresh.locator('.board .slot.filled')).toHaveCount(3);
   await expect(fresh.getByRole('alert')).toHaveCount(0);
   expect(await readingState(fresh)).toEqual(original);
+
+  // The opened link leaves the address bar, so a reload starts fresh and does
+  // not bring the shared reading back over later work.
+  await expect(fresh).not.toHaveURL(/#r=/);
+  await fresh.reload();
+  await expect(fresh.locator('.board .slot.filled')).toHaveCount(0);
+
+  // Pasting the link into the loaded page opens it without a reload.
+  await fresh.goto(url);
+  await expect(fresh.locator('.board .slot.filled')).toHaveCount(3);
+  await expect(fresh).not.toHaveURL(/#r=/);
+  expect(await readingState(fresh)).toEqual(original);
   await other.close();
 });

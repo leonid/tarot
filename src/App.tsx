@@ -3,12 +3,21 @@ import { SimulateView } from './features/simulate/SimulateView';
 import { SetupView } from './features/setup/SetupView';
 import { Controls } from './ui/Controls';
 import { SaveShare } from './ui/SaveShare';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { decodeSharedResult, type SharedReading } from './domain/share';
 import { locales } from './content/locales';
 import { useI18n } from './ui/i18n';
 import { Alert, Field, Tabs } from './ui/kit';
 import { applyTheme, THEMES, type Theme } from './ui/theme';
+
+type Link =
+  { reading: SharedReading } | { error: 'malformed' | 'newer' | 'unknown' };
+
+/** Drops the share payload from the address bar without a navigation. */
+function clearShareHash() {
+  if (location.hash.startsWith('#r='))
+    history.replaceState(null, '', location.pathname + location.search);
+}
 
 export function App() {
   const mode = useReadingStore((s) => s.mode);
@@ -19,13 +28,10 @@ export function App() {
   const setTheme = useReadingStore((s) => s.setTheme);
   const { locale, t, getDeck, getSpread } = useI18n();
 
-  // Read a share link (#r=...) once. Only a readable link we can show is
-  // opened; otherwise the current reading stays and a dismissible message says why.
-  const [link, setLink] = useState<
-    | { reading: SharedReading }
-    | { error: 'malformed' | 'newer' | 'unknown' }
-    | null
-  >(() => {
+  // A share link (#r=...) is read at load and whenever the hash changes. Only
+  // a readable link we can show is opened; otherwise the current reading
+  // stays and a dismissible message says why.
+  const readLink = useCallback((): Link | null => {
     const m = /^#r=(.+)$/.exec(location.hash);
     if (!m?.[1]) return null;
     const r = decodeSharedResult(m[1]);
@@ -36,7 +42,17 @@ export function App() {
     if (!getDeck(r.reading.deckId) || !getSpread(r.reading.spreadId))
       return { error: 'unknown' };
     return { reading: r.reading };
-  });
+  }, [getDeck, getSpread]);
+  const [link, setLink] = useState(readLink);
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const next = readLink();
+      if (next) setLink(next);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, [readLink]);
 
   useEffect(() => {
     document.documentElement.lang = locale.code;
@@ -46,7 +62,11 @@ export function App() {
   useEffect(() => applyTheme(theme), [theme]);
 
   useEffect(() => {
-    if (link && 'reading' in link) loadShared(link.reading);
+    if (!link || !('reading' in link)) return;
+    loadShared(link.reading);
+    // The link has done its job: left in place, a reload would open it again
+    // over whatever the reader did since.
+    clearShareHash();
   }, [link, loadShared]);
   return (
     <main className="app">
@@ -94,7 +114,13 @@ export function App() {
         </div>
       </header>
       {link && 'error' in link && (
-        <Alert dismissLabel={t.dismiss} onDismiss={() => setLink(null)}>
+        <Alert
+          dismissLabel={t.dismiss}
+          onDismiss={() => {
+            clearShareHash();
+            setLink(null);
+          }}
+        >
           {
             {
               malformed: t.shareLinkMalformed,
