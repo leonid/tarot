@@ -1,5 +1,6 @@
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
 import { useI18n } from '../../ui/i18n';
+import { Field, Toggle } from '../../ui/kit';
 import { ReadingView } from '../../ui/Layout';
 import { useReadingStore } from '../store';
 import { CardPalette } from './CardPalette';
@@ -69,43 +70,44 @@ export function SetupView() {
           const placed = placements.find((p) => p.positionId === pos.id);
           return (
             <div key={pos.id} className="slot-editor">
-              <label>
-                {pos.label}
-                <select
-                  value={placed?.cardId ?? ''}
-                  onChange={(e) =>
-                    e.target.value
-                      ? place(pos.id, e.target.value, placed?.orientation)
-                      : clearPosition(pos.id)
-                  }
-                >
-                  <option value="">{t.chooseCard}</option>
-                  {deck.cards.map((c) => (
-                    <option
-                      key={c.id}
-                      value={c.id}
-                      disabled={placedIds.has(c.id) && placed?.cardId !== c.id}
-                    >
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              {allowReversals && placed && (
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={placed.orientation === 'reversed'}
+              <Field label={pos.label}>
+                {(p) => (
+                  <select
+                    {...p}
+                    value={placed?.cardId ?? ''}
                     onChange={(e) =>
-                      place(
-                        pos.id,
-                        placed.cardId,
-                        e.target.checked ? 'reversed' : 'upright',
-                      )
+                      e.target.value
+                        ? place(pos.id, e.target.value, placed?.orientation)
+                        : clearPosition(pos.id)
                     }
-                  />
-                  {t.reversed}
-                </label>
+                  >
+                    <option value="">{t.chooseCard}</option>
+                    {deck.cards.map((c) => (
+                      <option
+                        key={c.id}
+                        value={c.id}
+                        disabled={
+                          placedIds.has(c.id) && placed?.cardId !== c.id
+                        }
+                      >
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </Field>
+              {allowReversals && placed && (
+                <Toggle
+                  label={t.reversed}
+                  checked={placed.orientation === 'reversed'}
+                  onChange={(e) =>
+                    place(
+                      pos.id,
+                      placed.cardId,
+                      e.target.checked ? 'reversed' : 'upright',
+                    )
+                  }
+                />
               )}
             </div>
           );

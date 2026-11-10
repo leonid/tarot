@@ -39,6 +39,8 @@
   --border-w-strong: 2px;
   --focus-w: 3px;
   --focus-offset: 2px;
+  --target: 2rem; /* 44px on touch, see below */
+  --opacity-disabled: 0.55;
 
   /* Type */
   --font-body: 'JetBrains Sans', system-ui, sans-serif;
@@ -109,5 +111,10 @@
   :root {
     --dur-fast: 0ms;
     --dur-slow: 0ms;
+  }
+}
+@media (pointer: coarse) {
+  :root {
+    --target: 2.75rem;
   }
 }

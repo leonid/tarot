@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { encodeShared, toShared } from '../domain/share';
 import { isComplete, validateReading } from '../domain/validate';
 import { useI18n } from './i18n';
+import { Button, StatusNote } from './kit';
 import { deleteReading, loadHistory, saveReading } from '../features/history';
 import { useReadingStore } from '../features/store';
 
@@ -38,7 +39,7 @@ export function SaveShare() {
 
   return (
     <section className="save-share">
-      <button
+      <Button
         disabled={!ready}
         onClick={() => {
           setHistory(saveReading(shared()));
@@ -46,11 +47,11 @@ export function SaveShare() {
         }}
       >
         {t.saveReading}
-      </button>{' '}
-      <button disabled={!ready} onClick={copyLink}>
+      </Button>{' '}
+      <Button disabled={!ready} onClick={copyLink}>
         {t.copyShareLink}
-      </button>{' '}
-      <small role="status">{notice}</small>
+      </Button>{' '}
+      <StatusNote>{notice}</StatusNote>
       {history.length > 0 && (
         <details>
           <summary>{t.savedReadings(history.length)}</summary>
@@ -60,12 +61,15 @@ export function SaveShare() {
                 {new Date(e.savedAt).toLocaleString(locale.code)} —{' '}
                 {e.reading.question || t.noQuestion} (
                 {getSpread(e.reading.spreadId)?.name ?? e.reading.spreadId}){' '}
-                <button onClick={() => s.loadShared(e.reading)}>
+                <Button onClick={() => s.loadShared(e.reading)}>
                   {t.open}
-                </button>{' '}
-                <button onClick={() => setHistory(deleteReading(e.id))}>
+                </Button>{' '}
+                <Button
+                  variant="danger"
+                  onClick={() => setHistory(deleteReading(e.id))}
+                >
                   {t.delete}
-                </button>
+                </Button>
               </li>
             ))}
           </ul>

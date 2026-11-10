@@ -1,0 +1,166 @@
+import {
+  useId,
+  useRef,
+  type ButtonHTMLAttributes,
+  type InputHTMLAttributes,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react';
+import './kit.css';
+
+export type ButtonVariant = 'primary' | 'secondary' | 'danger';
+
+/** A button. `busy` shows progress and blocks clicks; `disabled` dims it. */
+export function Button({
+  variant = 'secondary',
+  busy = false,
+  className = '',
+  ...rest
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: ButtonVariant;
+  busy?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      {...rest}
+      className={`btn btn-${variant} ${className}`.trim()}
+      disabled={rest.disabled || busy}
+      aria-busy={busy || undefined}
+    />
+  );
+}
+
+/** What a Field hands to its control so label, error and state stay linked. */
+export interface FieldControlProps {
+  id: string;
+  'aria-invalid'?: true;
+  'aria-describedby'?: string;
+}
+
+/** A label above a control, with optional hint and error text. */
+export function Field({
+  label,
+  hint,
+  error,
+  className = '',
+  children,
+}: {
+  label: string;
+  hint?: string;
+  error?: string;
+  className?: string;
+  children: (props: FieldControlProps) => ReactNode;
+}) {
+  const id = useId();
+  const noteId = `${id}-note`;
+  const note = error ?? hint;
+  return (
+    <div className={`field ${className}`.trim()}>
+      <label htmlFor={id}>{label}</label>
+      {children({
+        id,
+        ...(error ? { 'aria-invalid': true as const } : {}),
+        ...(note ? { 'aria-describedby': noteId } : {}),
+      })}
+      {note && (
+        <small id={noteId} className={error ? 'field-error' : 'field-hint'}>
+          {note}
+        </small>
+      )}
+    </div>
+  );
+}
+
+/** A checkbox with its label on one line. The native input, restyled. */
+export function Toggle({
+  label,
+  ...rest
+}: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & { label: string }) {
+  return (
+    <label className="toggle">
+      <input type="checkbox" {...rest} />
+      <span>{label}</span>
+    </label>
+  );
+}
+
+export interface TabItem<T extends string> {
+  id: T;
+  label: string;
+}
+
+/** A tablist with roving focus: arrows, Home and End move between tabs. */
+export function Tabs<T extends string>({
+  label,
+  tabs,
+  value,
+  onChange,
+}: {
+  label?: string;
+  tabs: readonly TabItem<T>[];
+  value: T;
+  onChange: (id: T) => void;
+}) {
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  function onKeyDown(e: KeyboardEvent, index: number) {
+    const last = tabs.length - 1;
+    const next =
+      e.key === 'ArrowRight'
+        ? index === last
+          ? 0
+          : index + 1
+        : e.key === 'ArrowLeft'
+          ? index === 0
+            ? last
+            : index - 1
+          : e.key === 'Home'
+            ? 0
+            : e.key === 'End'
+              ? last
+              : -1;
+    if (next < 0) return;
+    e.preventDefault();
+    const tab = tabs[next];
+    if (tab) onChange(tab.id);
+    refs.current[next]?.focus();
+  }
+  return (
+    <div role="tablist" aria-label={label} className="tabs">
+      {tabs.map((tab, i) => (
+        <button
+          key={tab.id}
+          ref={(el) => {
+            refs.current[i] = el;
+          }}
+          type="button"
+          role="tab"
+          className="tab"
+          aria-selected={value === tab.id}
+          tabIndex={value === tab.id ? 0 : -1}
+          onClick={() => onChange(tab.id)}
+          onKeyDown={(e) => onKeyDown(e, i)}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export type NoteKind = 'info' | 'success' | 'error';
+
+/** A live region. It stays in the DOM while empty so changes are announced. */
+export function StatusNote({
+  kind = 'info',
+  children,
+}: {
+  kind?: NoteKind;
+  children?: ReactNode;
+}) {
+  return (
+    <small role="status" className={`note note-${kind}`}>
+      {children}
+    </small>
+  );
+}
