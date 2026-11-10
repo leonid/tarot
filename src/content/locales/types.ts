@@ -37,6 +37,10 @@ export interface UiMessages {
   interpretation: string;
   /** Heading over the relations between cards. */
   connections: string;
+  interpreting: string;
+  interpretationFailed: string;
+  tryAgain: string;
+  updateInterpretation: string;
   hinge: string;
   hingeTitle: string;
   hingeLabel: string;

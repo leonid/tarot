@@ -44,6 +44,10 @@ const ui: UiMessages = {
 
   interpretation: 'Interpretation',
   connections: 'Connections',
+  interpreting: 'Reading the cards…',
+  interpretationFailed: 'The interpretation could not be made.',
+  tryAgain: 'Try again',
+  updateInterpretation: 'Update for the new question',
   hinge: 'Hinge',
   hingeTitle: 'Most connected to the other cards',
   hingeLabel: 'Hinge:',

@@ -377,3 +377,17 @@ body {
     padding: var(--space-3) var(--space-4);
   }
 }
+
+.interpretation [role='status']:empty {
+  display: none;
+}
+.interpretation-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.interpretation-action p {
+  margin: 0;
+}

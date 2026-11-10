@@ -99,6 +99,10 @@ const ui: UiMessages = {
 
   interpretation: 'Толкование',
   connections: 'Связи',
+  interpreting: 'Читаю карты…',
+  interpretationFailed: 'Не удалось составить толкование.',
+  tryAgain: 'Повторить',
+  updateInterpretation: 'Обновить для нового вопроса',
   hinge: 'Ось',
   hingeTitle: 'Больше всего связана с остальными картами',
   hingeLabel: 'Ось:',
