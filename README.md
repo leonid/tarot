@@ -25,6 +25,7 @@ End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and se
 ## Docs
 
 - `docs/research/`: sources and licensing, deck and spread structure, interpretation design, and the Structural Tarot Method guide.
+- `docs/research/dependency-audit.md`: the one accepted `npm audit` advisory (dev only), why it is not fixed, and the re-check date.
 - `GLOSSARY.md`: terms. `CLAUDE.md`: working conventions.
 
 ## Roadmap
