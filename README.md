@@ -28,6 +28,7 @@ Other scripts: `typecheck`, `lint`, `build`, `format`. CI runs typecheck, lint, 
 ## Roadmap
 
 1. Fill the optional theme notes (love, career, spirit, advice).
-2. Polish drag and drop (keyboard sensor, touch testing, card images on the board).
-3. Public-domain card images.
-4. LLM interpretation behind a small proxy.
+2. Design system (proposed in `DESIGN.md`, tasks D0 to D10 in `docs/research/full-app-plan.md`): tokens, fonts, shared components, light and dark themes, responsive layout.
+3. Polish drag and drop (keyboard sensor, touch testing, card images on the board).
+4. Public-domain card images.
+5. LLM interpretation behind a small proxy.

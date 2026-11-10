@@ -412,6 +412,24 @@ Each task should fit one commit. Convention: write the failing test first, keep 
 | M3.13 | Screen reader manual pass, recorded                                         | Notes and any issues filed                                                            | PR checklist                                      |
 | M3.14 | Static deploy workflow (host chosen in open decisions)                      | Push to `main` deploys; `base` configured if on a subpath                             | CI run plus smoke test of deployed URL            |
 
+### 5.3a Design system (runs alongside M3; proposal in `DESIGN.md`)
+
+All values in `DESIGN.md` are provisional until D1 lands. Do D1 to D5 before M3.7 and M3.8 (card image component and board), so images drop into a finished frame.
+
+| ID  | Task                                                                                                         | Acceptance                                                                                       | Proof                                          |
+| --- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| D0  | Owner decides the 8 open decisions in `DESIGN.md`                                                            | Each row marked accepted or changed in the file                                                  | Reviewed diff                                  |
+| D1  | `src/ui/tokens.css`: colour, space, radius, motion tokens, light and dark; replace raw values in `styles.css` | No hex or px literal outside the tokens file; both themes render                                 | grep check in CI plus a screenshot per theme   |
+| D2  | Fonts: add `@font-face`, check Cyrillic coverage of the bundled JetBrains subset, choose a display serif     | Russian and English card names render without fallback glyphs; licences recorded in `sources.md` | Test page with all 78 names in both locales    |
+| D3  | Shared controls: Button, Field, Toggle, Tabs (selected state not weight alone), StatusNote                   | Each has all states from `DESIGN.md`; focus ring and 44 px touch target                          | Component tests plus a dev-only catalogue page |
+| D4  | Slot and CardFace (typographic face, upright and reversed, hinge); fix the rotated-slot label               | Celtic Cross crossing card keeps a horizontal readable label; reversed shows the word            | Component test plus screenshot                 |
+| D5  | Chip and Badge: hinge, four element chips with glyph and word                                                | Colour never the only cue; contrast at least 4.5:1                                               | Unit test on contrast tokens                   |
+| D6  | Theme: follow the OS, plus a manual toggle stored locally                                                    | `data-theme` override works; no flash on load                                                    | Component test                                 |
+| D7  | Responsive layout: one column below 56rem, board plus sticky interpretation above; Celtic Cross fits 360 px  | No horizontal page scroll at 360 px                                                              | Playwright viewport test (with M3.11)          |
+| D8  | Inline SVG icon set (four suits, four elements, close, check)                                                | Each icon has an accessible name or is `aria-hidden` beside text                                 | Component test                                 |
+| D9  | Contrast test for tokens                                                                                     | Computes the WCAG ratio for every text and border pair in both themes; fails under 4.5 or 3      | `src/ui/tokens.test.ts`                        |
+| D10 | `/design-review` pass at the end of M3, then reconcile `DESIGN.md` with the built values                     | `DESIGN.md` no longer says "provisional"                                                         | Reviewed diff                                  |
+
 ### 5.4 M4 LLM interpretation
 
 | ID    | Task                                                                          | Acceptance                                                                                            | Proof                                            |
