@@ -2,6 +2,59 @@
 
 Written 2026-11-10. Planning document only; no code was changed. Statements about the repo cite files read on this date. External facts cite a URL in section 7; anything not confirmed is marked **unverified**.
 
+## 0. Status (revised 2026-11-10, after commit 1032b10)
+
+This section is the current truth. Sections 1 to 5 below are the original plan and are kept for the reasoning; where they disagree with this section, this section wins. Section 2 in particular describes the repo **before** the work listed here.
+
+### 0.1 Where each milestone stands
+
+| Milestone        | State                 | Done                                                                                                                                                                                                                  | Still open                                                                                                                                                                             |
+| ---------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M1 Hardening     | 8 of 13               | M1.2, M1.3 (e2e simulate and setup), M1.6, M1.7 (id, order and seeded-deal snapshots), M1.8, M1.9 (per-entry history, migration chain), M1.10 (bad share link message). M1.1 is built and green on Chromium and WebKit | M1.1 Firefox run (owner's machine), M1.4 persist e2e, M1.5 Playwright in CI, M1.11 interpretation trigger, M1.12 error boundary, M1.13 audit note                                      |
+| M2 Text split    | Goal met another way  | M2.3 to M2.10: typed UI dictionary, locale in store, `<html lang>`, switcher, localized drag announcements, per-locale text tables, per-key fallback, coverage tests, ids-only share links                            | M2.1 and M2.2 (typed facts) were **not** built; see 0.2                                                                                                                                |
+| Design system    | 8 of 11               | D0 (decisions recorded in `DESIGN.md`), D1 to D7, and D9 (`src/ui/contrast.test.ts`)                                                                                                                                  | D8 (suit and element icons exist; close and check are still text glyphs), D10 (review at the end of M3)                                                                                |
+| M3 Presentable   | Started through D4/D7 | The crossing-card label fix (half of M3.8); one keyboard-drag e2e (part of M3.10); contrast and focus tokens (part of M3.12)                                                                                          | All image work (M3.1 to M3.8), click-to-place (M3.9), touch (M3.11), screen-reader pass (M3.13), deploy (M3.14)                                                                        |
+| M4 LLM           | Not started           | Decisions taken (section 6)                                                                                                                                                                                           | Everything; blocked on M1.11 and on choosing a proxy host                                                                                                                              |
+| M5, M7, M8       | Not started           |                                                                                                                                                                                                                       |                                                                                                                                                                                        |
+| M6 Content       | One item early        | Russian (M6.7, M6.8): UI, 78 cards, meanings, spreads, interpreter phrases, with full coverage tests. It is a **machine draft**                                                                                       | Review of the Russian text by a fluent reader; everything else in M6                                                                                                                   |
+
+Evidence at this revision: 244 unit and component tests, 42 Playwright tests on Chromium and WebKit, typecheck, lint and build all pass. Firefox has not been run.
+
+### 0.2 Where the build left the plan
+
+1. **Localization came before hardening, and by a different design.** The plan had Compare return typed facts that a per-locale renderer turns into text (M2.1, M2.2). What was built instead: each locale supplies phrase templates (`ProviderStrings` in `src/domain/strings.ts`), and Compare calls them. `src/domain/` holds no English, the pseudo-locale tests prove no English reaches the screen, and plurals are each locale's own business, so a shared `Intl.PluralRules` helper (M2.3) and a lint rule (M2.11) were not needed.
+2. **What that leaves undone.** Compare still returns finished sentences. Two things need the facts themselves:
+   - the LLM prompt (M4.5), which should carry facts and not prose;
+   - the interface: a Celtic Cross can produce one sentence listing 20 or more conflicting pairs, which cannot be grouped or shortened while it is a string.
+3. **A second language shipped in M2, not M6.** Russian is complete by the coverage tests but unreviewed.
+4. **The design system ran ahead of M3**, as section 5.3a intended, and the typographic card face means the app is presentable before any image exists.
+5. **Card notes changed shape (1032b10).** A note is now the meaning only; the interface builds the heading (position, card, orientation) from the spread and deck. An LLM provider can therefore return plain notes and need not repeat names.
+
+### 0.3 Proposed changes to the task list
+
+| Change            | Task                                  | Proposal                                                                                                                                                                                  |
+| ----------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Close as done     | M2.4 to M2.10, D0, D9                 | Built and tested; issues #26 to #32, #48, #57                                                                                                                                             |
+| Close as replaced | M2.3, M2.11                           | Locale-owned templates and the pseudo-locale leak tests cover the intent; issues #25, #33                                                                                                 |
+| Rewrite           | M2.1 + M2.2 into one task             | "Compare returns typed facts; locale templates render them." Acceptance: no strings in `Comparison`; rendered text equal to today's for the existing test cases. Do it **before** M4.5    |
+| Rewrite           | M6.7 + M6.8                           | "Russian: review by a fluent reader", since the text exists                                                                                                                               |
+| Narrow            | M3.8, M3.10, D8                       | M3.8: images on board and palette only. M3.10: tune the keyboard sensor and place three cards. D8: close and check icons only                                                             |
+| New               | Group or shorten long relation lists  | Depends on typed facts. A ten-card reading should not show one 25-pair sentence                                                                                                           |
+| New               | Share link hygiene                    | Clear `#r=` from the address bar after opening or dismissing; react to `hashchange`                                                                                                       |
+| New               | Element chips in the reading          | `ElementChip` exists (D5) but no screen uses it yet                                                                                                                                       |
+| New               | Choose the LLM proxy host             | Open since decision #7; needed before M4.2                                                                                                                                                |
+| Known limit       | History after a downgrade             | Entries from a newer version are dropped when an older build rewrites history. Record it; fix only if downgrades become real                                                              |
+
+These are proposals. The GitHub issues have not been changed.
+
+### 0.4 Recommended order from here
+
+1. **Finish M1:** M1.11 (explicit interpretation trigger, loading and error state) first, because M4 depends on it; then M1.12, M1.4, M1.5, M1.13, and the Firefox run.
+2. **Typed facts** (the rewritten M2.1), then the relation-list grouping.
+3. **M3:** images (M3.1 to M3.8), click-to-place, touch, deploy to GitHub Pages.
+4. **M4** after the proxy host is chosen.
+5. M5 to M8 as planned.
+
 ## 1. Summary
 
 **Where we are.** Simulate and setup modes work, with 3 spreads, 2 decks, base meanings for all 78 cards, Book T correspondences, a deterministic interpreter with a Compare step, saved readings and share links. Nothing has been run in a real browser, there are no card images, there is no LLM provider, and most UI strings are hardcoded English.

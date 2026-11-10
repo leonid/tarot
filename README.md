@@ -6,7 +6,7 @@ A React app for interpreting tarot readings.
 - **Setup:** pick a deck and a spread, then place specific cards in specific positions to analyse a reading.
 - Each card is interpreted by its meaning, its position, and the other cards in the reading.
 
-Status: scaffold. The interface and interpreter text are localizable (English and Russian; the Russian text is machine-written and awaits native review; see `CLAUDE.md`). Readings can be saved locally and shared as a link (`#r=...`). The domain model, three spreads, two decks, a deterministic interpreter and a minimal UI exist. All 78 cards have base meanings and Golden Dawn (Book T) correspondences.
+Status: working app, not yet deployed. Both modes work with 2 decks, 3 spreads, base meanings for all 78 cards and Golden Dawn (Book T) correspondences. A deterministic interpreter reads each card in its position and compares the cards. The interface is in English and Russian (the Russian text is machine-written and awaits native review), with light and dark themes and typographic card faces (no card images yet). Readings can be saved locally and shared as a link (`#r=...`).
 
 ## Develop
 
@@ -18,7 +18,7 @@ npm run dev
 npm test
 ```
 
-Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`. CI runs typecheck, lint, test and build.
+Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`. CI runs typecheck, lint, test and build (not yet the end-to-end tests).
 
 End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and serve it on port 4391. First run: `npx playwright install chromium firefox webkit`. Run one browser with `npm run e2e -- --project=chromium`.
 
@@ -29,8 +29,10 @@ End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and se
 
 ## Roadmap
 
-1. Fill the optional theme notes (love, career, spirit, advice).
-2. Design system (proposed in `DESIGN.md`, tasks D0 to D10 in `docs/research/full-app-plan.md`): tokens, fonts, shared components, light and dark themes, responsive layout.
-3. Polish drag and drop (keyboard sensor, touch testing, card images on the board).
-4. Public-domain card images.
-5. LLM interpretation behind a small proxy.
+The plan, with current status at the top, is `docs/research/full-app-plan.md`; tasks are issues in the GitHub repo. In short:
+
+1. Finish hardening (M1): interpretation trigger, error boundary, persistence e2e, Playwright in CI.
+2. Compare returns typed facts, so long relation lists can be grouped and an LLM prompt can use them.
+3. Public-domain card images, click-to-place, touch, first deploy (M3).
+4. LLM interpretation behind a small proxy (M4).
+5. Journal, more spreads, daily card (M5); more content and locales (M6); PWA (M7).
