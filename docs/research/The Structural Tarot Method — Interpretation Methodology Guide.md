@@ -306,20 +306,20 @@ Dates are approximate (the sun enters each decan on roughly the date shown; shif
 | 7 of Cups | Scorpio III | Venus | Nov 12–21 | Lord of Illusionary Success |
 | 8 of Cups | Pisces I | Saturn | Feb 19–28 | Lord of Abandoned Success |
 | 9 of Cups | Pisces II | Jupiter | Mar 1–9 | Lord of Material Happiness |
-| 10 of Cups | Pisces III | Mars | Mar 10–19 | Lord of Perfected Happiness |
+| 10 of Cups | Pisces III | Mars | Mar 10–19 | Lord of Perfected Success |
 
 ### Swords — Air (Libra, Aquarius, Gemini)
 
 | Card | Decan | Ruler | Approx. dates | Book T title |
 |---|---|---|---|---|
-| 2 of Swords | Libra I | Moon | Sep 23–Oct 2 | Lord of Peace |
+| 2 of Swords | Libra I | Moon | Sep 23–Oct 2 | Lord of Peace Restored |
 | 3 of Swords | Libra II | Saturn | Oct 3–12 | Lord of Sorrow |
 | 4 of Swords | Libra III | Jupiter | Oct 13–22 | Lord of Rest from Strife |
 | 5 of Swords | Aquarius I | Venus | Jan 20–29 | Lord of Defeat |
-| 6 of Swords | Aquarius II | Mercury | Jan 30–Feb 8 | Lord of Science |
+| 6 of Swords | Aquarius II | Mercury | Jan 30–Feb 8 | Lord of Earned Success |
 | 7 of Swords | Aquarius III | Moon | Feb 9–18 | Lord of Unstable Effort |
-| 8 of Swords | Gemini I | Jupiter | May 21–30 | Lord of Interference |
-| 9 of Swords | Gemini II | Mars | May 31–Jun 9 | Lord of Despair |
+| 8 of Swords | Gemini I | Jupiter | May 21–30 | Lord of Shortened Force |
+| 9 of Swords | Gemini II | Mars | May 31–Jun 9 | Lord of Despair and Cruelty |
 | 10 of Swords | Gemini III | Sun | Jun 10–20 | Lord of Ruin |
 
 ### Pentacles — Earth (Capricorn, Taurus, Virgo)
@@ -328,7 +328,7 @@ Dates are approximate (the sun enters each decan on roughly the date shown; shif
 |---|---|---|---|---|
 | 2 of Pentacles | Capricorn I | Jupiter | Dec 22–31 | Lord of Harmonious Change |
 | 3 of Pentacles | Capricorn II | Mars | Jan 1–10 | Lord of Material Works |
-| 4 of Pentacles | Capricorn III | Sun | Jan 11–19 | Lord of Power |
+| 4 of Pentacles | Capricorn III | Sun | Jan 11–19 | Lord of Earthly Power |
 | 5 of Pentacles | Taurus I | Mercury | Apr 20–29 | Lord of Material Trouble |
 | 6 of Pentacles | Taurus II | Moon | Apr 30–May 9 | Lord of Material Success |
 | 7 of Pentacles | Taurus III | Saturn | May 10–19 | Lord of Success Unfulfilled |
@@ -336,7 +336,7 @@ Dates are approximate (the sun enters each decan on roughly the date shown; shif
 | 9 of Pentacles | Virgo II | Venus | Sep 1–10 | Lord of Material Gain |
 | 10 of Pentacles | Virgo III | Mercury | Sep 11–22 | Lord of Wealth |
 
-*(Book T titles vary slightly between reproductions; the forms above are the standard set.)*
+*(Titles follow the Book T text (Mathers and Felkin, manuscripts N-R); six were corrected on 2026-11-10 from earlier forms, two of which were Thoth titles. See `sources.md`. Dates are modern conversions that Book T does not give.)*
 
 **Aces** are not decans — they are the *roots* of their elements ("Root of the Powers of Fire," etc.), associated with the pure element and the whole three-sign triplicity of the suit.
 
