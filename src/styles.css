@@ -1,4 +1,13 @@
 /* Component styles. Raw values live in ui/tokens.css; use tokens here. */
+h1,
+h2,
+.slot-card {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.slot-card {
+  font-size: var(--text-lg);
+}
 body {
   margin: 0;
   background: var(--bg);

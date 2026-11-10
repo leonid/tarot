@@ -43,8 +43,8 @@ All text pairs clear 4.5:1 and the border clears 3:1 in both themes. These do no
 
 ### Type
 
-- **UI and body:** `JetBrains Sans` is already named in `src/styles.css` and the files sit in `public/fonts/`, but **no `@font-face` loads them**, so today everything renders in `system-ui`. **Unverified:** whether that 34 KB subset contains Cyrillic; Russian is a shipped locale, so check before relying on it (D2).
-- **Display (card names, headings):** a serif with Latin and Cyrillic, self-hosted so the future PWA works offline and no request leaks to a font CDN. Candidates: EB Garamond, Cormorant Garamond, PT Serif (licences and Cyrillic coverage **unverified**). Pick one in D2 by rendering the 78 English and 78 Russian card names.
+- **UI and body:** `JetBrains Sans`, self-hosted from `src/ui/fonts/` and loaded by `src/ui/fonts.css` (it was named in the CSS before but never loaded). **Checked in D2:** the 35 KB file has the full Russian alphabet (all 66 letters incl. Ё) and every non-ASCII character used in `src/`; only the dev-only pseudo-locale marks `⟦⟧` are missing. It ships the regular weight only, so bold is synthesised, and its licence file is not recorded yet (see `src/ui/fonts/README.md`).
+- **Display (headings, card names):** **EB Garamond 600**, Latin and Cyrillic subsets, about 40 KB, SIL OFL 1.1, from `@fontsource/eb-garamond` 5.3.0. Chosen over PT Serif (larger, 55 KB per weight pair) and Cormorant Garamond (too light for the contrast targets at small sizes). All three covered every character used. Loaded through `@font-face` with `unicode-range`, so the browser fetches only the subset a page needs. Falls back to Georgia. No request goes to a font CDN (checked by `e2e/fonts.spec.ts`).
 - Scale (rem, base 1rem = 16px): 0.8125 meta, 0.875 small, 1 body, 1.125 lead, 1.375 h2, 1.75 h1. Body line-height 1.55; interpretation text max 68ch.
 - Never set text smaller than 0.8125rem; Russian strings run roughly 20 to 30 percent longer than English, so no fixed-width labels.
 
