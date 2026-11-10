@@ -6,7 +6,7 @@ A React app for interpreting tarot readings.
 - **Setup:** pick a deck and a spread, then place specific cards in specific positions to analyse a reading.
 - Each card is interpreted by its meaning, its position, and the other cards in the reading.
 
-Status: scaffold. Readings can be saved locally and shared as a link (`#r=...`). The domain model, three spreads, two decks, a deterministic interpreter and a minimal UI exist. The Major Arcana, Wands and Cups have base meanings; Swords and Pentacles are still to do.
+Status: scaffold. Readings can be saved locally and shared as a link (`#r=...`). The domain model, three spreads, two decks, a deterministic interpreter and a minimal UI exist. The Major Arcana, Wands, Cups and Swords have base meanings; Pentacles are still to do.
 
 ## Develop
 
@@ -27,7 +27,7 @@ Other scripts: `typecheck`, `lint`, `build`, `format`. CI runs typecheck, lint, 
 
 ## Roadmap
 
-1. Write base meanings for Swords and Pentacles (Major Arcana, Wands and Cups done).
+1. Write base meanings for Pentacles (Major Arcana, Wands, Cups and Swords done).
 2. Polish drag and drop (keyboard sensor, touch testing, card images on the board).
 3. Public-domain card images.
 4. LLM interpretation behind a small proxy.
