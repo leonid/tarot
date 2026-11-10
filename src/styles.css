@@ -106,16 +106,6 @@ body {
 .slot.hinge {
   border: var(--border-w-strong) solid var(--gold);
 }
-.slot-hinge {
-  align-self: flex-start;
-  padding: 0 var(--space-2);
-  border: var(--border-w) solid var(--gold);
-  border-radius: var(--radius-pill);
-  color: var(--gold);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 .slot-empty {
   color: var(--text-muted);
 }
@@ -211,7 +201,7 @@ body {
     padding: var(--space-1);
     font-size: var(--text-xs);
   }
-  .slot-hinge {
+  .chip {
     padding: 0 var(--space-1);
     letter-spacing: 0;
   }

@@ -102,6 +102,7 @@ const ui: UiMessages = {
   hinge: 'Ось',
   hingeTitle: 'Больше всего связана с остальными картами',
   hingeLabel: 'Ось:',
+  elements: { fire: 'Огонь', water: 'Вода', air: 'Воздух', earth: 'Земля' },
 
   slotEmpty: 'пусто',
   slotReversed: '(перевёрнута)',

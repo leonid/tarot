@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { Button, Field, StatusNote, Tabs, Toggle } from './kit';
+import {
+  Button,
+  Chip,
+  ElementChip,
+  Field,
+  StatusNote,
+  Tabs,
+  Toggle,
+} from './kit';
 
 /** Dev-only page (#catalogue): every control in every state, for review. */
 export function Catalogue() {
@@ -59,6 +67,15 @@ export function Catalogue() {
           { id: 'two', label: 'Two' },
         ]}
       />
+
+      <h2>Chip</h2>
+      <p style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+        <Chip>Neutral</Chip>
+        <Chip tone="hinge">Hinge</Chip>
+        {(['fire', 'water', 'air', 'earth'] as const).map((e) => (
+          <ElementChip key={e} element={e} />
+        ))}
+      </p>
 
       <h2>StatusNote</h2>
       <p>

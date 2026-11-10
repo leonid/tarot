@@ -125,3 +125,43 @@
 .note-error:not(:empty)::before {
   content: '✕ ';
 }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  align-self: flex-start;
+  padding: 0 var(--space-2);
+  border: var(--border-w) solid currentColor;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading);
+}
+.chip-hinge {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.chip-fire {
+  color: var(--fire);
+}
+.chip-water {
+  color: var(--water);
+}
+.chip-air {
+  color: var(--air);
+}
+.chip-earth {
+  color: var(--earth);
+}
+.element-icon {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}

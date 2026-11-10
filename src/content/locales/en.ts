@@ -39,6 +39,7 @@ const ui: UiMessages = {
   hinge: 'Hinge',
   hingeTitle: 'Most connected to the other cards',
   hingeLabel: 'Hinge:',
+  elements: { fire: 'Fire', water: 'Water', air: 'Air', earth: 'Earth' },
 
   slotEmpty: 'empty',
   slotReversed: '(reversed)',

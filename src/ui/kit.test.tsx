@@ -2,7 +2,15 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { Button, Field, StatusNote, Tabs, Toggle } from './kit';
+import {
+  Button,
+  Chip,
+  ElementChip,
+  Field,
+  StatusNote,
+  Tabs,
+  Toggle,
+} from './kit';
 
 describe('Button', () => {
   it('clicks, and defaults to type=button so it never submits a form', async () => {
@@ -168,5 +176,32 @@ describe('StatusNote', () => {
     render(<StatusNote kind="error">Failed</StatusNote>);
     expect(screen.getByRole('status')).toHaveClass('note-error');
     expect(screen.getByRole('status')).toHaveTextContent('Failed');
+  });
+});
+
+describe('Chip', () => {
+  it('shows the element name with a decorative glyph', () => {
+    const { container } = render(<ElementChip element="water" />);
+    expect(screen.getByText('Water')).toBeInTheDocument();
+    expect(container.querySelector('svg')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
+    expect(container.querySelector('.chip')).toHaveClass('chip-water');
+  });
+
+  it('gives every element a different glyph and a word', () => {
+    const shapes = (['fire', 'water', 'air', 'earth'] as const).map((e) => {
+      const { container, unmount } = render(<ElementChip element={e} />);
+      const d = container.querySelector('svg')!.innerHTML;
+      unmount();
+      return d;
+    });
+    expect(new Set(shapes).size).toBe(4);
+  });
+
+  it('renders a hinge chip with its text', () => {
+    render(<Chip tone="hinge">Hinge</Chip>);
+    expect(screen.getByText('Hinge')).toHaveClass('chip-hinge');
   });
 });

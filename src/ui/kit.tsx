@@ -6,6 +6,9 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from 'react';
+import type { Element } from '../domain/elements';
+import { ElementIcon } from './ElementIcon';
+import { useI18n } from './i18n';
 import './kit.css';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger';
@@ -162,5 +165,35 @@ export function StatusNote({
     <small role="status" className={`note note-${kind}`}>
       {children}
     </small>
+  );
+}
+
+/** A small label pill. Always carries a word; the colour only reinforces it. */
+export function Chip({
+  tone = 'neutral',
+  icon,
+  title,
+  children,
+}: {
+  tone?: 'neutral' | 'hinge' | Element;
+  icon?: ReactNode;
+  title?: string;
+  children: ReactNode;
+}) {
+  return (
+    <span className={`chip chip-${tone}`} title={title}>
+      {icon}
+      {children}
+    </span>
+  );
+}
+
+/** Element chip: triangle glyph plus the element's name, in the element's colour. */
+export function ElementChip({ element }: { element: Element }) {
+  const { t } = useI18n();
+  return (
+    <Chip tone={element} icon={<ElementIcon element={element} />}>
+      {t.elements[element]}
+    </Chip>
   );
 }

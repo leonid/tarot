@@ -1,5 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import type { Card, PlacedCard, Spread, SpreadPosition } from '../domain/types';
+import { Chip } from './kit';
 import { CardFace } from './CardFace';
 import { useI18n } from './i18n';
 
@@ -91,9 +92,9 @@ function Slot({ pos, card, orientation, setRef, over, hinge }: SlotProps) {
         <span className="slot-empty">{t.slotEmpty}</span>
       )}
       {hinge && (
-        <span className="slot-hinge" title={t.hingeTitle}>
+        <Chip tone="hinge" title={t.hingeTitle}>
           {t.hinge}
-        </span>
+        </Chip>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import type { CardMeaning, Spread } from '../../domain/types';
+import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
 
 /** Every string the interface shows. English is the source of truth. */
@@ -33,6 +34,8 @@ export interface UiMessages {
   hinge: string;
   hingeTitle: string;
   hingeLabel: string;
+  /** Element names as shown on chips. */
+  elements: Record<Element, string>;
 
   slotEmpty: string;
   slotReversed: string;
