@@ -98,7 +98,7 @@ Card art arrives in M3 (public-domain Rider-Waite-Smith scans, per-file licence 
 
 ## Decisions to clarify
 
-Recommendation first in each row. Nothing here is built yet, so each is cheap to change.
+**Decided 2026-11-10: the owner accepted the recommended option (the bold one, option A) in all 8 rows.** Tracked and closed as issues; colour and type values stay provisional until D1 and D2.
 
 | #   | Decision                    | Options                                                                                                                                                                             | Recommendation and reason                                                                                                                                                      |
 | --- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
