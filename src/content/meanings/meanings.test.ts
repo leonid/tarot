@@ -6,6 +6,7 @@ import { meanings } from '.';
 const complete = [
   { group: 'major', cards: majorArcana },
   { group: 'wands', cards: rwsDeck.cards.filter((c) => c.suit === 'wands') },
+  { group: 'cups', cards: rwsDeck.cards.filter((c) => c.suit === 'cups') },
 ];
 
 describe.each(complete)('$group meanings', ({ cards }) => {
