@@ -30,7 +30,7 @@ Evidence at this revision: 244 unit and component tests, 42 Playwright tests on 
 4. **The design system ran ahead of M3**, as section 5.3a intended, and the typographic card face means the app is presentable before any image exists.
 5. **Card notes changed shape (1032b10).** A note is now the meaning only; the interface builds the heading (position, card, orientation) from the spread and deck. An LLM provider can therefore return plain notes and need not repeat names.
 
-### 0.3 Proposed changes to the task list
+### 0.3 Changes to the task list
 
 | Change            | Task                                  | Proposal                                                                                                                                                                                  |
 | ----------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -45,7 +45,7 @@ Evidence at this revision: 244 unit and component tests, 42 Playwright tests on 
 | New               | Choose the LLM proxy host             | Open since decision #7; needed before M4.2                                                                                                                                                |
 | Known limit       | History after a downgrade             | Entries from a newer version are dropped when an older build rewrites history. Record it; fix only if downgrades become real                                                              |
 
-These are proposals. The GitHub issues have not been changed.
+Applied to the GitHub issues on 2026-11-10. New issues: #119 (M2.12, group long relation lists), #120 (M1.14, share link hygiene), #121 (D11, element chips). The proxy host was not given a new issue: it is part of M4.1 (#59). M2.2 (#24) was merged into M2.1 (#23), and M6.8 (#87) was closed with the review tracked in M6.7 (#86).
 
 ### 0.4 Recommended order from here
 
