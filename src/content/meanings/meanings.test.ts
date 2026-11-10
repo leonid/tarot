@@ -1,9 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { majorArcana } from '../decks/rws';
+import { majorArcana, rwsDeck } from '../decks/rws';
 import { meanings } from '.';
 
-describe('Major Arcana meanings', () => {
-  it.each(majorArcana.map((c) => [c.name, c.id] as const))(
+/** Suits and groups whose meanings are fully written. */
+const complete = [
+  { group: 'major', cards: majorArcana },
+  { group: 'wands', cards: rwsDeck.cards.filter((c) => c.suit === 'wands') },
+];
+
+describe.each(complete)('$group meanings', ({ cards }) => {
+  it.each(cards.map((c) => [c.name, c.id] as const))(
     '%s is complete',
     (_name, id) => {
       const m = meanings[id];
@@ -15,10 +21,11 @@ describe('Major Arcana meanings', () => {
       expect(m!.reversed.summary).not.toBe(m!.upright.summary);
     },
   );
+});
 
+describe('meanings table', () => {
   it('has no orphan keys', () => {
-    const ids = new Set(majorArcana.map((c) => c.id));
-    for (const key of Object.keys(meanings))
-      if (key.startsWith('major-')) expect(ids.has(key)).toBe(true);
+    const ids = new Set(rwsDeck.cards.map((c) => c.id));
+    for (const key of Object.keys(meanings)) expect(ids.has(key)).toBe(true);
   });
 });

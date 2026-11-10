@@ -1,11 +1,11 @@
 import type { MeaningTable } from '../../domain/types';
 
 /**
- * Minor Arcana base meanings, keyed by card id. Original wording, written with the
+ * Cups base meanings, keyed by card id. Original wording, written with the
  * public-domain Waite text as a reference (see docs/research/sources.md).
  * Only one sample card exists so far; the rest is a content follow-up.
  */
-export const minorMeanings: MeaningTable = {
+export const cupsMeanings: MeaningTable = {
   'cups-01-ace': {
     upright: {
       keywords: ['new feeling', 'compassion', 'openness'],
