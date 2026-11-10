@@ -1,0 +1,19 @@
+# Glossary
+
+- **Arcana:** the two halves of a deck: Major (22 trumps) and Minor (56 suit cards).
+- **Suit:** Wands, Cups, Swords or Pentacles. Maps to an element.
+- **Card:** one of a deck's cards, identified by a stable id like `cups-12-queen`.
+- **Deck:** a named list of cards (`rws-78`, `major-22`).
+- **Orientation:** `upright` or `reversed`.
+- **Spread:** a named layout of positions.
+- **Position:** one slot in a spread, with a label and a meaning it asks of its card.
+- **Placement:** a card, in an orientation, in a position.
+- **Reading:** a question, a deck, a spread and its placements. Simulate-mode readings also store a seed.
+- **Simulate mode:** the app shuffles and deals the cards.
+- **Setup mode:** the user places chosen cards into positions.
+- **Base meaning:** what a card means on its own (`CardMeaning`), before context.
+- **Interpretation:** the contextual result for a reading: per-card notes, relations, summary, advice.
+- **Provider:** an implementation of `InterpretationProvider` (fallback now, LLM later).
+- **Elemental dignity:** how two elements modify each other (strengthened, friendly, conflicted).
+- **Hinge card:** the card that most changes the meaning of the others.
+- **DCAS:** Decompose, Compare, Anchor, Synthesize, the interpretation method in `docs/research`.

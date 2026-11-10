@@ -1,0 +1,29 @@
+:root {
+  font-family: 'JetBrains Sans', system-ui, sans-serif;
+  color-scheme: light dark;
+}
+.app {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.controls,
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.slot-editor {
+  display: flex;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+[role='tab'][aria-selected='true'] {
+  font-weight: bold;
+}
