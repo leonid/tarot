@@ -67,18 +67,36 @@ Sets considered and not chosen (same date, same API):
 
 Known limits of this decision:
 
-- Only one file page was read in full. Checking all 78 pages and recording
-  each is M3.3; if any card fails, take that card from the TaionWC set and
-  record it.
+- All 78 file pages were read by script on 2026-11-10 UTC (M3.3, see "Licence
+  check" below). The script reads the licence template; it does not judge
+  whether the template is right.
 - "Public domain" here rests on the artist's death in 1951 (life plus 70) and
   1909 publication (US). A few countries have longer terms. A plain scan of a
   flat work adds no copyright in the US and, since 2019, in the EU.
 - The scans show wear, a cream tone and a sliver of scanner background at the
   rounded corners. M3.4 should crop to the card and M3.7 clips the corners.
 
+### Licence check (M3.3, 2026-11-10 UTC)
+
+`node scripts/check-image-licences.mjs` reads the Commons file page of every
+card in the set and writes `src/content/images/rws-1909.json`: one row per
+card with the file, the licence template, the author, the page address and
+the check date (the UTC day).
+
+- Result: 78 of 78 pages carry `{{PD-old-70-expired}}` and no other
+  public-domain template; author Pamela Colman Smith on all.
+- The script writes nothing if any page has no accepted template, more than
+  one, or no author. Accepted templates are listed in
+  `src/content/images/manifest.ts`.
+- `src/content/images/manifest.test.ts` fails if a card has no row, a row is
+  malformed, or a card is paired with the wrong file.
+- Rerun the script before a release that changes the images, or if Commons
+  flags a file. It makes three API requests a few seconds apart.
+- No image file is in the repository yet; downloading and optimising is M3.4.
+
 ## Open items
 
-- [ ] Verify the licence of each Wikimedia scan chosen for bundling (M3.3; the set is chosen, see "Chosen image set").
+- [x] Verify the licence of each Wikimedia scan chosen for bundling (M3.3, 2026-11-10 UTC; see "Licence check").
 - [x] Encode Book T tables (Major signs and planets, 36 decans, court spans) as
       typed data in `src/content/correspondences.ts`. Transcribed from Part IV
       of the owner's guide. Cross-check status is in the next item; structural tests check the decan rulers (Chaldean order), the

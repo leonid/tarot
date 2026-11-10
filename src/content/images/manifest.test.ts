@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { rwsDeck } from '../decks/rws';
+import rws1909 from './rws-1909.json';
 import {
   commonsFileUrl,
   imageManifestSchema,
@@ -116,5 +118,35 @@ describe('commonsFileUrl', () => {
     expect(commonsFileUrl('A & B.jpg')).toBe(
       'https://commons.wikimedia.org/wiki/File:A_%26_B.jpg',
     );
+  });
+});
+
+/**
+ * The manifest written by scripts/check-image-licences.mjs, which reads every
+ * file page on Commons. Do not edit rows by hand to make this pass: rerun the
+ * script, or record a hand check with checkedBy "person".
+ */
+describe('rws-1909 manifest', () => {
+  const m = imageManifestSchema.parse(rws1909);
+
+  it('is valid and belongs to the full RWS deck', () => {
+    expect(m.deckId).toBe(rwsDeck.id);
+  });
+
+  it('has exactly one checked image for each of the 78 cards', () => {
+    expect(m.images).toHaveLength(78);
+    expect(m.images.map((i) => i.cardId)).toEqual(
+      rwsDeck.cards.map((c) => c.id),
+    );
+  });
+
+  it('pairs each card with the file of its number and suit', () => {
+    for (const card of rwsDeck.cards) {
+      const file = m.images.find((i) => i.cardId === card.id)!.file;
+      const nn = String(card.number).padStart(2, '0');
+      if (card.suit)
+        expect(file.toLowerCase()).toBe(`rws1909 - ${card.suit} ${nn}.jpeg`);
+      else expect(file.startsWith(`RWS1909 - ${nn} `)).toBe(true);
+    }
   });
 });
