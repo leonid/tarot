@@ -39,5 +39,5 @@ including a user-made one later, is just data.
 ## Out of scope for v1
 
 Thoth and Marseille decks, a custom layout editor and accounts. The models do
-not preclude any of them. The localization scaffold exists (English plus a
-dev pseudo-locale); translations themselves are not written.
+not preclude any of them. Localization exists: English, Russian (unreviewed) and a dev
+pseudo-locale.

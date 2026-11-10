@@ -50,3 +50,16 @@ describe('locale switching', () => {
     expect(useReadingStore.getState().locale).toBe('en');
   });
 });
+
+describe('Russian', () => {
+  it('shows the interface and a reading in Russian', async () => {
+    useReadingStore.setState({ locale: 'ru' });
+    render(<App />);
+    expect(
+      screen.getByRole('tab', { name: 'Расклад вручную' }),
+    ).toBeInTheDocument();
+    await userEvent.click(screen.getByText('Перемешать и раскинуть'));
+    expect(await screen.findByText('Толкование')).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('ru');
+  });
+});

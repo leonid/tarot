@@ -19,7 +19,11 @@ function initialLocale(): string {
   } catch {
     // Storage can be blocked; the language falls back to the default.
   }
-  return DEFAULT_LOCALE;
+  // First visit: follow the browser language when we ship it.
+  const browser = (typeof navigator === 'undefined' ? '' : navigator.language)
+    .slice(0, 2)
+    .toLowerCase();
+  return locales.find((l) => l.code === browser)?.code ?? DEFAULT_LOCALE;
 }
 
 interface State {

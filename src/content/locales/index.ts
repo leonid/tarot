@@ -6,6 +6,7 @@ import type {
 } from '../../domain/types';
 import { en } from './en';
 import { pseudo } from './pseudo';
+import { ru } from './ru';
 import type { LocaleBundle } from './types';
 
 export type { LocaleBundle, SpreadText, UiMessages } from './types';
@@ -15,8 +16,8 @@ export type { LocaleBundle, SpreadText, UiMessages } from './types';
  * pseudo-locale is a development aid, so production builds leave it out.
  */
 export const locales: readonly LocaleBundle[] = import.meta.env.DEV
-  ? [en, pseudo]
-  : [en];
+  ? [en, ru, pseudo]
+  : [en, ru];
 export const DEFAULT_LOCALE = en.code;
 
 export const getLocale = (code: string): LocaleBundle =>

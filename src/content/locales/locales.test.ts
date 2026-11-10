@@ -55,6 +55,38 @@ describe('locale coverage', () => {
   }
 });
 
+describe('translation completeness', () => {
+  // A translated locale covers every card, meaning and spread position.
+  const cardIds = [...new Set(decks.flatMap((d) => d.cards.map((c) => c.id)))];
+  for (const l of locales.filter((x) => x !== en)) {
+    it(`${l.code} translates every card, meaning, deck and spread`, () => {
+      expect(Object.keys(l.cards ?? {}).sort()).toEqual([...cardIds].sort());
+      const rwsIds = decks[0]!.cards.map((c) => c.id).sort();
+      expect(Object.keys(l.meanings ?? {}).sort()).toEqual(rwsIds);
+      expect(Object.keys(l.decks ?? {}).sort()).toEqual(
+        decks.map((d) => d.id).sort(),
+      );
+      for (const s of spreads) {
+        const t = l.spreads?.[s.id];
+        expect(t?.name).toBeTruthy();
+        expect(t?.description).toBeTruthy();
+        for (const p of s.positions) {
+          expect(t?.positions?.[p.id]?.label).toBeTruthy();
+          expect(t?.positions?.[p.id]?.meaning).toBeTruthy();
+        }
+      }
+    });
+    it(`${l.code} keeps the same keyword counts shape as English`, () => {
+      for (const [id, en_] of Object.entries(meanings)) {
+        const m = l.meanings?.[id];
+        expect(m?.upright.keywords.length, id).toBeGreaterThan(0);
+        expect(m?.reversed.keywords.length, id).toBeGreaterThan(0);
+        expect(Boolean(m?.themes), id).toBe(Boolean(en_.themes));
+      }
+    });
+  }
+});
+
 describe('localization', () => {
   it('returns the same object when a locale overrides nothing', () => {
     expect(localizeDeck(decks[0]!, en)).toBe(decks[0]);
