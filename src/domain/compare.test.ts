@@ -65,6 +65,35 @@ describe('compare (DCAS step 2)', () => {
     expect(r.relations).toEqual([]);
   });
 
+  it('notes a court sub-element echoing another card', () => {
+    // Queen of Wands is Water of Fire; the Ace of Cups is water.
+    const r = compare(ctx(['wands-13-queen', 'cups-01-ace', 'swords-01-ace']));
+    expect(r.relations).toContain(
+      'Queen of Wands (Water of Fire) echoes water in Ace of Cups.',
+    );
+  });
+
+  it('skips the echo when sub-element equals the suit element', () => {
+    // Knight of Wands is Fire of Fire.
+    const r = compare(ctx(['wands-12-knight', 'wands-01-ace', 'cups-01-ace']));
+    expect(r.relations.some((x) => x.includes('echoes'))).toBe(false);
+  });
+
+  it('finds decans inside a court span, including across Pisces to Aries', () => {
+    // Queen of Wands spans 20 Pisces to 20 Aries: Pisces III and Aries I-II.
+    const inside = compare(
+      ctx(['wands-13-queen', 'cups-10-ten', 'wands-03-three']),
+    );
+    expect(inside.relations).toContain(
+      'Ten of Cups and Three of Wands fall within the span of Queen of Wands.',
+    );
+    // Pisces II and Aries III lie outside it.
+    const outside = compare(
+      ctx(['wands-13-queen', 'cups-09-nine', 'wands-04-four']),
+    );
+    expect(outside.relations.some((x) => x.includes('span'))).toBe(false);
+  });
+
   it('flows through the fallback provider', async () => {
     const out = await fallbackProvider.interpret(
       ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']),

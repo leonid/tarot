@@ -41,6 +41,6 @@ to find it, and the offline fallback still returns something useful.
 ## Gaps to close in content work
 
 - Per-card dossiers beyond keywords: symbols, formula, correspondences.
-- Book T tables are encoded (`src/content/correspondences.ts`); `domain/compare.ts` uses them in the Compare step (dominant element, shared planet or sign, dignity pairs, hinge card).
+- Book T tables are encoded (`src/content/correspondences.ts`); `domain/compare.ts` uses them in the Compare step (dominant element, shared planet or sign, court sub-elements and spans, dignity pairs, hinge card).
 - Visual axes (direction, figure count, and so on) as optional per-card tags,
   if the comparison step should use them.

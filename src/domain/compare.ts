@@ -1,7 +1,13 @@
 import type { Correspondence } from './correspondences';
 import { dignity, elementOf, type Element } from './elements';
 import { findCard, type ReadingContext } from './interpretation';
-import { signElement, type Planet, type Sign } from './zodiac';
+import {
+  longitude,
+  signElement,
+  signIndex,
+  type Planet,
+  type Sign,
+} from './zodiac';
 import type { Card } from './types';
 
 export interface Comparison {
@@ -77,6 +83,33 @@ export function compare(ctx: ReadingContext): Comparison {
     relations.push(`${cap(planet)} links ${names.join(' and ')}.`);
   for (const [s, names] of group(signOf))
     relations.push(`${cap(s)} links ${names.join(' and ')}.`);
+
+  // Court cards: sub-element echoes and zodiac spans.
+  for (const court of items) {
+    if (court.c?.kind !== 'court') continue;
+    const sub = court.c.subElement;
+    const suitEl = court.element;
+    if (suitEl && sub !== suitEl) {
+      const echoes = items.filter((o) => o !== court && o.element === sub);
+      if (echoes.length)
+        relations.push(
+          `${court.card.name} (${cap(sub)} of ${cap(suitEl)}) echoes ${sub} in ${echoes.map((o) => o.card.name).join(' and ')}.`,
+        );
+    }
+    const span = court.c.span;
+    if (span) {
+      const from = longitude(span.from);
+      const inside = items.filter((o) => {
+        if (o.c?.kind !== 'decan') return false;
+        const start = signIndex(o.c.sign) * 30 + (o.c.decan - 1) * 10;
+        return (start - from + 360) % 360 <= 20;
+      });
+      if (inside.length)
+        relations.push(
+          `${inside.map((o) => o.card.name).join(' and ')} fall${inside.length === 1 ? 's' : ''} within the span of ${court.card.name}.`,
+        );
+    }
+  }
 
   // Pairwise elemental dignities; tally ties per card for the hinge.
   const ties = new Map<string, number>();
