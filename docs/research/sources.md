@@ -31,5 +31,11 @@ Written 2026-11-10. Decisions on where card content and imagery come from.
 ## Open items
 
 - [ ] Verify the licence of each Wikimedia scan chosen for bundling.
-- [ ] Encode Book T tables (Major signs and planets, 36 decans, court spans) as
-      typed data, cross-checked against two independent sources.
+- [x] Encode Book T tables (Major signs and planets, 36 decans, court spans) as
+      typed data in `src/content/correspondences.ts`. Transcribed from Part IV
+      of the owner's guide. Not yet checked against two independent published
+      sources; structural tests check the decan rulers (Chaldean order), the
+      2-3-4 / 5-6-7 / 8-9-10 sign rule and that the 12 court spans tile the
+      zodiac, which catches transcription slips but not a wrong source.
+- [ ] Cross-check `correspondences.ts` against two independent Golden Dawn
+      sources (decan dates and Book T titles are the least certain fields).

@@ -6,7 +6,7 @@ A React app for interpreting tarot readings.
 - **Setup:** pick a deck and a spread, then place specific cards in specific positions to analyse a reading.
 - Each card is interpreted by its meaning, its position, and the other cards in the reading.
 
-Status: scaffold. Readings can be saved locally and shared as a link (`#r=...`). The domain model, three spreads, two decks, a deterministic interpreter and a minimal UI exist. All 78 cards have base meanings.
+Status: scaffold. Readings can be saved locally and shared as a link (`#r=...`). The domain model, three spreads, two decks, a deterministic interpreter and a minimal UI exist. All 78 cards have base meanings and Golden Dawn (Book T) correspondences.
 
 ## Develop
 
@@ -27,7 +27,7 @@ Other scripts: `typecheck`, `lint`, `build`, `format`. CI runs typecheck, lint, 
 
 ## Roadmap
 
-1. Fill the optional theme notes (love, career, spirit, advice) and the Book T correspondence tables.
+1. Fill the optional theme notes (love, career, spirit, advice), and use the correspondences in the Compare step.
 2. Polish drag and drop (keyboard sensor, touch testing, card images on the board).
 3. Public-domain card images.
 4. LLM interpretation behind a small proxy.
