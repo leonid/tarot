@@ -18,7 +18,9 @@ npm run dev
 npm test
 ```
 
-Other scripts: `typecheck`, `lint`, `build`, `format`. CI runs typecheck, lint, test and build.
+Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`. CI runs typecheck, lint, test and build.
+
+End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and serve it on port 4391. First run: `npx playwright install chromium firefox webkit`. Run one browser with `npm run e2e -- --project=chromium`.
 
 ## Docs
 
