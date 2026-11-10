@@ -165,3 +165,23 @@
   stroke-linejoin: round;
   stroke-linecap: round;
 }
+
+.alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-4) 0;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-w) solid var(--danger);
+  border-radius: var(--radius);
+  background: var(--surface);
+  max-width: var(--measure);
+}
+.alert::before {
+  flex: none;
+}
+.alert > span {
+  flex: 1 1 50%;
+}

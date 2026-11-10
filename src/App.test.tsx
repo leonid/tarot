@@ -51,4 +51,50 @@ describe('shared links', () => {
     );
     location.hash = '';
   });
+
+  const link = (o: unknown) =>
+    btoa(JSON.stringify(o))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  const good = {
+    v: 1,
+    mode: 'setup',
+    question: 'from a link',
+    deckId: 'rws-78',
+    spreadId: 'single',
+    placements: [],
+  };
+
+  it.each([
+    ['garbage', 'garbage', /could not be read/],
+    ['a newer version', link({ ...good, v: 99 }), /newer version/],
+    [
+      'an unknown spread',
+      link({ ...good, spreadId: 'nope' }),
+      /deck or spread/,
+    ],
+  ])(
+    'shows a dismissible message for %s and keeps the current reading',
+    async (_n, hash, message) => {
+      location.hash = `#r=${hash}`;
+      render(<App />);
+      await userEvent.type(screen.getByLabelText('Question'), 'mine');
+      const alert = screen.getByRole('alert');
+      expect(alert).toHaveTextContent(message);
+      expect(screen.getByLabelText('Question')).toHaveValue('mine');
+
+      await userEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+      expect(screen.queryByRole('alert')).toBeNull();
+      expect(screen.getByLabelText('Question')).toHaveValue('mine');
+      location.hash = '';
+    },
+  );
+
+  it('shows no message for a good link', () => {
+    location.hash = `#r=${link(good)}`;
+    render(<App />);
+    expect(screen.queryByRole('alert')).toBeNull();
+    location.hash = '';
+  });
 });

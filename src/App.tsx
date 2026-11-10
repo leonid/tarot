@@ -3,11 +3,11 @@ import { SimulateView } from './features/simulate/SimulateView';
 import { SetupView } from './features/setup/SetupView';
 import { Controls } from './ui/Controls';
 import { SaveShare } from './ui/SaveShare';
-import { useEffect } from 'react';
-import { decodeShared } from './domain/share';
+import { useEffect, useState } from 'react';
+import { decodeSharedResult, type SharedReading } from './domain/share';
 import { locales } from './content/locales';
 import { useI18n } from './ui/i18n';
-import { Field, Tabs } from './ui/kit';
+import { Alert, Field, Tabs } from './ui/kit';
 import { applyTheme, THEMES, type Theme } from './ui/theme';
 
 export function App() {
@@ -17,7 +17,26 @@ export function App() {
   const setLocale = useReadingStore((s) => s.setLocale);
   const theme = useReadingStore((s) => s.theme);
   const setTheme = useReadingStore((s) => s.setTheme);
-  const { locale, t } = useI18n();
+  const { locale, t, getDeck, getSpread } = useI18n();
+
+  // Read a share link (#r=...) once. Only a readable link we can show is
+  // opened; otherwise the current reading stays and a dismissible message says why.
+  const [link, setLink] = useState<
+    | { reading: SharedReading }
+    | { error: 'malformed' | 'newer' | 'unknown' }
+    | null
+  >(() => {
+    const m = /^#r=(.+)$/.exec(location.hash);
+    if (!m?.[1]) return null;
+    const r = decodeSharedResult(m[1]);
+    if (!r.ok)
+      return {
+        error: r.error.kind === 'future-version' ? 'newer' : 'malformed',
+      };
+    if (!getDeck(r.reading.deckId) || !getSpread(r.reading.spreadId))
+      return { error: 'unknown' };
+    return { reading: r.reading };
+  });
 
   useEffect(() => {
     document.documentElement.lang = locale.code;
@@ -26,15 +45,23 @@ export function App() {
 
   useEffect(() => applyTheme(theme), [theme]);
 
-  // Open a shared link (#r=...) once on load.
   useEffect(() => {
-    const m = /^#r=(.+)$/.exec(location.hash);
-    const shared = m?.[1] ? decodeShared(m[1]) : null;
-    if (shared) loadShared(shared);
-  }, [loadShared]);
+    if (link && 'reading' in link) loadShared(link.reading);
+  }, [link, loadShared]);
   return (
     <main className="app">
       <h1>{t.appTitle}</h1>
+      {link && 'error' in link && (
+        <Alert dismissLabel={t.dismiss} onDismiss={() => setLink(null)}>
+          {
+            {
+              malformed: t.shareLinkMalformed,
+              newer: t.shareLinkNewer,
+              unknown: t.shareLinkUnknown,
+            }[link.error]
+          }
+        </Alert>
+      )}
       <div className="prefs">
         {locales.length > 1 && (
           <Field label={t.language} className="language">

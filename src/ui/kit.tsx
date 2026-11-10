@@ -168,6 +168,24 @@ export function StatusNote({
   );
 }
 
+/** An error or warning the user can close. role="alert" announces it when it appears. */
+export function Alert({
+  dismissLabel,
+  onDismiss,
+  children,
+}: {
+  dismissLabel: string;
+  onDismiss: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div role="alert" className="alert note-error">
+      <span>{children}</span>
+      <Button onClick={onDismiss}>{dismissLabel}</Button>
+    </div>
+  );
+}
+
 /** A small label pill. Always carries a word; the colour only reinforces it. */
 export function Chip({
   tone = 'neutral',

@@ -51,6 +51,13 @@ const ui: UiMessages = {
   saveReading: 'Save reading',
   copyShareLink: 'Copy share link',
   linkCopied: 'Link copied.',
+  dismiss: 'Dismiss',
+  shareLinkMalformed:
+    'This share link could not be read. It may be cut off or damaged. Your current reading is unchanged.',
+  shareLinkNewer:
+    'This share link was made by a newer version of the app and cannot be opened here. Your current reading is unchanged.',
+  shareLinkUnknown:
+    'This share link uses a deck or spread this version does not have. Your current reading is unchanged.',
   saved: 'Saved.',
   savedReadings: (count) => `Saved readings (${count})`,
   noQuestion: 'no question',

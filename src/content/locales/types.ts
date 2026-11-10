@@ -52,6 +52,11 @@ export interface UiMessages {
   noQuestion: string;
   open: string;
   delete: string;
+  dismiss: string;
+  /** Shown when a share link cannot be opened; the current reading is kept. */
+  shareLinkMalformed: string;
+  shareLinkNewer: string;
+  shareLinkUnknown: string;
 }
 
 /** Spread text that can be translated; structure (ids, x, y) stays shared. */

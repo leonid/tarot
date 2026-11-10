@@ -33,3 +33,19 @@ test('a new deal changes the seed', async ({ page }) => {
   await deal.click();
   await expect(page.getByText(/seed \d+/)).not.toHaveText(first ?? '');
 });
+
+test('a bad share link shows a dismissible message and the app still works', async ({
+  page,
+}, testInfo) => {
+  await page.goto('/#r=garbage');
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('could not be read');
+  await page.screenshot({ path: testInfo.outputPath('bad-link.png') });
+
+  await page.getByRole('button', { name: 'Shuffle and deal' }).click();
+  await expect(page.locator('.board .slot.filled').first()).toBeVisible();
+  await expect(alert).toBeVisible();
+
+  await alert.getByRole('button', { name: 'Dismiss' }).click();
+  await expect(alert).toHaveCount(0);
+});
