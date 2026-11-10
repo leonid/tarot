@@ -1,5 +1,6 @@
 import type { Correspondence } from './correspondences';
 import { dignity, elementOf, type Element } from './elements';
+import type { CardPair, Fact } from './facts';
 import { findCard, type ReadingContext } from './interpretation';
 import {
   longitude,
@@ -8,10 +9,11 @@ import {
   type Planet,
   type Sign,
 } from './zodiac';
-import type { Card } from './types';
+import type { Card, Suit } from './types';
 
 export interface Comparison {
-  relations: string[];
+  /** What the cards have in common or against each other, as data. */
+  facts: Fact[];
   /** Card with the most elemental ties to the others, if any stands out. */
   hingeCardId?: string;
 }
@@ -43,7 +45,8 @@ function signOf(c: Correspondence | undefined): Sign | undefined {
 
 /**
  * DCAS step 2 (Compare): deterministic structure drawn from the Golden Dawn
- * correspondences. Returns plain-language relations and a hinge card.
+ * correspondences. Returns typed facts (no text) and a hinge card; a locale's
+ * templates render the facts (see renderFact).
  */
 export function compare(ctx: ReadingContext): Comparison {
   const table = ctx.correspondences ?? {};
@@ -53,7 +56,7 @@ export function compare(ctx: ReadingContext): Comparison {
     const c = table[card.id];
     return [{ card, c, element: effectiveElement(card, c) }];
   });
-  const relations: string[] = [];
+  const facts: Fact[] = structure(ctx);
 
   // Dominant element.
   const counts = new Map<Element, number>();
@@ -62,23 +65,28 @@ export function compare(ctx: ReadingContext): Comparison {
   const withElement = [...counts.values()].reduce((a, b) => a + b, 0);
   for (const [el, n] of counts)
     if (n >= 2 && n * 2 > withElement)
-      relations.push(ctx.strings.elementDominates(el, n, withElement));
+      facts.push({
+        kind: 'element-dominates',
+        element: el,
+        count: n,
+        total: withElement,
+      });
 
   // Shared planets and signs (a decan ruler counts as that planet).
-  const group = (
-    pick: (c: Correspondence | undefined) => string | undefined,
+  const group = <K extends string>(
+    pick: (c: Correspondence | undefined) => K | undefined,
   ) => {
-    const m = new Map<string, string[]>();
+    const m = new Map<K, string[]>();
     for (const i of items) {
       const k = pick(i.c);
-      if (k) m.set(k, [...(m.get(k) ?? []), i.card.name]);
+      if (k) m.set(k, [...(m.get(k) ?? []), i.card.id]);
     }
-    return [...m].filter(([, names]) => names.length >= 2);
+    return [...m].filter(([, ids]) => ids.length >= 2);
   };
-  for (const [planet, names] of group(planetOf))
-    relations.push(ctx.strings.planetLinks(planet as Planet, names));
-  for (const [s, names] of group(signOf))
-    relations.push(ctx.strings.signLinks(s as Sign, names));
+  for (const [planet, cardIds] of group(planetOf))
+    facts.push({ kind: 'planet-link', planet, cardIds });
+  for (const [sign, cardIds] of group(signOf))
+    facts.push({ kind: 'sign-link', sign, cardIds });
 
   // Court cards: sub-element echoes and zodiac spans.
   for (const court of items) {
@@ -88,14 +96,13 @@ export function compare(ctx: ReadingContext): Comparison {
     if (suitEl && sub !== suitEl) {
       const echoes = items.filter((o) => o !== court && o.element === sub);
       if (echoes.length)
-        relations.push(
-          ctx.strings.courtEcho(
-            court.card.name,
-            sub,
-            suitEl,
-            echoes.map((o) => o.card.name),
-          ),
-        );
+        facts.push({
+          kind: 'court-echo',
+          courtId: court.card.id,
+          sub,
+          suit: suitEl,
+          cardIds: echoes.map((o) => o.card.id),
+        });
     }
     const span = court.c.span;
     if (span) {
@@ -106,19 +113,18 @@ export function compare(ctx: ReadingContext): Comparison {
         return (start - from + 360) % 360 <= 20;
       });
       if (inside.length)
-        relations.push(
-          ctx.strings.courtSpan(
-            inside.map((o) => o.card.name),
-            court.card.name,
-          ),
-        );
+        facts.push({
+          kind: 'court-span',
+          courtId: court.card.id,
+          cardIds: inside.map((o) => o.card.id),
+        });
     }
   }
 
   // Pairwise elemental dignities; tally ties per card for the hinge.
   const ties = new Map<string, number>();
-  const conflicts: [string, string][] = [];
-  const friends: [string, string][] = [];
+  const conflicts: CardPair[] = [];
+  const friends: CardPair[] = [];
   for (let a = 0; a < items.length; a++) {
     for (let b = a + 1; b < items.length; b++) {
       const x = items[a]!;
@@ -128,14 +134,11 @@ export function compare(ctx: ReadingContext): Comparison {
       if (d === 'strengthened') continue;
       for (const i of [x, y])
         ties.set(i.card.id, (ties.get(i.card.id) ?? 0) + 1);
-      (d === 'conflicted' ? conflicts : friends).push([
-        x.card.name,
-        y.card.name,
-      ]);
+      (d === 'conflicted' ? conflicts : friends).push([x.card.id, y.card.id]);
     }
   }
-  if (conflicts.length) relations.push(ctx.strings.conflicts(conflicts));
-  if (friends.length) relations.push(ctx.strings.friends(friends));
+  if (conflicts.length) facts.push({ kind: 'conflicts', pairs: conflicts });
+  if (friends.length) facts.push({ kind: 'friends', pairs: friends });
 
   // Hinge: the single card with the most non-neutral ties, if it is unique and
   // has at least two.
@@ -144,5 +147,29 @@ export function compare(ctx: ReadingContext): Comparison {
   const hingeCardId =
     top && top[1] >= 2 && top[1] > (ranked[1]?.[1] ?? 0) ? top[0] : undefined;
 
-  return { relations, ...(hingeCardId ? { hingeCardId } : {}) };
+  return { facts, ...(hingeCardId ? { hingeCardId } : {}) };
+}
+
+/** Facts that need no correspondences: arcana, suit and orientation counts. */
+function structure(ctx: ReadingContext): Fact[] {
+  const out: Fact[] = [];
+  const cards = ctx.placements
+    .map((p) => findCard(ctx.deck, p.cardId))
+    .filter((c) => c !== undefined);
+  if (cards.length === 0) return out;
+
+  const majors = cards.filter((c) => c.arcana === 'major').length;
+  if (majors * 2 > cards.length) out.push({ kind: 'mostly-majors' });
+
+  const suitCounts = new Map<Suit, number>();
+  for (const c of cards)
+    if (c.suit) suitCounts.set(c.suit, (suitCounts.get(c.suit) ?? 0) + 1);
+  for (const [suit, count] of suitCounts)
+    if (count >= 2 && count * 2 > cards.length)
+      out.push({ kind: 'suit-dominates', suit, count, total: cards.length });
+
+  const reversed = ctx.placements.filter((p) => p.orientation === 'reversed');
+  if (reversed.length * 2 > ctx.placements.length)
+    out.push({ kind: 'mostly-reversed' });
+  return out;
 }

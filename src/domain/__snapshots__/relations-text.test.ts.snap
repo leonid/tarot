@@ -1,0 +1,197 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`relation text, 'en' > cups-01-ace cups-02-two cups-03-three 1`] = `
+[
+  "cups dominate (3 of 3).",
+  "Water dominates (3 of 3 cards with an element).",
+  "Cancer links Two of Cups and Three of Cups.",
+]
+`;
+
+exports[`relation text, 'en' > major-00-fool major-01-magician major-02-high-priestess 1`] = `
+[
+  "Mostly Major Arcana: weighty, fated themes.",
+]
+`;
+
+exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 1`] = `
+[
+  "Mostly Major Arcana: weighty, fated themes.",
+  "Water dominates (2 of 3 cards with an element).",
+  "Conflicting elements: The Fool and Death; The Fool and Ace of Cups.",
+]
+`;
+
+exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 2`] = `
+[
+  "Mars links Ten of Cups and The Tower and Five of Cups.",
+  "Scorpio links Death and Five of Cups.",
+  "Queen of Wands (Water of Fire) echoes water in Death and Ace of Cups and Ten of Cups and Five of Cups.",
+  "Ten of Cups and Three of Wands fall within the span of Queen of Wands.",
+  "King of Pentacles (Air of Earth) echoes air in The Fool and Five of Swords.",
+  "Conflicting elements: The Fool and Death; The Fool and Ace of Cups; The Fool and Ten of Cups; The Fool and King of Pentacles; The Fool and Five of Cups; Death and Queen of Wands; Death and Three of Wands; Death and Five of Swords; Ace of Cups and Queen of Wands; Ace of Cups and Three of Wands; Ace of Cups and Five of Swords; Queen of Wands and Ten of Cups; Queen of Wands and King of Pentacles; Queen of Wands and Five of Cups; Ten of Cups and Three of Wands; Ten of Cups and Five of Swords; Three of Wands and King of Pentacles; Three of Wands and Five of Cups; Five of Swords and King of Pentacles; Five of Swords and Five of Cups.",
+  "Friendly elements: The Fool and Queen of Wands; The Fool and Three of Wands; Death and King of Pentacles; Ace of Cups and King of Pentacles; Queen of Wands and Five of Swords; Ten of Cups and King of Pentacles; Three of Wands and Five of Swords; King of Pentacles and Five of Cups.",
+]
+`;
+
+exports[`relation text, 'en' > major-13-death cups-01-ace cups-02-two 1`] = `
+[
+  "cups dominate (2 of 3).",
+  "Water dominates (3 of 3 cards with an element).",
+]
+`;
+
+exports[`relation text, 'en' > major-13-death cups-06-six swords-01-ace 1`] = `
+[
+  "Water dominates (2 of 3 cards with an element).",
+  "Scorpio links Death and Six of Cups.",
+  "Conflicting elements: Death and Ace of Swords; Six of Cups and Ace of Swords.",
+]
+`;
+
+exports[`relation text, 'en' > major-16-tower cups-05-five wands-01-ace 1`] = `
+[
+  "Mars links The Tower and Five of Cups.",
+  "Conflicting elements: Five of Cups and Ace of Wands.",
+]
+`;
+
+exports[`relation text, 'en' > major-21-world pentacles-01-ace swords-01-ace 1`] = `
+[
+  "Earth dominates (2 of 3 cards with an element).",
+  "Conflicting elements: The World and Ace of Swords; Ace of Pentacles and Ace of Swords.",
+]
+`;
+
+exports[`relation text, 'en' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
+[
+  "wands dominate (2 of 3).",
+  "Fire dominates (2 of 3 cards with an element).",
+  "Conflicting elements: Knight of Wands and Ace of Cups; Ace of Wands and Ace of Cups.",
+]
+`;
+
+exports[`relation text, 'en' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
+[
+  "Queen of Wands (Water of Fire) echoes water in Ace of Cups.",
+  "Conflicting elements: Queen of Wands and Ace of Cups; Ace of Cups and Ace of Swords.",
+  "Friendly elements: Queen of Wands and Ace of Swords.",
+]
+`;
+
+exports[`relation text, 'en' > wands-13-queen cups-09-nine wands-04-four 1`] = `
+[
+  "wands dominate (2 of 3).",
+  "Fire dominates (2 of 3 cards with an element).",
+  "Queen of Wands (Water of Fire) echoes water in Nine of Cups.",
+  "Conflicting elements: Queen of Wands and Nine of Cups; Nine of Cups and Four of Wands.",
+]
+`;
+
+exports[`relation text, 'en' > wands-13-queen cups-10-ten wands-03-three 1`] = `
+[
+  "wands dominate (2 of 3).",
+  "Fire dominates (2 of 3 cards with an element).",
+  "Queen of Wands (Water of Fire) echoes water in Ten of Cups.",
+  "Ten of Cups and Three of Wands fall within the span of Queen of Wands.",
+  "Conflicting elements: Queen of Wands and Ten of Cups; Ten of Cups and Three of Wands.",
+]
+`;
+
+exports[`relation text, 'ru' > cups-01-ace cups-02-two cups-03-three 1`] = `
+[
+  "Преобладают Кубки (3 из 3).",
+  "Преобладает стихия воды (3 из 3 карт со стихией).",
+  "Знак Рак связывает карты: Двойка Кубков и Тройка Кубков.",
+]
+`;
+
+exports[`relation text, 'ru' > major-00-fool major-01-magician major-02-high-priestess 1`] = `
+[
+  "Преимущественно Старшие арканы: весомые, судьбоносные темы.",
+]
+`;
+
+exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 1`] = `
+[
+  "Преимущественно Старшие арканы: весомые, судьбоносные темы.",
+  "Преобладает стихия воды (2 из 3 карт со стихией).",
+  "Конфликт стихий: Шут и Смерть; Шут и Туз Кубков.",
+]
+`;
+
+exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 2`] = `
+[
+  "Планета Марс связывает карты: Десятка Кубков и Башня и Пятёрка Кубков.",
+  "Знак Скорпион связывает карты: Смерть и Пятёрка Кубков.",
+  "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Смерть и Туз Кубков и Десятка Кубков и Пятёрка Кубков.",
+  "Десятка Кубков и Тройка Жезлов попадают в зодиакальный диапазон карты «Королева Жезлов».",
+  "Король Пентаклей (Воздух земли) перекликается со стихией воздуха в картах: Шут и Пятёрка Мечей.",
+  "Конфликт стихий: Шут и Смерть; Шут и Туз Кубков; Шут и Десятка Кубков; Шут и Король Пентаклей; Шут и Пятёрка Кубков; Смерть и Королева Жезлов; Смерть и Тройка Жезлов; Смерть и Пятёрка Мечей; Туз Кубков и Королева Жезлов; Туз Кубков и Тройка Жезлов; Туз Кубков и Пятёрка Мечей; Королева Жезлов и Десятка Кубков; Королева Жезлов и Король Пентаклей; Королева Жезлов и Пятёрка Кубков; Десятка Кубков и Тройка Жезлов; Десятка Кубков и Пятёрка Мечей; Тройка Жезлов и Король Пентаклей; Тройка Жезлов и Пятёрка Кубков; Пятёрка Мечей и Король Пентаклей; Пятёрка Мечей и Пятёрка Кубков.",
+  "Дружественные стихии: Шут и Королева Жезлов; Шут и Тройка Жезлов; Смерть и Король Пентаклей; Туз Кубков и Король Пентаклей; Королева Жезлов и Пятёрка Мечей; Десятка Кубков и Король Пентаклей; Тройка Жезлов и Пятёрка Мечей; Король Пентаклей и Пятёрка Кубков.",
+]
+`;
+
+exports[`relation text, 'ru' > major-13-death cups-01-ace cups-02-two 1`] = `
+[
+  "Преобладают Кубки (2 из 3).",
+  "Преобладает стихия воды (3 из 3 карт со стихией).",
+]
+`;
+
+exports[`relation text, 'ru' > major-13-death cups-06-six swords-01-ace 1`] = `
+[
+  "Преобладает стихия воды (2 из 3 карт со стихией).",
+  "Знак Скорпион связывает карты: Смерть и Шестёрка Кубков.",
+  "Конфликт стихий: Смерть и Туз Мечей; Шестёрка Кубков и Туз Мечей.",
+]
+`;
+
+exports[`relation text, 'ru' > major-16-tower cups-05-five wands-01-ace 1`] = `
+[
+  "Планета Марс связывает карты: Башня и Пятёрка Кубков.",
+  "Конфликт стихий: Пятёрка Кубков и Туз Жезлов.",
+]
+`;
+
+exports[`relation text, 'ru' > major-21-world pentacles-01-ace swords-01-ace 1`] = `
+[
+  "Преобладает стихия земли (2 из 3 карт со стихией).",
+  "Конфликт стихий: Мир и Туз Мечей; Туз Пентаклей и Туз Мечей.",
+]
+`;
+
+exports[`relation text, 'ru' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
+[
+  "Преобладают Жезлы (2 из 3).",
+  "Преобладает стихия огня (2 из 3 карт со стихией).",
+  "Конфликт стихий: Рыцарь Жезлов и Туз Кубков; Туз Жезлов и Туз Кубков.",
+]
+`;
+
+exports[`relation text, 'ru' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
+[
+  "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Туз Кубков.",
+  "Конфликт стихий: Королева Жезлов и Туз Кубков; Туз Кубков и Туз Мечей.",
+  "Дружественные стихии: Королева Жезлов и Туз Мечей.",
+]
+`;
+
+exports[`relation text, 'ru' > wands-13-queen cups-09-nine wands-04-four 1`] = `
+[
+  "Преобладают Жезлы (2 из 3).",
+  "Преобладает стихия огня (2 из 3 карт со стихией).",
+  "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Девятка Кубков.",
+  "Конфликт стихий: Королева Жезлов и Девятка Кубков; Девятка Кубков и Четвёрка Жезлов.",
+]
+`;
+
+exports[`relation text, 'ru' > wands-13-queen cups-10-ten wands-03-three 1`] = `
+[
+  "Преобладают Жезлы (2 из 3).",
+  "Преобладает стихия огня (2 из 3 карт со стихией).",
+  "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Десятка Кубков.",
+  "Десятка Кубков и Тройка Жезлов попадают в зодиакальный диапазон карты «Королева Жезлов».",
+  "Конфликт стихий: Королева Жезлов и Десятка Кубков; Десятка Кубков и Тройка Жезлов.",
+]
+`;

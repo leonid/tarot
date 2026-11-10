@@ -1,15 +1,16 @@
 import { compare } from './compare';
+import { renderFact } from './facts';
 import {
   findCard,
   type Interpretation,
   type InterpretationProvider,
   type ReadingContext,
 } from './interpretation';
-import type { Suit } from './types';
 
 /**
  * Deterministic, offline interpreter: stitches base meanings to the position
- * and adds simple structural observations. No network, no LLM.
+ * and renders the Compare step's facts with the locale's templates. No
+ * network, no LLM.
  */
 export const fallbackProvider: InterpretationProvider = {
   id: 'fallback',
@@ -35,33 +36,12 @@ export const fallbackProvider: InterpretationProvider = {
     const cmp = compare(ctx);
     return {
       cards,
-      relations: [...describeRelations(ctx), ...cmp.relations],
+      relations: cmp.facts.map((f) =>
+        renderFact(f, ctx.strings, (id) => findCard(ctx.deck, id)?.name ?? id),
+      ),
       ...(cmp.hingeCardId ? { hingeCardId: cmp.hingeCardId } : {}),
       summary: ctx.strings.summary(ctx.question, cards.length),
       advice: ctx.strings.advice,
     };
   },
 };
-
-function describeRelations(ctx: ReadingContext): string[] {
-  const out: string[] = [];
-  const cards = ctx.placements
-    .map((p) => findCard(ctx.deck, p.cardId))
-    .filter((c) => c !== undefined);
-  if (cards.length === 0) return out;
-
-  const majors = cards.filter((c) => c.arcana === 'major').length;
-  if (majors * 2 > cards.length) out.push(ctx.strings.mostlyMajors);
-
-  const suitCounts = new Map<Suit, number>();
-  for (const c of cards)
-    if (c.suit) suitCounts.set(c.suit, (suitCounts.get(c.suit) ?? 0) + 1);
-  for (const [suit, n] of suitCounts)
-    if (n >= 2 && n * 2 > cards.length)
-      out.push(ctx.strings.suitDominates(suit, n, cards.length));
-
-  const reversed = ctx.placements.filter((p) => p.orientation === 'reversed');
-  if (reversed.length * 2 > ctx.placements.length)
-    out.push(ctx.strings.mostlyReversed);
-  return out;
-}

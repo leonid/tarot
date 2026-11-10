@@ -9,7 +9,7 @@ an LLM.
 | Step | What it is | Who does it |
 |---|---|---|
 | **1. Decompose** | Per-card dossier: symbols, formula (element x number), correspondences, a field of 3-5 candidate meanings | Static content (`CardMeaning`, `correspondences`) |
-| **2. Compare** | Relationships between cards: elemental dignities, dominant element or number, repeated numbers, the hinge card | Deterministic code (`domain/compare.ts`, `domain/elements.ts`, `domain/fallback.ts`) |
+| **2. Compare** | Relationships between cards: elemental dignities, dominant element or number, repeated numbers, the hinge card | Deterministic code (`domain/compare.ts`, `domain/elements.ts`); returns typed facts (`domain/facts.ts`), which the locale templates render |
 | **3. Anchor** | Tie each card to its position and the question, weight cards, pick one meaning per card | LLM provider (or the fallback's simpler stitching) |
 | **4. Synthesize** | One sentence per card, an integration paragraph, one actionable close, then the self-check rubric | LLM provider |
 
