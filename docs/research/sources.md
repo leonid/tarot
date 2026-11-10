@@ -28,9 +28,54 @@ Written 2026-11-10. Decisions on where card content and imagery come from.
   swap in verified public-domain RWS scans. The `Card` model carries no image
   path yet, so adding one will be a deliberate, reviewed change.
 
+### Chosen image set (M3.1, decided 2026-11-10)
+
+**Set:** the 1909 "Roses & Lilies" first edition, Wikimedia Commons category
+[Rider-Waite tarot deck (Roses & Lilies)](https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck_(Roses_%26_Lilies)).
+
+Read from the Commons API on 2026-11-10:
+
+- 80 files: the cards, named `RWS1909 - 00 Fool.jpeg` to
+  `RWS1909 - Wands 14.jpeg`, plus two photographs of the whole deck that we
+  do not use.
+- All 80 report the licence "Public domain". The one file page read in full
+  carries `{{PD-old-70-expired}}`, artist Pamela Colman Smith, date 1909.
+- JPEG, 812 to 860 px wide, 23 MB in total before optimising.
+- Described as scans of an original 1909 deck from a private collection; the
+  source is a collector's blog post.
+
+Why this set:
+
+1. **Simplest provenance.** A direct scan of the first printing: one artist
+   (died 1951), published 1909, nobody else's work in the file.
+2. **Uniform.** One scanner, one naming pattern that maps to our card ids by
+   number and suit, near-equal sizes.
+3. **Small.** 840 px is enough for a card shown at up to about 400 CSS px on
+   a 2x screen, and 23 MB of originals is easy to keep out of the repository
+   history if we store only optimised files.
+
+Sets considered and not chosen (same date, same API):
+
+| Set (Commons category suffix) | Files | Format | Why not |
+| --- | --- | --- | --- |
+| Geldard | 78 | PNG, 2100 px, about 1 GB | The best looking: cleaned, even colour, transparent corners. But each file is an uploader's cleaned version of another scan ("source: Wikimedia Commons") tagged only `{{PD-old-70}}`, with no statement about the cleaning work. Faithful restoration probably adds no copyright, but that is a judgement, not a recorded fact. Fallback if the chosen scans look too worn in the interface. |
+| TaionWC | 78 | JPEG, 1100 px, 70 MB | The 1910 "Pam-A" printing. Fine, and the licence tag is more detailed. Older file names (`Cups01.jpg`), and a later printing than the first edition, with no advantage for us. |
+| Yale University | 10 | JPEG, 1840 px | Best provenance (Beinecke Library), but only 10 cards. |
+
+Known limits of this decision:
+
+- Only one file page was read in full. Checking all 78 pages and recording
+  each is M3.3; if any card fails, take that card from the TaionWC set and
+  record it.
+- "Public domain" here rests on the artist's death in 1951 (life plus 70) and
+  1909 publication (US). A few countries have longer terms. A plain scan of a
+  flat work adds no copyright in the US and, since 2019, in the EU.
+- The scans show wear, a cream tone and a sliver of scanner background at the
+  rounded corners. M3.4 should crop to the card and M3.7 clips the corners.
+
 ## Open items
 
-- [ ] Verify the licence of each Wikimedia scan chosen for bundling.
+- [ ] Verify the licence of each Wikimedia scan chosen for bundling (M3.3; the set is chosen, see "Chosen image set").
 - [x] Encode Book T tables (Major signs and planets, 36 decans, court spans) as
       typed data in `src/content/correspondences.ts`. Transcribed from Part IV
       of the owner's guide. Cross-check status is in the next item; structural tests check the decan rulers (Chaldean order), the
