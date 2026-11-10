@@ -24,7 +24,9 @@ export function SpreadBoard({
   return (
     <div
       className="board"
-      style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 7rem))` }}
+      style={{
+        gridTemplateColumns: `repeat(${cols}, minmax(0, var(--card-w)))`,
+      }}
     >
       {spread.positions.map((pos) => {
         const placed = placements.find((p) => p.positionId === pos.id);

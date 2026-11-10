@@ -1,0 +1,112 @@
+/*
+ * Design tokens. The only file that may contain raw colour, px or rem values.
+ * Provisional: see DESIGN.md. Components use semantic tokens only.
+ * Light is the default; dark follows the OS, and `data-theme` on <html>
+ * overrides either way (manual toggle: task D6).
+ */
+:root {
+  color-scheme: light dark;
+
+  /* Colour (light) */
+  --bg: #f6f0e4;
+  --surface: #fffaf0;
+  --text: #231b2e;
+  --text-muted: #5c5367;
+  --border: #8f8272;
+  --accent: #4b2a7b;
+  --accent-contrast: #ffffff;
+  --gold: #7a5200;
+  --danger: #a3202e;
+  --fire: #a83a1a;
+  --water: #1d5a94;
+  --air: #6b5700;
+  --earth: #3a6429;
+  --lift: 0 0.25rem 0.75rem rgb(35 27 46 / 25%);
+
+  /* Space scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  /* Shape */
+  --radius: 6px;
+  --radius-pill: 999px;
+  --border-w: 1px;
+  --border-w-strong: 2px;
+  --focus-w: 3px;
+  --focus-offset: 2px;
+
+  /* Type */
+  --font-body: 'JetBrains Sans', system-ui, sans-serif;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --leading: 1.55;
+  --measure: 68ch;
+
+  /* Layout */
+  --content-max: 52rem;
+  --slot-min-h: 5rem;
+  --card-w: 7rem;
+  --palette-max-h: 14rem;
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur-slow: 240ms;
+  --ease: ease-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #14101c;
+    --surface: #1d1829;
+    --text: #efe8f7;
+    --text-muted: #b3a8c2;
+    --border: #7d7390;
+    --accent: #c9b3f0;
+    --accent-contrast: #14101c;
+    --gold: #e0bd6a;
+    --danger: #ff8a93;
+    --fire: #ff8a65;
+    --water: #7ab8f0;
+    --air: #e6cf6a;
+    --earth: #8fcf7a;
+    --lift: 0 0.25rem 0.75rem rgb(0 0 0 / 55%);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #14101c;
+  --surface: #1d1829;
+  --text: #efe8f7;
+  --text-muted: #b3a8c2;
+  --border: #7d7390;
+  --accent: #c9b3f0;
+  --accent-contrast: #14101c;
+  --gold: #e0bd6a;
+  --danger: #ff8a93;
+  --fire: #ff8a65;
+  --water: #7ab8f0;
+  --air: #e6cf6a;
+  --earth: #8fcf7a;
+  --lift: 0 0.25rem 0.75rem rgb(0 0 0 / 55%);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-slow: 0ms;
+  }
+}

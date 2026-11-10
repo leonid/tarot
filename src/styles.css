@@ -1,67 +1,97 @@
-:root {
-  font-family: 'JetBrains Sans', system-ui, sans-serif;
-  color-scheme: light dark;
+/* Component styles. Raw values live in ui/tokens.css; use tokens here. */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: var(--leading);
+}
+:focus-visible {
+  outline: var(--focus-w) solid var(--accent);
+  outline-offset: var(--focus-offset);
 }
 .app {
-  max-width: 52rem;
+  max-width: var(--content-max);
   margin: 0 auto;
-  padding: 1rem;
+  padding: var(--space-4);
 }
 .controls,
 .modes {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin: 1rem 0;
+  gap: var(--space-4);
+  margin: var(--space-4) 0;
 }
 .controls label {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-1);
+}
+button,
+input,
+select {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-2);
+}
+button {
+  cursor: pointer;
 }
 .slot-editor {
   display: flex;
-  gap: 1rem;
-  margin: 0.5rem 0;
+  gap: var(--space-4);
+  margin: var(--space-2) 0;
 }
 [role='tab'][aria-selected='true'] {
   font-weight: bold;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+}
+.interpretation {
+  max-width: var(--measure);
 }
 .board {
   display: grid;
-  gap: 0.5rem;
-  margin: 1rem 0;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
   justify-content: start;
 }
 .slot {
-  min-height: 5rem;
-  padding: 0.4rem;
-  border: 1px dashed gray;
-  border-radius: 6px;
+  min-height: var(--slot-min-h);
+  padding: var(--space-2);
+  background: var(--surface);
+  border: var(--border-w) dashed var(--border);
+  border-radius: var(--radius);
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.85rem;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
 }
 .slot.filled {
   border-style: solid;
 }
 .slot.over {
-  outline: 2px solid currentColor;
+  outline: var(--border-w-strong) solid var(--accent);
 }
 .slot.rotated {
   transform: rotate(90deg) scale(0.8);
   opacity: 0.85;
 }
 .slot.hinge {
-  border: 2px solid currentColor;
+  border: var(--border-w-strong) solid var(--gold);
 }
 .slot-hinge {
   align-self: flex-start;
-  padding: 0 0.4rem;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  font-size: 0.7rem;
+  padding: 0 var(--space-2);
+  border: var(--border-w) solid var(--gold);
+  border-radius: var(--radius-pill);
+  color: var(--gold);
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -73,18 +103,20 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  max-height: 14rem;
+  gap: var(--space-1);
+  max-height: var(--palette-max-h);
   overflow: auto;
 }
 .palette-card {
-  padding: 0.25rem 0.5rem;
-  border: 1px solid gray;
-  border-radius: 4px;
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
   cursor: grab;
   touch-action: none;
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
 }
 .palette-card.dragging {
   opacity: 0.5;
+  box-shadow: var(--lift);
 }
