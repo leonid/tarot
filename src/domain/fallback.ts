@@ -1,3 +1,4 @@
+import { compare } from './compare';
 import {
   findCard,
   type Interpretation,
@@ -28,9 +29,11 @@ export const fallbackProvider: InterpretationProvider = {
       };
     });
 
+    const cmp = compare(ctx);
     return {
       cards,
-      relations: describeRelations(ctx),
+      relations: [...describeRelations(ctx), ...cmp.relations],
+      ...(cmp.hingeCardId ? { hingeCardId: cmp.hingeCardId } : {}),
       summary: ctx.question
         ? `For the question "${ctx.question}", ${cards.length} card(s) were read.`
         : `${cards.length} card(s) were read.`,

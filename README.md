@@ -27,7 +27,7 @@ Other scripts: `typecheck`, `lint`, `build`, `format`. CI runs typecheck, lint, 
 
 ## Roadmap
 
-1. Fill the optional theme notes (love, career, spirit, advice), and use the correspondences in the Compare step.
+1. Fill the optional theme notes (love, career, spirit, advice).
 2. Polish drag and drop (keyboard sensor, touch testing, card images on the board).
 3. Public-domain card images.
 4. LLM interpretation behind a small proxy.

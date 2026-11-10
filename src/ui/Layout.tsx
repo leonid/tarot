@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fallbackProvider } from '../domain/fallback';
 import type { Interpretation } from '../domain/interpretation';
+import { correspondences } from '../content/correspondences';
 import { meanings } from '../content/meanings';
 import { getDeck } from '../content/decks';
 import { getSpread } from '../content/spreads';
@@ -19,7 +20,14 @@ export function ReadingView({ droppable = false }: { droppable?: boolean }) {
       return;
     let live = true;
     fallbackProvider
-      .interpret({ question, deck, spread, placements, meanings })
+      .interpret({
+        question,
+        deck,
+        spread,
+        placements,
+        meanings,
+        correspondences,
+      })
       .then((r) => live && setResult(r));
     return () => {
       live = false;

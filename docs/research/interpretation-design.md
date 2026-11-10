@@ -9,7 +9,7 @@ an LLM.
 | Step | What it is | Who does it |
 |---|---|---|
 | **1. Decompose** | Per-card dossier: symbols, formula (element x number), correspondences, a field of 3-5 candidate meanings | Static content (`CardMeaning`, `correspondences`) |
-| **2. Compare** | Relationships between cards: elemental dignities, dominant element or number, repeated numbers, the hinge card | Deterministic code (`domain/elements.ts`, `domain/fallback.ts`) |
+| **2. Compare** | Relationships between cards: elemental dignities, dominant element or number, repeated numbers, the hinge card | Deterministic code (`domain/compare.ts`, `domain/elements.ts`, `domain/fallback.ts`) |
 | **3. Anchor** | Tie each card to its position and the question, weight cards, pick one meaning per card | LLM provider (or the fallback's simpler stitching) |
 | **4. Synthesize** | One sentence per card, an integration paragraph, one actionable close, then the self-check rubric | LLM provider |
 
@@ -41,6 +41,6 @@ to find it, and the offline fallback still returns something useful.
 ## Gaps to close in content work
 
 - Per-card dossiers beyond keywords: symbols, formula, correspondences.
-- Book T tables are encoded (`src/content/correspondences.ts`); the Compare step does not use them yet.
+- Book T tables are encoded (`src/content/correspondences.ts`); `domain/compare.ts` uses them in the Compare step (dominant element, shared planet or sign, dignity pairs, hinge card).
 - Visual axes (direction, figure count, and so on) as optional per-card tags,
   if the comparison step should use them.
