@@ -4,7 +4,7 @@ Written 2026-11-10. Decisions on where card content and imagery come from.
 
 ## Card meanings (text)
 
-- **Policy:** all meaning text in `src/content/meanings.ts` is original wording.
+- **Policy:** all meaning text in `src/content/meanings/` is original wording.
   Never paste from books or websites.
 - **Reference material that is safe to read and paraphrase:**
   - A. E. Waite, *The Pictorial Key to the Tarot* (1911). Public domain.
