@@ -12,7 +12,7 @@ import {
   locales,
 } from '.';
 import { en } from './en';
-import { pseudo, wrap } from './pseudo';
+import { pseudo } from './pseudo';
 
 describe('locale registry', () => {
   it('has unique codes and English as the default', () => {
@@ -155,7 +155,9 @@ describe('pseudo-locale', () => {
     });
     for (const text of [r.summary, r.advice, ...r.cards.map((c) => c.note)])
       expect(text.startsWith('⟦')).toBe(true);
-    expect(r.cards[0]?.note).toContain(wrap('The Fool'));
+    expect(r.cards[0]?.note).toContain(
+      localizeMeanings(meanings, pseudo)['major-00-fool']!.upright.summary,
+    );
     expect(r.cards[0]?.note).toContain('Keywords');
   });
 });

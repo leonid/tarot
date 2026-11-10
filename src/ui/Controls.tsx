@@ -7,7 +7,7 @@ export function Controls() {
   const { t, decks, spreads } = useI18n();
   return (
     <section className="controls">
-      <Field label={t.question}>
+      <Field label={t.question} className="question">
         {(p) => (
           <input
             {...p}

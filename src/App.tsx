@@ -50,7 +50,49 @@ export function App() {
   }, [link, loadShared]);
   return (
     <main className="app">
-      <h1>{t.appTitle}</h1>
+      <header className="app-header">
+        <h1>{t.appTitle}</h1>
+        <div className="prefs">
+          {locales.length > 1 && (
+            <Field label={t.language} className="language">
+              {(p) => (
+                <select
+                  {...p}
+                  value={locale.code}
+                  onChange={(e) => setLocale(e.target.value)}
+                >
+                  {locales.map((l) => (
+                    <option key={l.code} value={l.code} lang={l.code}>
+                      {l.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </Field>
+          )}
+          <Field label={t.theme} className="theme">
+            {(p) => (
+              <select
+                {...p}
+                value={theme}
+                onChange={(e) => setTheme(e.target.value as Theme)}
+              >
+                {THEMES.map((v) => (
+                  <option key={v} value={v}>
+                    {
+                      {
+                        system: t.themeSystem,
+                        light: t.themeLight,
+                        dark: t.themeDark,
+                      }[v]
+                    }
+                  </option>
+                ))}
+              </select>
+            )}
+          </Field>
+        </div>
+      </header>
       {link && 'error' in link && (
         <Alert dismissLabel={t.dismiss} onDismiss={() => setLink(null)}>
           {
@@ -62,46 +104,6 @@ export function App() {
           }
         </Alert>
       )}
-      <div className="prefs">
-        {locales.length > 1 && (
-          <Field label={t.language} className="language">
-            {(p) => (
-              <select
-                {...p}
-                value={locale.code}
-                onChange={(e) => setLocale(e.target.value)}
-              >
-                {locales.map((l) => (
-                  <option key={l.code} value={l.code} lang={l.code}>
-                    {l.label}
-                  </option>
-                ))}
-              </select>
-            )}
-          </Field>
-        )}
-        <Field label={t.theme} className="theme">
-          {(p) => (
-            <select
-              {...p}
-              value={theme}
-              onChange={(e) => setTheme(e.target.value as Theme)}
-            >
-              {THEMES.map((v) => (
-                <option key={v} value={v}>
-                  {
-                    {
-                      system: t.themeSystem,
-                      light: t.themeLight,
-                      dark: t.themeDark,
-                    }[v]
-                  }
-                </option>
-              ))}
-            </select>
-          )}
-        </Field>
-      </div>
       <Tabs
         tabs={[
           { id: 'simulate', label: t.modeSimulate },

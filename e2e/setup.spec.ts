@@ -38,7 +38,16 @@ test('setup: drag a card onto a slot with the mouse', async ({ page }) => {
   await openSetup(page);
   const card = page.locator('.palette-card').first();
   const name = (await card.locator('.card-face-name').innerText()).trim();
-  await card.dragTo(slot(page, 'present'));
+  // Explicit pointer steps: a single jump (dragTo) is sometimes missed by the
+  // pointer sensor on WebKit, which then never sees the card over the slot.
+  const from = (await card.boundingBox())!;
+  const to = (await slot(page, 'present').boundingBox())!;
+  await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, {
+    steps: 12,
+  });
+  await page.mouse.up();
   await expect(slot(page, 'present')).toContainText(name);
   await expect(page.locator('.palette-card')).toHaveCount(77);
 });

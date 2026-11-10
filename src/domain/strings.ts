@@ -9,7 +9,10 @@ import type { Planet, Sign } from './zodiac';
  * text arrives already localized in the ReadingContext.
  */
 export interface ProviderStrings {
-  /** One card's note: the card, where it landed and what it means. */
+  /**
+   * One card's note: what it means here. The interface shows the card and
+   * position as a heading, so the note need not repeat them.
+   */
   cardNote(a: {
     card: string;
     orientation: Orientation;

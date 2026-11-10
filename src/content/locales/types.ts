@@ -35,6 +35,8 @@ export interface UiMessages {
   reversed: string;
 
   interpretation: string;
+  /** Heading over the relations between cards. */
+  connections: string;
   hinge: string;
   hingeTitle: string;
   hingeLabel: string;

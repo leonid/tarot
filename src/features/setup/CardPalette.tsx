@@ -7,11 +7,14 @@ import { useI18n } from '../../ui/i18n';
 export function CardPalette({ cards }: { cards: readonly Card[] }) {
   const { t } = useI18n();
   return (
-    <ul className="palette" aria-label={t.availableCards}>
-      {cards.map((c) => (
-        <PaletteCard key={c.id} card={c} />
-      ))}
-    </ul>
+    <section className="palette-box">
+      <h2 aria-hidden="true">{t.availableCards}</h2>
+      <ul className="palette" aria-label={t.availableCards}>
+        {cards.map((c) => (
+          <PaletteCard key={c.id} card={c} />
+        ))}
+      </ul>
+    </section>
   );
 }
 

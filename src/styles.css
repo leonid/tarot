@@ -1,6 +1,7 @@
 /* Component styles. Raw values live in ui/tokens.css; use tokens here. */
 h1,
 h2,
+.note-name,
 .card-face-name,
 .card-face-num {
   font-family: var(--font-display);
@@ -46,6 +47,10 @@ body {
 .interpretation {
   max-width: var(--measure);
 }
+.slot-label {
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
 .reading {
   display: block;
 }
@@ -57,7 +62,7 @@ body {
   }
   .reading {
     display: grid;
-    grid-template-columns: auto minmax(0, var(--aside-w));
+    grid-template-columns: auto minmax(0, 1fr);
     gap: var(--space-6);
     align-items: start;
   }
@@ -157,7 +162,6 @@ body {
 }
 .palette {
   list-style: none;
-  padding: 0;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1);
@@ -215,4 +219,161 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
+}
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-w) solid var(--border);
+}
+.app-header h1 {
+  margin: 0;
+  font-size: var(--text-2xl);
+  line-height: 1.2;
+}
+.prefs .field {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+.controls .question {
+  flex: 1 1 100%;
+}
+.question input {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--measure);
+}
+.deal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.meta {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+/* Interpretation: a summary, one block per card, then the connections. */
+.interpretation {
+  background: var(--surface);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-5);
+  margin: var(--space-4) 0;
+  box-sizing: border-box;
+}
+.interpretation h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xl);
+}
+.interpretation h3 {
+  margin: 0;
+  font-size: var(--text-md);
+}
+.interpretation p {
+  margin: var(--space-1) 0 0;
+}
+.reading-summary {
+  color: var(--text-muted);
+}
+.notes {
+  list-style: none;
+  margin: var(--space-4) 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.note-card {
+  padding-left: var(--space-3);
+  border-left: var(--border-w-strong) solid var(--border);
+}
+.note-card h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+}
+.note-position {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.note-name {
+  font-size: var(--text-lg);
+}
+.note-reversed,
+.note-meaning {
+  font-size: var(--text-sm);
+  font-weight: normal;
+  color: var(--text-muted);
+}
+.interpretation .note-meaning {
+  margin: 0;
+}
+.connections {
+  padding-top: var(--space-3);
+  border-top: var(--border-w) solid var(--border);
+}
+.connections ul {
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-5);
+  font-size: var(--text-sm);
+}
+.connections li + li {
+  margin-top: var(--space-1);
+}
+.interpretation .advice {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: var(--border-w) solid var(--border);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+}
+
+/* Setup: the palette is a framed scroll area, so a cut-off row reads as
+   "scroll for more" and not as a broken layout. */
+.palette-box {
+  margin: var(--space-4) 0;
+}
+.palette-box h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg);
+}
+.palette {
+  margin: 0;
+  padding: var(--space-2);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+}
+.slot-menus {
+  margin: var(--space-4) 0;
+}
+.slot-menus summary {
+  cursor: pointer;
+  min-height: var(--target);
+  font-weight: 600;
+}
+.save-share {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: var(--border-w) solid var(--border);
+}
+@media (max-width: 40em) {
+  .slot-label {
+    font-size: 0.9em;
+    font-weight: 600;
+  }
+  .interpretation {
+    padding: var(--space-3) var(--space-4);
+  }
 }

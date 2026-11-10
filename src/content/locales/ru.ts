@@ -1,6 +1,6 @@
 import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
-import type { Orientation, Suit } from '../../domain/types';
+import type { Suit } from '../../domain/types';
 import type { Planet, Sign } from '../../domain/zodiac';
 import { decks } from '../decks';
 import { ruMeanings } from './ru-meanings';
@@ -65,11 +65,6 @@ const suitGen: Record<Suit, string> = {
   swords: 'Мечей',
   pentacles: 'Пентаклей',
 };
-const orientationName: Record<Orientation, string> = {
-  upright: 'прямое положение',
-  reversed: 'перевёрнутое положение',
-};
-
 const ui: UiMessages = {
   appTitle: 'Таро',
   language: 'Язык',
@@ -103,6 +98,7 @@ const ui: UiMessages = {
   reversed: 'Перевёрнута',
 
   interpretation: 'Толкование',
+  connections: 'Связи',
   hinge: 'Ось',
   hingeTitle: 'Больше всего связана с остальными картами',
   hingeLabel: 'Ось:',
@@ -129,13 +125,10 @@ const ui: UiMessages = {
 };
 
 const provider: ProviderStrings = {
-  cardNote: ({ card, orientation, position, base }) => {
-    const where = position ? `«${position.label}» (${position.meaning})` : '';
-    const text = base
+  cardNote: ({ base }) =>
+    base
       ? `${base.summary} Ключевые слова: ${base.keywords.join(', ')}.`
-      : 'Для этой карты пока нет базового значения.';
-    return `${card}, ${orientationName[orientation]}, позиция ${where}: ${text}`;
-  },
+      : 'Для этой карты пока нет базового значения.',
   mostlyMajors: 'Преимущественно Старшие арканы: весомые, судьбоносные темы.',
   suitDominates: (suit, count, total) =>
     `Преобладают ${suitPlural[suit]} (${count} из ${total}).`,

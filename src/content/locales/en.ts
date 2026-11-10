@@ -8,6 +8,9 @@ const and = (items: readonly string[]) => items.join(' and ');
 const pairs = (list: readonly (readonly [string, string])[]) =>
   list.map(([a, b]) => `${a} and ${b}`).join('; ');
 
+const cardsRead = (n: number) =>
+  n === 1 ? 'one card was read' : `${n} cards were read`;
+
 const ui: UiMessages = {
   appTitle: 'Tarot',
   language: 'Language',
@@ -40,6 +43,7 @@ const ui: UiMessages = {
   reversed: 'Reversed',
 
   interpretation: 'Interpretation',
+  connections: 'Connections',
   hinge: 'Hinge',
   hingeTitle: 'Most connected to the other cards',
   hingeLabel: 'Hinge:',
@@ -66,21 +70,18 @@ const ui: UiMessages = {
 };
 
 const provider: ProviderStrings = {
-  cardNote: ({ card, orientation, position, base }) => {
-    const where = position ? `${position.label} (${position.meaning})` : '';
-    const text = base
+  cardNote: ({ base }) =>
+    base
       ? `${base.summary} Keywords: ${base.keywords.join(', ')}.`
-      : 'No base meaning written for this card yet.';
-    return `${card}, ${orientation}, in ${where}: ${text}`;
-  },
+      : 'No base meaning written for this card yet.',
   mostlyMajors: 'Mostly Major Arcana: weighty, fated themes.',
   suitDominates: (suit, count, total) =>
     `${suit} dominate (${count} of ${total}).`,
   mostlyReversed: 'Mostly reversed: blocked or internalised energy.',
   summary: (question, cards) =>
     question
-      ? `For the question "${question}", ${cards} card(s) were read.`
-      : `${cards} card(s) were read.`,
+      ? `For the question "${question}", ${cardsRead(cards)}.`
+      : `${cap(cardsRead(cards))}.`,
   advice: 'Weigh each card against the position it landed in.',
 
   elementDominates: (element: Element, count, total) =>

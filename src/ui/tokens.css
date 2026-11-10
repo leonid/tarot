@@ -118,7 +118,7 @@
 /* Phones: smaller cards so the 4-column Celtic Cross fits 360px. */
 @media (max-width: 40em) {
   :root {
-    --card-w: 4.75rem;
+    --card-w: 5.5rem;
   }
 }
 @media (pointer: coarse) {

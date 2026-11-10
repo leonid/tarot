@@ -110,7 +110,8 @@ describe('fallback provider', () => {
       ],
     });
     expect(r.cards).toHaveLength(3);
-    expect(r.cards[0]?.note).toContain('The Fool');
+    // The note is the meaning; the interface adds the card and position heading.
+    expect(r.cards[0]?.note).toContain('A leap into the unknown');
   });
 });
 

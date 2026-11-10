@@ -9,10 +9,12 @@ export function SimulateView() {
   const { t } = useI18n();
   return (
     <>
-      <Button variant="primary" onClick={() => dealRandom()}>
-        {t.shuffleAndDeal}
-      </Button>
-      {seed !== undefined && <small> {t.seed(seed)}</small>}
+      <div className="deal">
+        <Button variant="primary" onClick={() => dealRandom()}>
+          {t.shuffleAndDeal}
+        </Button>
+        {seed !== undefined && <small className="meta">{t.seed(seed)}</small>}
+      </div>
       <ReadingView />
     </>
   );

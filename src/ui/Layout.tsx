@@ -48,22 +48,47 @@ export function ReadingView({ droppable = false }: { droppable?: boolean }) {
       {result && complete && (
         <aside className="interpretation" aria-label={t.interpretation}>
           <h2>{t.interpretation}</h2>
-          {result.cards.map((c) => (
-            <p key={c.positionId}>{c.note}</p>
-          ))}
-          {result.relations.map((r) => (
-            <p key={r}>
-              <em>{r}</em>
-            </p>
-          ))}
-          {result.hingeCardId && (
-            <p>
-              <strong>{t.hingeLabel}</strong>{' '}
-              {deck.cards.find((c) => c.id === result.hingeCardId)?.name}
-            </p>
+          <p className="reading-summary">{result.summary}</p>
+          <ol className="notes">
+            {result.cards.map((c) => {
+              const pos = spread.positions.find((p) => p.id === c.positionId);
+              const placed = placements.find(
+                (p) => p.positionId === c.positionId,
+              );
+              return (
+                <li key={c.positionId} className="note-card">
+                  <h3>
+                    <span className="note-position">{pos?.label}</span>
+                    <span className="note-name">
+                      {deck.cards.find((d) => d.id === c.cardId)?.name}
+                    </span>
+                    {placed?.orientation === 'reversed' && (
+                      <span className="note-reversed">{t.slotReversed}</span>
+                    )}
+                  </h3>
+                  {pos && <p className="note-meaning">{pos.meaning}</p>}
+                  <p>{c.note}</p>
+                </li>
+              );
+            })}
+          </ol>
+          {(result.relations.length > 0 || result.hingeCardId) && (
+            <section className="connections">
+              <h3>{t.connections}</h3>
+              {result.hingeCardId && (
+                <p>
+                  <strong>{t.hingeLabel}</strong>{' '}
+                  {deck.cards.find((c) => c.id === result.hingeCardId)?.name}
+                </p>
+              )}
+              <ul>
+                {result.relations.map((r) => (
+                  <li key={r}>{r}</li>
+                ))}
+              </ul>
+            </section>
           )}
-          <p>{result.summary}</p>
-          <p>{result.advice}</p>
+          <p className="advice">{result.advice}</p>
         </aside>
       )}
     </section>
