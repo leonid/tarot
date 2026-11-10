@@ -1,22 +1,38 @@
 import { z } from 'zod';
-import { sharedReadingSchema, type SharedReading } from '../domain/share';
+import { migrate } from '../domain/migrate';
+import type { SharedReading } from '../domain/share';
 
 const KEY = 'tarot.history.v1';
 const MAX = 50;
 
-const entrySchema = z.object({
+const envelopeSchema = z.object({
   id: z.string(),
   savedAt: z.number(),
-  reading: sharedReadingSchema,
+  reading: z.unknown(),
 });
-export type HistoryEntry = z.infer<typeof entrySchema>;
+export interface HistoryEntry {
+  id: string;
+  savedAt: number;
+  reading: SharedReading;
+}
 
+/**
+ * Each entry is checked and migrated on its own, so one corrupt or
+ * unreadable entry (including one from a newer version) is skipped while the
+ * rest still load.
+ */
 export function loadHistory(): HistoryEntry[] {
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return [];
-    const parsed = z.array(entrySchema).safeParse(JSON.parse(raw));
-    return parsed.success ? parsed.data : [];
+    const raw: unknown = JSON.parse(localStorage.getItem(KEY) ?? '[]');
+    if (!Array.isArray(raw)) return [];
+    return raw.flatMap((item): HistoryEntry[] => {
+      const env = envelopeSchema.safeParse(item);
+      if (!env.success) return [];
+      const m = migrate(env.data.reading);
+      return m.ok
+        ? [{ id: env.data.id, savedAt: env.data.savedAt, reading: m.reading }]
+        : [];
+    });
   } catch {
     return [];
   }

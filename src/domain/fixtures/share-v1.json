@@ -1,0 +1,25 @@
+{
+  "v": 1,
+  "mode": "setup",
+  "question": "Fixture: a version 1 shared reading",
+  "deckId": "rws-78",
+  "spreadId": "three-card",
+  "placements": [
+    {
+      "positionId": "past",
+      "cardId": "major-00-fool",
+      "orientation": "upright"
+    },
+    {
+      "positionId": "present",
+      "cardId": "cups-01-ace",
+      "orientation": "reversed"
+    },
+    {
+      "positionId": "future",
+      "cardId": "swords-03-three",
+      "orientation": "upright"
+    }
+  ],
+  "seed": 42
+}

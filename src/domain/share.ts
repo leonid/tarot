@@ -1,23 +1,9 @@
-import { z } from 'zod';
+import { sharedReadingSchema, type SharedReading } from './schema';
+import type { MigrateError } from './migrate';
+import { migrate } from './migrate';
 import type { Reading } from './types';
 
-export const sharedReadingSchema = z.object({
-  v: z.literal(1),
-  mode: z.enum(['simulate', 'setup']),
-  question: z.string().max(500),
-  deckId: z.string(),
-  spreadId: z.string(),
-  placements: z.array(
-    z.object({
-      positionId: z.string(),
-      cardId: z.string(),
-      orientation: z.enum(['upright', 'reversed']),
-    }),
-  ),
-  seed: z.number().int().optional(),
-});
-
-export type SharedReading = z.infer<typeof sharedReadingSchema>;
+export { sharedReadingSchema, type SharedReading };
 
 export function toShared(
   reading: Reading,
@@ -50,13 +36,24 @@ export function encodeShared(shared: SharedReading): string {
   return toBase64Url(new TextEncoder().encode(JSON.stringify(shared)));
 }
 
-/** Returns null for anything malformed; shared links are untrusted input. */
-export function decodeShared(text: string): SharedReading | null {
+/**
+ * Decodes a share link and runs it through the migration chain. Shared links
+ * are untrusted input, so every failure is an explicit result, never a throw.
+ */
+export function decodeSharedResult(
+  text: string,
+): { ok: true; reading: SharedReading } | { ok: false; error: MigrateError } {
+  let raw: unknown;
   try {
-    const json = new TextDecoder().decode(fromBase64Url(text));
-    const parsed = sharedReadingSchema.safeParse(JSON.parse(json));
-    return parsed.success ? parsed.data : null;
+    raw = JSON.parse(new TextDecoder().decode(fromBase64Url(text)));
   } catch {
-    return null;
+    return { ok: false, error: { kind: 'malformed' } };
   }
+  return migrate(raw);
+}
+
+/** Returns null for anything unreadable; use decodeSharedResult to know why. */
+export function decodeShared(text: string): SharedReading | null {
+  const r = decodeSharedResult(text);
+  return r.ok ? r.reading : null;
 }

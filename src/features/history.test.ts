@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import v1 from '../domain/fixtures/share-v1.json';
 import { toShared } from '../domain/share';
 import { deleteReading, loadHistory, saveReading } from './history';
 
@@ -28,5 +29,28 @@ describe('history', () => {
   it('ignores corrupt stored data', () => {
     localStorage.setItem('tarot.history.v1', '{broken');
     expect(loadHistory()).toEqual([]);
+  });
+
+  it('keeps the good entries when one is corrupt or from a newer version', () => {
+    const good = { id: 'a', savedAt: 1, reading: shared };
+    localStorage.setItem(
+      'tarot.history.v1',
+      JSON.stringify([
+        good,
+        { id: 'b', savedAt: 2, reading: { v: 99 } },
+        { id: 'c', savedAt: 3, reading: { v: 1, mode: 'nope' } },
+        'junk',
+        { id: 'd', savedAt: 4, reading: { ...shared, question: 'kept' } },
+      ]),
+    );
+    expect(loadHistory().map((e) => e.id)).toEqual(['a', 'd']);
+  });
+
+  it('loads a v1 fixture entry', () => {
+    localStorage.setItem(
+      'tarot.history.v1',
+      JSON.stringify([{ id: 'f', savedAt: 5, reading: v1 }]),
+    );
+    expect(loadHistory()[0]?.reading.seed).toBe(42);
   });
 });
