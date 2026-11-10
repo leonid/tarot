@@ -41,8 +41,6 @@ function signOf(c: Correspondence | undefined): Sign | undefined {
   return undefined;
 }
 
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
 /**
  * DCAS step 2 (Compare): deterministic structure drawn from the Golden Dawn
  * correspondences. Returns plain-language relations and a hinge card.
@@ -64,9 +62,7 @@ export function compare(ctx: ReadingContext): Comparison {
   const withElement = [...counts.values()].reduce((a, b) => a + b, 0);
   for (const [el, n] of counts)
     if (n >= 2 && n * 2 > withElement)
-      relations.push(
-        `${cap(el)} dominates (${n} of ${withElement} cards with an element).`,
-      );
+      relations.push(ctx.strings.elementDominates(el, n, withElement));
 
   // Shared planets and signs (a decan ruler counts as that planet).
   const group = (
@@ -80,9 +76,9 @@ export function compare(ctx: ReadingContext): Comparison {
     return [...m].filter(([, names]) => names.length >= 2);
   };
   for (const [planet, names] of group(planetOf))
-    relations.push(`${cap(planet)} links ${names.join(' and ')}.`);
+    relations.push(ctx.strings.planetLinks(planet as Planet, names));
   for (const [s, names] of group(signOf))
-    relations.push(`${cap(s)} links ${names.join(' and ')}.`);
+    relations.push(ctx.strings.signLinks(s as Sign, names));
 
   // Court cards: sub-element echoes and zodiac spans.
   for (const court of items) {
@@ -93,7 +89,12 @@ export function compare(ctx: ReadingContext): Comparison {
       const echoes = items.filter((o) => o !== court && o.element === sub);
       if (echoes.length)
         relations.push(
-          `${court.card.name} (${cap(sub)} of ${cap(suitEl)}) echoes ${sub} in ${echoes.map((o) => o.card.name).join(' and ')}.`,
+          ctx.strings.courtEcho(
+            court.card.name,
+            sub,
+            suitEl,
+            echoes.map((o) => o.card.name),
+          ),
         );
     }
     const span = court.c.span;
@@ -106,15 +107,18 @@ export function compare(ctx: ReadingContext): Comparison {
       });
       if (inside.length)
         relations.push(
-          `${inside.map((o) => o.card.name).join(' and ')} fall${inside.length === 1 ? 's' : ''} within the span of ${court.card.name}.`,
+          ctx.strings.courtSpan(
+            inside.map((o) => o.card.name),
+            court.card.name,
+          ),
         );
     }
   }
 
   // Pairwise elemental dignities; tally ties per card for the hinge.
   const ties = new Map<string, number>();
-  const conflicts: string[] = [];
-  const friends: string[] = [];
+  const conflicts: [string, string][] = [];
+  const friends: [string, string][] = [];
   for (let a = 0; a < items.length; a++) {
     for (let b = a + 1; b < items.length; b++) {
       const x = items[a]!;
@@ -124,14 +128,14 @@ export function compare(ctx: ReadingContext): Comparison {
       if (d === 'strengthened') continue;
       for (const i of [x, y])
         ties.set(i.card.id, (ties.get(i.card.id) ?? 0) + 1);
-      const text = `${x.card.name} and ${y.card.name}`;
-      (d === 'conflicted' ? conflicts : friends).push(text);
+      (d === 'conflicted' ? conflicts : friends).push([
+        x.card.name,
+        y.card.name,
+      ]);
     }
   }
-  if (conflicts.length)
-    relations.push(`Conflicting elements: ${conflicts.join('; ')}.`);
-  if (friends.length)
-    relations.push(`Friendly elements: ${friends.join('; ')}.`);
+  if (conflicts.length) relations.push(ctx.strings.conflicts(conflicts));
+  if (friends.length) relations.push(ctx.strings.friends(friends));
 
   // Hinge: the single card with the most non-neutral ties, if it is unique and
   // has at least two.

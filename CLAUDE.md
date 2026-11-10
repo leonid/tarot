@@ -24,5 +24,6 @@ Needs Node >= 20.19 (`.nvmrc` says 22); Vite 8 will not install its native bindi
 - A card appears at most once per reading.
 - Card meaning text is original wording; see `docs/research/sources.md` before adding content or images.
 - All user-facing strings live in typed content files, to keep i18n possible.
+- Localization: structure (ids, coordinates) stays in `src/content/`; text is per locale in `src/content/locales/<code>.ts` (UI strings, interpreter phrase templates, optional card, deck and spread names and meaning overrides). Anything a locale omits falls back to English. Read text through `useI18n()` in `src/ui/i18n.ts`, never import English content straight into a component. `en-XA` is a dev-only pseudo-locale that wraps every string in ⟦⟧; `src/ui/i18n.test.tsx` fails if English leaks past it. Saved readings and share links hold ids only, so they are language-independent.
 - Interpretation goes through `InterpretationProvider`. Never put an API key in client code.
 - Install quirk: `@testing-library/dom` is an explicit dependency on purpose. Without it, `npm install` crashed with an arborist `edgesOut` error.

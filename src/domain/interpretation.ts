@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { Correspondence } from './correspondences';
+import type { ProviderStrings } from './strings';
 import type { Card, CardMeaning, Deck, PlacedCard, Spread } from './types';
 
 /** Everything an interpreter needs, with ids already resolved. */
@@ -9,6 +10,8 @@ export interface ReadingContext {
   spread: Spread;
   placements: readonly PlacedCard[];
   meanings: Readonly<Record<string, CardMeaning>>;
+  /** Phrases the deterministic provider writes, in the reading's language. */
+  strings: ProviderStrings;
   /** Book T attributions by card id; enables the Compare step. */
   correspondences?: Readonly<Record<string, Correspondence>>;
 }

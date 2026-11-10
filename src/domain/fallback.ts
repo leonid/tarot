@@ -5,6 +5,7 @@ import {
   type InterpretationProvider,
   type ReadingContext,
 } from './interpretation';
+import type { Suit } from './types';
 
 /**
  * Deterministic, offline interpreter: stitches base meanings to the position
@@ -16,16 +17,18 @@ export const fallbackProvider: InterpretationProvider = {
     const cards = ctx.placements.map((p) => {
       const card = findCard(ctx.deck, p.cardId);
       const position = ctx.spread.positions.find((x) => x.id === p.positionId);
-      const meaning = ctx.meanings[p.cardId]?.[p.orientation];
-      const name = card?.name ?? p.cardId;
-      const where = position ? `${position.label} (${position.meaning})` : '';
-      const text = meaning
-        ? `${meaning.summary} Keywords: ${meaning.keywords.join(', ')}.`
-        : 'No base meaning written for this card yet.';
+      const base = ctx.meanings[p.cardId]?.[p.orientation];
       return {
         positionId: p.positionId,
         cardId: p.cardId,
-        note: `${name}, ${p.orientation}, in ${where}: ${text}`,
+        note: ctx.strings.cardNote({
+          card: card?.name ?? p.cardId,
+          orientation: p.orientation,
+          ...(position
+            ? { position: { label: position.label, meaning: position.meaning } }
+            : {}),
+          ...(base ? { base } : {}),
+        }),
       };
     });
 
@@ -34,10 +37,8 @@ export const fallbackProvider: InterpretationProvider = {
       cards,
       relations: [...describeRelations(ctx), ...cmp.relations],
       ...(cmp.hingeCardId ? { hingeCardId: cmp.hingeCardId } : {}),
-      summary: ctx.question
-        ? `For the question "${ctx.question}", ${cards.length} card(s) were read.`
-        : `${cards.length} card(s) were read.`,
-      advice: 'Weigh each card against the position it landed in.',
+      summary: ctx.strings.summary(ctx.question, cards.length),
+      advice: ctx.strings.advice,
     };
   },
 };
@@ -50,18 +51,17 @@ function describeRelations(ctx: ReadingContext): string[] {
   if (cards.length === 0) return out;
 
   const majors = cards.filter((c) => c.arcana === 'major').length;
-  if (majors * 2 > cards.length)
-    out.push('Mostly Major Arcana: weighty, fated themes.');
+  if (majors * 2 > cards.length) out.push(ctx.strings.mostlyMajors);
 
-  const suitCounts = new Map<string, number>();
+  const suitCounts = new Map<Suit, number>();
   for (const c of cards)
     if (c.suit) suitCounts.set(c.suit, (suitCounts.get(c.suit) ?? 0) + 1);
   for (const [suit, n] of suitCounts)
     if (n >= 2 && n * 2 > cards.length)
-      out.push(`${suit} dominate (${n} of ${cards.length}).`);
+      out.push(ctx.strings.suitDominates(suit, n, cards.length));
 
   const reversed = ctx.placements.filter((p) => p.orientation === 'reversed');
   if (reversed.length * 2 > ctx.placements.length)
-    out.push('Mostly reversed: blocked or internalised energy.');
+    out.push(ctx.strings.mostlyReversed);
   return out;
 }

@@ -6,6 +6,7 @@ import { fallbackProvider } from './fallback';
 import { dignity, elementOf } from './elements';
 import { majorOnlyDeck, rwsDeck } from '../content/decks/rws';
 import { celticCross, spreads, threeCard } from '../content/spreads';
+import { en } from '../content/locales/en';
 import { meanings } from '../content/meanings';
 
 describe('decks', () => {
@@ -97,6 +98,7 @@ describe('fallback provider', () => {
       deck: rwsDeck,
       spread: threeCard,
       meanings,
+      strings: en.provider,
       placements: [
         { positionId: 'past', cardId: 'major-00-fool', orientation: 'upright' },
         {

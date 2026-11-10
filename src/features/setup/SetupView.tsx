@@ -1,6 +1,5 @@
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
-import { getDeck } from '../../content/decks';
-import { getSpread } from '../../content/spreads';
+import { useI18n } from '../../ui/i18n';
 import { ReadingView } from '../../ui/Layout';
 import { useReadingStore } from '../store';
 import { CardPalette } from './CardPalette';
@@ -12,9 +11,44 @@ import { CardPalette } from './CardPalette';
 export function SetupView() {
   const { deckId, spreadId, placements, allowReversals, place, clearPosition } =
     useReadingStore();
+  const { t, getDeck, getSpread } = useI18n();
   const deck = getDeck(deckId);
   const spread = getSpread(spreadId);
   if (!deck || !spread) return null;
+
+  const cardName = (id: string | number) =>
+    deck.cards.find((c) => c.id === id)?.name ?? String(id);
+  const positionLabel = (id: string | number) =>
+    spread.positions.find((p) => p.id === id)?.label ?? String(id);
+  const accessibility = {
+    screenReaderInstructions: { draggable: t.dragInstructions },
+    announcements: {
+      onDragStart: ({ active }: { active: { id: string | number } }) =>
+        t.dragPickedUp(cardName(active.id)),
+      onDragOver: ({
+        active,
+        over,
+      }: {
+        active: { id: string | number };
+        over: { id: string | number } | null;
+      }) =>
+        over
+          ? t.dragOver(cardName(active.id), positionLabel(over.id))
+          : undefined,
+      onDragEnd: ({
+        active,
+        over,
+      }: {
+        active: { id: string | number };
+        over: { id: string | number } | null;
+      }) =>
+        over
+          ? t.dragDropped(cardName(active.id), positionLabel(over.id))
+          : t.dragDroppedOutside(cardName(active.id)),
+      onDragCancel: ({ active }: { active: { id: string | number } }) =>
+        t.dragCancelled(cardName(active.id)),
+    },
+  };
 
   const placedIds = new Set(placements.map((p) => p.cardId));
   const unplaced = deck.cards.filter((c) => !placedIds.has(c.id));
@@ -26,11 +60,11 @@ export function SetupView() {
   }
 
   return (
-    <DndContext onDragEnd={onDragEnd}>
+    <DndContext onDragEnd={onDragEnd} accessibility={accessibility}>
       <ReadingView droppable />
       <CardPalette cards={unplaced} />
       <details className="slot-menus">
-        <summary>Place with menus</summary>
+        <summary>{t.placeWithMenus}</summary>
         {spread.positions.map((pos) => {
           const placed = placements.find((p) => p.positionId === pos.id);
           return (
@@ -45,7 +79,7 @@ export function SetupView() {
                       : clearPosition(pos.id)
                   }
                 >
-                  <option value="">-- choose a card --</option>
+                  <option value="">{t.chooseCard}</option>
                   {deck.cards.map((c) => (
                     <option
                       key={c.id}
@@ -70,7 +104,7 @@ export function SetupView() {
                       )
                     }
                   />
-                  Reversed
+                  {t.reversed}
                 </label>
               )}
             </div>

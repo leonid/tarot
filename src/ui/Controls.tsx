@@ -1,21 +1,21 @@
-import { decks } from '../content/decks';
-import { spreads } from '../content/spreads';
 import { useReadingStore } from '../features/store';
+import { useI18n } from './i18n';
 
 export function Controls() {
   const s = useReadingStore();
+  const { t, decks, spreads } = useI18n();
   return (
     <section className="controls">
       <label>
-        Question
+        {t.question}
         <input
           value={s.question}
           onChange={(e) => s.setQuestion(e.target.value)}
-          placeholder="What do you want to ask?"
+          placeholder={t.questionPlaceholder}
         />
       </label>
       <label>
-        Deck
+        {t.deck}
         <select value={s.deckId} onChange={(e) => s.setDeck(e.target.value)}>
           {decks.map((d) => (
             <option key={d.id} value={d.id}>
@@ -25,7 +25,7 @@ export function Controls() {
         </select>
       </label>
       <label>
-        Spread
+        {t.spread}
         <select
           value={s.spreadId}
           onChange={(e) => s.setSpread(e.target.value)}
@@ -43,7 +43,7 @@ export function Controls() {
           checked={s.allowReversals}
           onChange={(e) => s.setAllowReversals(e.target.checked)}
         />
-        Reversals
+        {t.reversals}
       </label>
     </section>
   );

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { encodeShared, toShared } from '../domain/share';
 import { isComplete, validateReading } from '../domain/validate';
-import { getDeck } from '../content/decks';
-import { getSpread } from '../content/spreads';
+import { useI18n } from './i18n';
 import { deleteReading, loadHistory, saveReading } from '../features/history';
 import { useReadingStore } from '../features/store';
 
@@ -10,6 +9,7 @@ export function SaveShare() {
   const s = useReadingStore();
   const [history, setHistory] = useState(loadHistory);
   const [notice, setNotice] = useState('');
+  const { t, locale, getDeck, getSpread } = useI18n();
   const deck = getDeck(s.deckId);
   const spread = getSpread(s.spreadId);
   if (!deck || !spread) return null;
@@ -30,7 +30,7 @@ export function SaveShare() {
     const url = `${location.origin}${location.pathname}#r=${encodeShared(shared())}`;
     try {
       await navigator.clipboard.writeText(url);
-      setNotice('Link copied.');
+      setNotice(t.linkCopied);
     } catch {
       setNotice(url);
     }
@@ -42,26 +42,29 @@ export function SaveShare() {
         disabled={!ready}
         onClick={() => {
           setHistory(saveReading(shared()));
-          setNotice('Saved.');
+          setNotice(t.saved);
         }}
       >
-        Save reading
+        {t.saveReading}
       </button>{' '}
       <button disabled={!ready} onClick={copyLink}>
-        Copy share link
+        {t.copyShareLink}
       </button>{' '}
       <small role="status">{notice}</small>
       {history.length > 0 && (
         <details>
-          <summary>Saved readings ({history.length})</summary>
+          <summary>{t.savedReadings(history.length)}</summary>
           <ul>
             {history.map((e) => (
               <li key={e.id}>
-                {new Date(e.savedAt).toLocaleString()} —{' '}
-                {e.reading.question || 'no question'} ({e.reading.spreadId}){' '}
-                <button onClick={() => s.loadShared(e.reading)}>Open</button>{' '}
+                {new Date(e.savedAt).toLocaleString(locale.code)} —{' '}
+                {e.reading.question || t.noQuestion} (
+                {getSpread(e.reading.spreadId)?.name ?? e.reading.spreadId}){' '}
+                <button onClick={() => s.loadShared(e.reading)}>
+                  {t.open}
+                </button>{' '}
                 <button onClick={() => setHistory(deleteReading(e.id))}>
-                  Delete
+                  {t.delete}
                 </button>
               </li>
             ))}

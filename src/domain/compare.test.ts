@@ -5,6 +5,7 @@ import type { ReadingContext } from './interpretation';
 import type { Orientation } from './types';
 import { correspondences } from '../content/correspondences';
 import { rwsDeck } from '../content/decks/rws';
+import { en } from '../content/locales/en';
 import { meanings } from '../content/meanings';
 import { threeCard } from '../content/spreads';
 
@@ -15,6 +16,7 @@ function ctx(cardIds: string[], withTable = true): ReadingContext {
     deck: rwsDeck,
     spread: threeCard,
     meanings,
+    strings: en.provider,
     ...(withTable ? { correspondences } : {}),
     placements: cardIds.map((cardId, i) => ({
       positionId: ids[i]!,

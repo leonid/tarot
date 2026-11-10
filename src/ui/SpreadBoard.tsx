@@ -1,5 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import type { Card, PlacedCard, Spread, SpreadPosition } from '../domain/types';
+import { useI18n } from './i18n';
 
 interface Props {
   spread: Spread;
@@ -54,6 +55,7 @@ interface SlotProps {
 }
 
 function Slot({ pos, card, orientation, setRef, over, hinge }: SlotProps) {
+  const { t } = useI18n();
   return (
     <div
       ref={setRef}
@@ -63,12 +65,12 @@ function Slot({ pos, card, orientation, setRef, over, hinge }: SlotProps) {
     >
       <span className="slot-label">{pos.label}</span>
       <span className="slot-card">
-        {card ? card.name : 'empty'}
-        {card && orientation === 'reversed' ? ' (reversed)' : ''}
+        {card ? card.name : t.slotEmpty}
+        {card && orientation === 'reversed' ? ` ${t.slotReversed}` : ''}
       </span>
       {hinge && (
-        <span className="slot-hinge" title="Most connected to the other cards">
-          Hinge
+        <span className="slot-hinge" title={t.hingeTitle}>
+          {t.hinge}
         </span>
       )}
     </div>

@@ -6,10 +6,25 @@ import type { SharedReading } from '../domain/share';
 import { getDeck, decks } from '../content/decks';
 import { getSpread, spreads } from '../content/spreads';
 
+import { DEFAULT_LOCALE, locales } from '../content/locales';
+
 export type Mode = 'simulate' | 'setup';
+
+const LOCALE_KEY = 'tarot.locale.v1';
+
+function initialLocale(): string {
+  try {
+    const saved = localStorage.getItem(LOCALE_KEY);
+    if (saved && locales.some((l) => l.code === saved)) return saved;
+  } catch {
+    // Storage can be blocked; the language falls back to the default.
+  }
+  return DEFAULT_LOCALE;
+}
 
 interface State {
   mode: Mode;
+  locale: string;
   deckId: string;
   spreadId: string;
   question: string;
@@ -17,6 +32,7 @@ interface State {
   placements: PlacedCard[];
   seed?: number;
   setMode: (m: Mode) => void;
+  setLocale: (code: string) => void;
   setDeck: (id: string) => void;
   setSpread: (id: string) => void;
   setQuestion: (q: string) => void;
@@ -30,11 +46,21 @@ interface State {
 
 export const useReadingStore = create<State>((set, get) => ({
   mode: 'simulate',
+  locale: initialLocale(),
   deckId: decks[0]!.id,
   spreadId: spreads[1]!.id,
   question: '',
   allowReversals: true,
   placements: [],
+  setLocale: (locale) => {
+    if (!locales.some((l) => l.code === locale)) return;
+    try {
+      localStorage.setItem(LOCALE_KEY, locale);
+    } catch {
+      // Not persisting the choice is harmless.
+    }
+    set({ locale });
+  },
   setMode: (mode) => set({ mode, placements: [], seed: undefined }),
   setDeck: (deckId) => set({ deckId, placements: [], seed: undefined }),
   setSpread: (spreadId) => set({ spreadId, placements: [], seed: undefined }),
