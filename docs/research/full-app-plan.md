@@ -509,26 +509,26 @@ All values in `DESIGN.md` are provisional until D1 lands. Do D1 to D5 before M3.
 
 ### Decisions taken (2026-11-10)
 
-Numbers match the table above; each is a closed  issue. Fifteen of sixteen follow the suggested default.
+Numbers match the table above; each is a closed `decision` issue. Fifteen of sixteen follow the suggested default.
 
-8. Migration chain now: add a `v` field and a chain of migrate functions (M1.9); never delete a migration.
-12. Accept and track: dev-only advisory; record the reason and a re-check date (M1.13).
-1. One Wikimedia Commons scan set plus a per-file manifest (licence, author, source URL, checked date); no colourized sets; a test fails on any missing row.
-2. Write from structure and Waite (public domain) in original wording; review each batch for originality; split PRs per suit.
-3. Thoth and Marseille: names and meanings only, no art; research note first (M6.9).
-4. LLM is opt-in with a clear notice, a visible off switch, and the offline interpreter always available.
-5. Layered caps: dedicated workspace with a hard spend cap, small model, `max_tokens`, server-side cache, session token; Cloudflare limiter only as a soft extra.
-6. Tell users "up to 30 days" until retention is confirmed with Anthropic.
-7. GitHub Pages for the static site plus a SEPARATE proxy host for the LLM function. Follow-up: choose the proxy host (open), and set Vite `base` for the repo subpath (M3.14).
-9. One locale at a time with a named reviewer; partial locales allowed with English fallback.
-10. Get Russian reviewed first, then add one locale at a time.
-11. No analytics in v1.
-13. WCAG 2.2 AA; record exceptions.
-14. Export/import in M5; decide on sync only at M8.
-15. Entertainment-and-reflection disclaimer in the app plus an LLM prompt rule against medical, legal and financial instructions.
-16. Mark the question as untrusted data in the prompt, validate the reply with the Zod schema, render output as plain text.
+- **#1.** One Wikimedia Commons scan set plus a per-file manifest (licence, author, source URL, checked date); no colourized sets; a test fails on any missing row.
+- **#2.** Write from structure and Waite (public domain) in original wording; review each batch for originality; split PRs per suit.
+- **#3.** Thoth and Marseille: names and meanings only, no art; research note first (M6.9).
+- **#4.** LLM is opt-in with a clear notice, a visible off switch, and the offline interpreter always available.
+- **#5.** Layered caps: dedicated workspace with a hard spend cap, small model, `max_tokens`, server-side cache, session token; Cloudflare limiter only as a soft extra.
+- **#6.** Tell users "up to 30 days" until retention is confirmed with Anthropic.
+- **#7.** GitHub Pages for the static site plus a SEPARATE proxy host for the LLM function. Follow-up: choose the proxy host (open), and set Vite `base` for the repo subpath (M3.14).
+- **#8.** Migration chain now: add a `v` field and a chain of migrate functions (M1.9); never delete a migration.
+- **#9.** One locale at a time with a named reviewer; partial locales allowed with English fallback.
+- **#10.** Get Russian reviewed first, then add one locale at a time.
+- **#11.** No analytics in v1.
+- **#12.** Accept and track: dev-only advisory; record the reason and a re-check date (M1.13).
+- **#13.** WCAG 2.2 AA; record exceptions.
+- **#14.** Export/import in M5; decide on sync only at M8.
+- **#15.** Entertainment-and-reflection disclaimer in the app plus an LLM prompt rule against medical, legal and financial instructions.
+- **#16.** Mark the question as untrusted data in the prompt, validate the reply with the Zod schema, render output as plain text.
 
-**Deviation:** #7 chose GitHub Pages instead of Cloudflare Pages, so the LLM proxy needs its own host. That host is not chosen yet; decide it before M4. Design decisions 1 to 8 are recorded in .
+**Deviation:** #7 chose GitHub Pages instead of Cloudflare Pages, so the LLM proxy needs its own host. That host is not chosen yet; decide it before M4. Design decisions 1 to 8 are recorded in `DESIGN.md`.
 
 Other risks: model ids and prices change (confirm at build time, as `docs/research/interpretation-design.md:38-39` already says); a service worker can serve stale code; big content PRs are hard to review (split per suit or per locale).
 
