@@ -1,0 +1,175 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / celtic-cross / seed 1 1`] = `
+[
+  "present major-08-strength reversed",
+  "challenge major-16-tower reversed",
+  "foundation major-14-temperance reversed",
+  "recent-past major-06-lovers upright",
+  "crown major-20-judgement upright",
+  "near-future major-02-high-priestess reversed",
+  "self major-07-chariot reversed",
+  "environment major-15-devil upright",
+  "hopes-fears major-03-empress upright",
+  "outcome major-01-magician upright",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / celtic-cross / seed 42 1`] = `
+[
+  "present major-05-hierophant reversed",
+  "challenge major-16-tower upright",
+  "foundation major-10-wheel-of-fortune reversed",
+  "recent-past major-00-fool reversed",
+  "crown major-21-world reversed",
+  "near-future major-15-devil reversed",
+  "self major-19-sun upright",
+  "environment major-01-magician upright",
+  "hopes-fears major-11-justice reversed",
+  "outcome major-07-chariot reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / celtic-cross / seed 2024 1`] = `
+[
+  "present major-18-moon upright",
+  "challenge major-20-judgement reversed",
+  "foundation major-01-magician upright",
+  "recent-past major-12-hanged-man reversed",
+  "crown major-10-wheel-of-fortune reversed",
+  "near-future major-15-devil reversed",
+  "self major-16-tower upright",
+  "environment major-03-empress reversed",
+  "hopes-fears major-00-fool upright",
+  "outcome major-04-emperor reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / single / seed 1 1`] = `
+[
+  "card major-08-strength reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / single / seed 42 1`] = `
+[
+  "card major-05-hierophant reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / single / seed 2024 1`] = `
+[
+  "card major-18-moon upright",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / three-card / seed 1 1`] = `
+[
+  "past major-08-strength reversed",
+  "present major-16-tower reversed",
+  "future major-14-temperance reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / three-card / seed 42 1`] = `
+[
+  "past major-05-hierophant reversed",
+  "present major-16-tower upright",
+  "future major-10-wheel-of-fortune reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > major-22 / three-card / seed 2024 1`] = `
+[
+  "past major-18-moon upright",
+  "present major-20-judgement reversed",
+  "future major-01-magician upright",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / celtic-cross / seed 1 1`] = `
+[
+  "present swords-05-five reversed",
+  "challenge swords-06-six reversed",
+  "foundation pentacles-12-knight reversed",
+  "recent-past major-21-world upright",
+  "crown major-14-temperance upright",
+  "near-future major-11-justice upright",
+  "self cups-14-king reversed",
+  "environment swords-08-eight upright",
+  "hopes-fears wands-06-six upright",
+  "outcome cups-12-knight reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / celtic-cross / seed 42 1`] = `
+[
+  "present pentacles-13-queen upright",
+  "challenge wands-09-nine reversed",
+  "foundation major-13-death upright",
+  "recent-past swords-14-king reversed",
+  "crown major-04-emperor upright",
+  "near-future swords-03-three reversed",
+  "self wands-03-three upright",
+  "environment major-15-devil reversed",
+  "hopes-fears swords-12-knight reversed",
+  "outcome major-21-world upright",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / celtic-cross / seed 2024 1`] = `
+[
+  "present pentacles-08-eight upright",
+  "challenge major-02-high-priestess reversed",
+  "foundation major-10-wheel-of-fortune reversed",
+  "recent-past pentacles-13-queen upright",
+  "crown swords-09-nine reversed",
+  "near-future wands-02-two upright",
+  "self major-01-magician reversed",
+  "environment wands-14-king upright",
+  "hopes-fears cups-08-eight upright",
+  "outcome pentacles-02-two reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / single / seed 1 1`] = `
+[
+  "card swords-05-five reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / single / seed 42 1`] = `
+[
+  "card pentacles-13-queen upright",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / single / seed 2024 1`] = `
+[
+  "card pentacles-08-eight upright",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / three-card / seed 1 1`] = `
+[
+  "past swords-05-five reversed",
+  "present swords-06-six reversed",
+  "future pentacles-12-knight reversed",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / three-card / seed 42 1`] = `
+[
+  "past pentacles-13-queen upright",
+  "present wands-09-nine reversed",
+  "future major-13-death upright",
+]
+`;
+
+exports[`seeded deal (snapshot per spread and deck) > rws-78 / three-card / seed 2024 1`] = `
+[
+  "past pentacles-08-eight upright",
+  "present major-02-high-priestess reversed",
+  "future major-10-wheel-of-fortune reversed",
+]
+`;
