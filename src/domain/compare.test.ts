@@ -1,15 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { compare } from './compare';
+import { compare, effectiveElement } from './compare';
+import { dignity } from './elements';
 import { renderFact, type Fact } from './facts';
 import { fallbackProvider } from './fallback';
-import type { ReadingContext } from './interpretation';
+import { findCard, type ReadingContext } from './interpretation';
 import type { Orientation } from './types';
 import { correspondences } from '../content/correspondences';
 import { rwsDeck } from '../content/decks/rws';
 import { en } from '../content/locales/en';
 import { ru } from '../content/locales/ru';
 import { meanings } from '../content/meanings';
-import { threeCard } from '../content/spreads';
+import { celticCross, threeCard } from '../content/spreads';
 
 const ids = ['past', 'present', 'future'];
 function ctx(cardIds: string[], withTable = true): ReadingContext {
@@ -67,11 +68,9 @@ describe('compare (DCAS step 2)', () => {
     // Fool (traditional air) conflicts with Death (water) and the Ace of Cups.
     const r = compare(ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']));
     expect(r.facts).toContainEqual({
-      kind: 'conflicts',
-      pairs: [
-        ['major-00-fool', 'major-13-death'],
-        ['major-00-fool', 'cups-01-ace'],
-      ],
+      kind: 'element-conflict',
+      elements: ['water', 'air'],
+      cardIds: [['major-13-death', 'cups-01-ace'], ['major-00-fool']],
     });
     expect(r.hingeCardId).toBe('major-00-fool');
   });
@@ -147,11 +146,11 @@ describe('compare (DCAS step 2)', () => {
     const r = compare(
       ctx(['major-21-world', 'pentacles-01-ace', 'swords-01-ace']),
     );
-    const conflicts = r.facts.find((f) => f.kind === 'conflicts');
-    expect(conflicts?.pairs).toContainEqual([
-      'major-21-world',
-      'swords-01-ace',
-    ]);
+    expect(r.facts).toContainEqual({
+      kind: 'element-conflict',
+      elements: ['air', 'earth'],
+      cardIds: [['swords-01-ace'], ['major-21-world', 'pentacles-01-ace']],
+    });
   });
 
   it('returns data only: no card name or other text in a fact', () => {
@@ -164,13 +163,82 @@ describe('compare (DCAS step 2)', () => {
     expect(strings.filter((x) => /[\sA-Z]/.test(x))).toEqual([]);
   });
 
+  describe('a ten-card reading', () => {
+    const TEN = [
+      'major-00-fool',
+      'major-13-death',
+      'cups-01-ace',
+      'wands-13-queen',
+      'cups-10-ten',
+      'wands-03-three',
+      'swords-05-five',
+      'pentacles-14-king',
+      'major-16-tower',
+      'cups-05-five',
+    ];
+    const c: ReadingContext = {
+      ...ctx([]),
+      spread: celticCross,
+      placements: TEN.map((cardId, i) => ({
+        positionId: celticCross.positions[i]!.id,
+        cardId,
+        orientation: 'upright' as Orientation,
+      })),
+    };
+    const facts = compare(c).facts;
+    const element = (id: string) =>
+      effectiveElement(findCard(rwsDeck, id)!, correspondences[id]);
+    const pairsOf = (kind: 'element-conflict' | 'element-friendship') =>
+      facts
+        .flatMap((f) =>
+          f.kind === kind
+            ? f.cardIds[0].flatMap((a) => f.cardIds[1].map((b) => [a, b]))
+            : [],
+        )
+        .map((p) => p.sort().join(' + '))
+        .sort();
+
+    it('loses no pair: the groups cover every conflicting and friendly pair', () => {
+      const want = { conflicted: [] as string[], friendly: [] as string[] };
+      for (let a = 0; a < TEN.length; a++)
+        for (let b = a + 1; b < TEN.length; b++) {
+          const x = element(TEN[a]!);
+          const y = element(TEN[b]!);
+          if (!x || !y) continue;
+          const d = dignity(x, y);
+          if (d !== 'strengthened')
+            want[d].push([TEN[a]!, TEN[b]!].sort().join(' + '));
+        }
+      expect(want.conflicted.length).toBe(20);
+      expect(pairsOf('element-conflict')).toEqual(want.conflicted.sort());
+      expect(pairsOf('element-friendship')).toEqual(want.friendly.sort());
+    });
+
+    it('names each card at most once per line and keeps lines short', () => {
+      const lines = facts.map((f) =>
+        renderFact(f, en.provider, (id) => findCard(rwsDeck, id)!.name),
+      );
+      for (const line of lines) {
+        for (const id of TEN) {
+          const name = findCard(rwsDeck, id)!.name;
+          expect(line.split(name).length - 1).toBeLessThanOrEqual(1);
+        }
+        expect(line.length).toBeLessThan(160);
+      }
+      // At most four enemy pairs of elements and two friendly ones exist.
+      expect(
+        facts.filter((f) => f.kind === 'element-conflict').length,
+      ).toBeLessThanOrEqual(4);
+    });
+  });
+
   it('flows through the fallback provider as rendered sentences', async () => {
     const out = await fallbackProvider.interpret(
       ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']),
     );
     expect(out.hingeCardId).toBe('major-00-fool');
     expect(out.relations).toContain(
-      'Conflicting elements: The Fool and Death; The Fool and Ace of Cups.',
+      'Water against air: Death and Ace of Cups conflict with The Fool.',
     );
   });
 });
@@ -192,8 +260,16 @@ describe('renderFact', () => {
       cardIds: ['a'],
     },
     { kind: 'court-span', courtId: 'q', cardIds: ['a', 'b'] },
-    { kind: 'conflicts', pairs: [['a', 'b']] },
-    { kind: 'friends', pairs: [['a', 'b']] },
+    {
+      kind: 'element-conflict',
+      elements: ['fire', 'water'],
+      cardIds: [['a'], ['b']],
+    },
+    {
+      kind: 'element-friendship',
+      elements: ['fire', 'air'],
+      cardIds: [['a'], ['b']],
+    },
   ];
 
   it.each([en, ru])('renders every kind of fact in $code', (locale) => {
@@ -202,9 +278,8 @@ describe('renderFact', () => {
       expect(text.length).toBeGreaterThan(0);
       // Card ids reach the sentence only through the name lookup.
       if ('cardIds' in fact)
-        for (const id of fact.cardIds) expect(text).toContain(`<${id}>`);
+        for (const id of fact.cardIds.flat()) expect(text).toContain(`<${id}>`);
       if ('courtId' in fact) expect(text).toContain('<q>');
-      if ('pairs' in fact) expect(text).toContain('<a>');
     }
   });
 

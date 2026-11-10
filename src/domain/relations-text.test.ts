@@ -10,8 +10,8 @@ import { meanings } from '../content/meanings';
 import { celticCross, threeCard } from '../content/spreads';
 
 /**
- * The relation sentences a reader sees, per locale. Recorded before compare()
- * moved from sentences to typed facts, so a snapshot failure means the wording
+ * The relation sentences a reader sees, per locale, for fixed readings (the
+ * last is a ten-card Celtic Cross). A snapshot failure means the wording
  * changed: check it is intended before updating.
  */
 const CASES: string[][] = [

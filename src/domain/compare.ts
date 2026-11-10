@@ -1,6 +1,6 @@
 import type { Correspondence } from './correspondences';
-import { dignity, elementOf, type Element } from './elements';
-import type { CardPair, Fact } from './facts';
+import { dignity, elementOf, ELEMENTS, type Element } from './elements';
+import type { Fact } from './facts';
 import { findCard, type ReadingContext } from './interpretation';
 import {
   longitude,
@@ -121,24 +121,35 @@ export function compare(ctx: ReadingContext): Comparison {
     }
   }
 
-  // Pairwise elemental dignities; tally ties per card for the hinge.
-  const ties = new Map<string, number>();
-  const conflicts: CardPair[] = [];
-  const friends: CardPair[] = [];
-  for (let a = 0; a < items.length; a++) {
-    for (let b = a + 1; b < items.length; b++) {
-      const x = items[a]!;
-      const y = items[b]!;
-      if (!x.element || !y.element) continue;
-      const d = dignity(x.element, y.element);
-      if (d === 'strengthened') continue;
-      for (const i of [x, y])
-        ties.set(i.card.id, (ties.get(i.card.id) ?? 0) + 1);
-      (d === 'conflicted' ? conflicts : friends).push([x.card.id, y.card.id]);
+  // Elemental dignities, grouped by element pair: every card of one element
+  // stands in the same relation to every card of the other, so two groups say
+  // what a list of pairs would, in far fewer words. Ties per card (the number
+  // of cards in a different element) pick the hinge.
+  const byElement = ELEMENTS.map(
+    (element) =>
+      [
+        element,
+        items.filter((i) => i.element === element).map((i) => i.card.id),
+      ] as const,
+  ).filter(([, ids]) => ids.length > 0);
+  const clashes: Fact[] = [];
+  const alliances: Fact[] = [];
+  for (let a = 0; a < byElement.length; a++)
+    for (let b = a + 1; b < byElement.length; b++) {
+      const [x, xs] = byElement[a]!;
+      const [y, ys] = byElement[b]!;
+      const conflicted = dignity(x, y) === 'conflicted';
+      (conflicted ? clashes : alliances).push({
+        kind: conflicted ? 'element-conflict' : 'element-friendship',
+        elements: [x, y],
+        cardIds: [xs, ys],
+      });
     }
-  }
-  if (conflicts.length) facts.push({ kind: 'conflicts', pairs: conflicts });
-  if (friends.length) facts.push({ kind: 'friends', pairs: friends });
+  facts.push(...clashes, ...alliances);
+  const ties = new Map<string, number>();
+  for (const [, ids] of byElement)
+    if (withElement > ids.length)
+      for (const id of ids) ties.set(id, withElement - ids.length);
 
   // Hinge: the single card with the most non-neutral ties, if it is unique and
   // has at least two.

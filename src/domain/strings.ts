@@ -35,6 +35,18 @@ export interface ProviderStrings {
     cards: readonly string[],
   ): string;
   courtSpan(cards: readonly string[], court: string): string;
-  conflicts(pairs: readonly (readonly [string, string])[]): string;
-  friends(pairs: readonly (readonly [string, string])[]): string;
+  /** Every card of element `a` conflicts with every card of element `b`. */
+  elementConflict(
+    a: Element,
+    aCards: readonly string[],
+    b: Element,
+    bCards: readonly string[],
+  ): string;
+  /** Every card of element `a` is friendly to every card of element `b`. */
+  elementFriendship(
+    a: Element,
+    aCards: readonly string[],
+    b: Element,
+    bCards: readonly string[],
+  ): string;
 }

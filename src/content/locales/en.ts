@@ -4,9 +4,11 @@ import type { Planet, Sign } from '../../domain/zodiac';
 import type { LocaleBundle, UiMessages } from './types';
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const and = (items: readonly string[]) => items.join(' and ');
-const pairs = (list: readonly (readonly [string, string])[]) =>
-  list.map(([a, b]) => `${a} and ${b}`).join('; ');
+/** "A", "A and B", "A, B and C". */
+const and = (items: readonly string[]) =>
+  items.length <= 1
+    ? items.join('')
+    : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]!}`;
 
 const cardsRead = (n: number) =>
   n === 1 ? 'one card was read' : `${n} cards were read`;
@@ -100,8 +102,10 @@ const provider: ProviderStrings = {
     `${court} (${cap(sub)} of ${cap(suit)}) echoes ${sub} in ${and(cards)}.`,
   courtSpan: (cards, court) =>
     `${and(cards)} fall${cards.length === 1 ? 's' : ''} within the span of ${court}.`,
-  conflicts: (list) => `Conflicting elements: ${pairs(list)}.`,
-  friends: (list) => `Friendly elements: ${pairs(list)}.`,
+  elementConflict: (a, aCards, b, bCards) =>
+    `${cap(a)} against ${b}: ${and(aCards)} conflict${aCards.length === 1 ? 's' : ''} with ${and(bCards)}.`,
+  elementFriendship: (a, aCards, b, bCards) =>
+    `${cap(a)} with ${b}: ${and(aCards)} support${aCards.length === 1 ? 's' : ''} ${and(bCards)}.`,
 };
 
 /**

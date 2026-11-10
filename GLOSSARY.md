@@ -15,6 +15,6 @@
 - **Interpretation:** the contextual result for a reading: per-card notes, relations, summary, advice.
 - **Provider:** an implementation of `InterpretationProvider` (fallback now, LLM later).
 - **Elemental dignity:** how two elements modify each other (strengthened, friendly, conflicted).
-- **Fact:** one structural observation about a reading as data (ids and enum values, no text), for example a shared planet or a pair of conflicting elements. Compare returns facts; a locale's templates render each as a relation sentence.
+- **Fact:** one structural observation about a reading as data (ids and enum values, no text), for example a shared planet, or two conflicting elements with the cards of each. Compare returns facts; a locale's templates render each as a relation sentence.
 - **Hinge card:** the card that most changes the meaning of the others.
 - **DCAS:** Decompose, Compare, Anchor, Synthesize, the interpretation method in `docs/research`.

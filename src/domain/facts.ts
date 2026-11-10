@@ -3,9 +3,6 @@ import type { ProviderStrings } from './strings';
 import type { Suit } from './types';
 import type { Planet, Sign } from './zodiac';
 
-/** Two card ids. */
-export type CardPair = readonly [string, string];
-
 /**
  * One structural observation about a reading, as data: ids and enum values,
  * never text. A locale's templates turn it into a sentence (renderFact); an
@@ -39,10 +36,20 @@ export type Fact =
     }
   /** Decan cards that fall inside a court card's zodiac span. */
   | { kind: 'court-span'; courtId: string; cardIds: readonly string[] }
-  /** Pairs whose elements are enemies. */
-  | { kind: 'conflicts'; pairs: readonly CardPair[] }
-  /** Pairs whose elements are friends. */
-  | { kind: 'friends'; pairs: readonly CardPair[] };
+  /**
+   * Two elements that are enemies, with the cards of each: every card in the
+   * first group conflicts with every card in the second.
+   */
+  | ElementPairFact<'element-conflict'>
+  /** Two friendly elements, with the cards of each. */
+  | ElementPairFact<'element-friendship'>;
+
+interface ElementPairFact<K extends string> {
+  kind: K;
+  elements: readonly [Element, Element];
+  /** Card ids per element, in the order of `elements`. */
+  cardIds: readonly [readonly string[], readonly string[]];
+}
 
 /**
  * Turns a fact into a sentence with a locale's templates. `name` gives the
@@ -54,8 +61,6 @@ export function renderFact(
   name: (cardId: string) => string,
 ): string {
   const names = (ids: readonly string[]) => ids.map(name);
-  const pairs = (list: readonly CardPair[]) =>
-    list.map(([a, b]) => [name(a), name(b)] as const);
   switch (fact.kind) {
     case 'mostly-majors':
       return strings.mostlyMajors;
@@ -78,9 +83,17 @@ export function renderFact(
       );
     case 'court-span':
       return strings.courtSpan(names(fact.cardIds), name(fact.courtId));
-    case 'conflicts':
-      return strings.conflicts(pairs(fact.pairs));
-    case 'friends':
-      return strings.friends(pairs(fact.pairs));
+    case 'element-conflict':
+    case 'element-friendship':
+      return (
+        fact.kind === 'element-conflict'
+          ? strings.elementConflict
+          : strings.elementFriendship
+      )(
+        fact.elements[0],
+        names(fact.cardIds[0]),
+        fact.elements[1],
+        names(fact.cardIds[1]),
+      );
   }
 }

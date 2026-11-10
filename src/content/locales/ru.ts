@@ -11,9 +11,11 @@ import type { LocaleBundle, SpreadText, UiMessages } from './types';
  * (Старшие и Младшие арканы). Needs review by a native speaker who reads tarot.
  */
 
-const and = (items: readonly string[]) => items.join(' и ');
-const pairs = (list: readonly (readonly [string, string])[]) =>
-  list.map(([a, b]) => `${a} и ${b}`).join('; ');
+/** «А», «А и Б», «А, Б и В». */
+const and = (items: readonly string[]) =>
+  items.length <= 1
+    ? items.join('')
+    : `${items.slice(0, -1).join(', ')} и ${items[items.length - 1]!}`;
 
 const elementNom: Record<Element, string> = {
   fire: 'Огонь',
@@ -158,8 +160,11 @@ const provider: ProviderStrings = {
     `${court} (${elementNom[sub]} ${elementGen[suit]}) перекликается со стихией ${elementGen[sub]} в картах: ${and(cards)}.`,
   courtSpan: (cards, court) =>
     `${and(cards)} ${cards.length === 1 ? 'попадает' : 'попадают'} в зодиакальный диапазон карты «${court}».`,
-  conflicts: (list) => `Конфликт стихий: ${pairs(list)}.`,
-  friends: (list) => `Дружественные стихии: ${pairs(list)}.`,
+  // Card names stay in the nominative: each group is a labelled list.
+  elementConflict: (a, aCards, b, bCards) =>
+    `${elementNom[a]} и ${elementNom[b]} конфликтуют. ${elementNom[a]}: ${and(aCards)}. ${elementNom[b]}: ${and(bCards)}.`,
+  elementFriendship: (a, aCards, b, bCards) =>
+    `${elementNom[a]} и ${elementNom[b]} дружественны. ${elementNom[a]}: ${and(aCards)}. ${elementNom[b]}: ${and(bCards)}.`,
 };
 
 const majors = [

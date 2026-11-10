@@ -1,6 +1,8 @@
 import type { Card, Suit } from './types';
 
 export type Element = 'fire' | 'water' | 'air' | 'earth';
+/** Fixed order, so grouped output is stable. */
+export const ELEMENTS: readonly Element[] = ['fire', 'water', 'air', 'earth'];
 export type Dignity = 'strengthened' | 'friendly' | 'conflicted';
 
 const SUIT_ELEMENT: Record<Suit, Element> = {
