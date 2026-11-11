@@ -1,11 +1,13 @@
 name: CI
+# Pinned: ubuntu-latest became 26.04, for which this Playwright has no WebKit
+# build (libicudata.so.74 missing). Move up when Playwright is upgraded.
 on:
   push:
     branches: [main]
   pull_request:
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -18,7 +20,7 @@ jobs:
       - run: npm test
       - run: npm run build
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
