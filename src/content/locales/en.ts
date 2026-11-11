@@ -39,6 +39,8 @@ const ui: UiMessages = {
     'To pick up a card, press the space bar. While dragging, use the arrow keys to move it. Press space again to drop it on a position, or escape to cancel.',
   placeHint:
     'Click a card, then click a position to place it. You can also drag a card, or use the menus below.',
+  dealt: (count) =>
+    `Cards dealt: ${count}. The interpretation is below the board.`,
   cardSelected: (card) =>
     `${card} is selected. Click a position to place it, or click the card again to put it back.`,
   placeIn: (card, position) => `Place ${card} in ${position}`,

@@ -31,6 +31,7 @@ export interface UiMessages {
   placeHint: string;
   /** Status once a card is selected by clicking it. */
   cardSelected(card: string): string;
+  dealt(count: number): string;
   /** Accessible name of a position that will take the selected card. */
   placeIn(card: string, position: string): string;
   dragPickedUp(card: string): string;

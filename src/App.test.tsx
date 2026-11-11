@@ -166,3 +166,18 @@ describe('click to place', () => {
     ).toHaveLength(0);
   });
 });
+
+describe('screen reader feedback', () => {
+  it('announces a deal in a status region', async () => {
+    render(<App />);
+    const before = screen.getAllByRole('status');
+    expect(before.some((s) => /Cards dealt/.test(s.textContent ?? ''))).toBe(
+      false,
+    );
+    await userEvent.click(screen.getByText('Shuffle and deal'));
+    const after = await screen.findAllByRole('status');
+    expect(after.some((s) => /Cards dealt: 3/.test(s.textContent ?? ''))).toBe(
+      true,
+    );
+  });
+});
