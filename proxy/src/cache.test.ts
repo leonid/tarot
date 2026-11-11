@@ -95,6 +95,16 @@ describe('reading cache', () => {
     expect(await readingHash(a)).not.toContain('What');
   });
 
+  it('keys on the resolved language: unknown locales share English, Russian differs', async () => {
+    const a = reading as unknown as InterpretRequest;
+    const h = (locale?: string) =>
+      readingHash(locale ? ({ ...a, locale } as InterpretRequest) : a);
+    expect(await h('xx')).toBe(await h());
+    expect(await h('en-XA')).toBe(await h('en'));
+    expect(await h('ru-RU')).toBe(await h('ru'));
+    expect(await h('ru')).not.toBe(await h());
+  });
+
   it('does not cache errors', async () => {
     const { store, m } = mapStore();
     const upstream = vi.fn(

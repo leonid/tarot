@@ -1,5 +1,6 @@
 import type { Env, Interpret } from './handler';
-import { SYSTEM_PROMPT } from './prompt';
+import { resolveLocale } from './locales';
+import { systemPrompt } from './prompt';
 import type { InterpretRequest } from './request';
 import { MODEL } from './upstream';
 
@@ -26,13 +27,14 @@ export async function readingHash(req: InterpretRequest): Promise<string> {
   const placements = [...req.placements]
     .sort((a, b) => a.positionId.localeCompare(b.positionId))
     .map((p) => [p.positionId, p.cardId, p.orientation]);
+  const { language } = resolveLocale(req.locale);
   const material = JSON.stringify([
     MODEL,
-    SYSTEM_PROMPT,
+    systemPrompt(language),
     req.question,
     req.deckId,
     req.spreadId,
-    req.locale ?? '',
+    language,
     placements,
   ]);
   const digest = await crypto.subtle.digest(
