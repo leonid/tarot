@@ -1,0 +1,56 @@
+name: Deploy
+# Push to main builds the app and publishes it to GitHub Pages
+# (https://<owner>.github.io/tarot/), then smoke-tests the live URL.
+# One-time setup: repo Settings > Pages > Source: "GitHub Actions".
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      # A project site lives under /<repo>/, so assets need that base path.
+      - run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Smoke test the live site
+        env:
+          URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS "$URL" | grep -q '<title>Tarot</title>'; then ok=1; break; fi
+            sleep 10
+          done
+          test "${ok:-}" = 1
+          # The page's script and a card image must be served under the base path.
+          script=$(curl -fsS "$URL" | grep -o 'assets/index-[^"]*\.js' | head -1)
+          curl -fsSI "${URL}${script}" | head -1
+          curl -fsSI "${URL}cards/rws-1909/cups-01-ace-480.webp" | head -1
