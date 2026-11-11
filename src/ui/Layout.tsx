@@ -2,6 +2,7 @@ import { fallbackProvider } from '../domain/fallback';
 import type { InterpretationProvider } from '../domain/interpretation';
 import { correspondences } from '../content/correspondences';
 import { useReadingStore } from '../features/store';
+import type { Card } from '../domain/types';
 import { SpreadBoard } from './SpreadBoard';
 import { useI18n } from './i18n';
 import { Button } from './kit';
@@ -11,8 +12,13 @@ import { useInterpretation } from './useInterpretation';
 export function ReadingView({
   droppable = false,
   provider = fallbackProvider,
+  armedCard,
+  onSlotClick,
 }: {
   droppable?: boolean;
+  /** Setup: the card picked by clicking; slots then accept a click. */
+  armedCard?: Card;
+  onSlotClick?: (positionId: string) => void;
   provider?: InterpretationProvider;
 }) {
   const { deckId, spreadId, question, placements } = useReadingStore();
@@ -48,6 +54,8 @@ export function ReadingView({
         cards={deck.cards}
         placements={placements}
         droppable={droppable}
+        armedCard={armedCard}
+        onSlotClick={onSlotClick}
         hingeCardId={result?.hingeCardId}
       />
       {complete && (

@@ -27,6 +27,12 @@ export interface UiMessages {
   availableCards: string;
   /** Read by screen readers on a draggable card. */
   dragInstructions: string;
+  /** One line above the palette: the three ways to place a card. */
+  placeHint: string;
+  /** Status once a card is selected by clicking it. */
+  cardSelected(card: string): string;
+  /** Accessible name of a position that will take the selected card. */
+  placeIn(card: string, position: string): string;
   dragPickedUp(card: string): string;
   dragOver(card: string, position: string): string;
   dragDropped(card: string, position: string): string;

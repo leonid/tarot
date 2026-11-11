@@ -11,6 +11,9 @@ interface Props {
   placements: readonly PlacedCard[];
   /** When true, slots accept dragged cards (must be inside a DndContext). */
   droppable?: boolean;
+  /** A card picked by click: every slot becomes a button that places it. */
+  armedCard?: Card;
+  onSlotClick?: (positionId: string) => void;
   /** Card the Compare step found most connected to the others. */
   hingeCardId?: string;
 }
@@ -22,6 +25,8 @@ export function SpreadBoard({
   cards,
   placements,
   droppable = false,
+  armedCard,
+  onSlotClick,
   hingeCardId,
 }: Props) {
   const cols = Math.max(...spread.positions.map((p) => p.x)) + 1;
@@ -54,6 +59,8 @@ export function SpreadBoard({
               const props = {
                 deckId,
                 pos,
+                armedCard: onSlotClick ? armedCard : undefined,
+                onSlotClick,
                 card,
                 orientation: placed?.orientation,
                 hinge: !!card && card.id === hingeCardId,
@@ -79,6 +86,8 @@ interface SlotProps {
   setRef?: (el: HTMLElement | null) => void;
   over?: boolean;
   hinge?: boolean;
+  armedCard?: Card;
+  onSlotClick?: (positionId: string) => void;
 }
 
 function Slot({
@@ -89,13 +98,30 @@ function Slot({
   setRef,
   over,
   hinge,
+  armedCard,
+  onSlotClick,
 }: SlotProps) {
   const { t } = useI18n();
+  const press = () => onSlotClick?.(pos.id);
   return (
     <div
       ref={setRef}
-      className={`slot${card ? ' filled' : ''}${over ? ' over' : ''}${pos.rotated ? ' crossing' : ''}${hinge ? ' hinge' : ''}`}
+      className={`slot${card ? ' filled' : ''}${over ? ' over' : ''}${pos.rotated ? ' crossing' : ''}${hinge ? ' hinge' : ''}${armedCard ? ' armed' : ''}`}
       data-position={pos.id}
+      {...(armedCard
+        ? {
+            role: 'button',
+            tabIndex: 0,
+            'aria-label': t.placeIn(armedCard.name, pos.label),
+            onClick: press,
+            onKeyDown: (e: React.KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                press();
+              }
+            },
+          }
+        : {})}
     >
       <span className="slot-label">{pos.label}</span>
       {card ? (

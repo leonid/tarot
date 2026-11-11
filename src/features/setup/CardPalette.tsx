@@ -7,9 +7,14 @@ import { useI18n } from '../../ui/i18n';
 export function CardPalette({
   deckId,
   cards,
+  pickedId,
+  onPick,
 }: {
   deckId: string;
   cards: readonly Card[];
+  /** The card selected by clicking, if any. */
+  pickedId?: string;
+  onPick?: (cardId: string) => void;
 }) {
   const { t } = useI18n();
   return (
@@ -17,14 +22,30 @@ export function CardPalette({
       <h2 aria-hidden="true">{t.availableCards}</h2>
       <ul className="palette" aria-label={t.availableCards}>
         {cards.map((c) => (
-          <PaletteCard key={c.id} deckId={deckId} card={c} />
+          <PaletteCard
+            key={c.id}
+            deckId={deckId}
+            card={c}
+            picked={c.id === pickedId}
+            onPick={onPick}
+          />
         ))}
       </ul>
     </section>
   );
 }
 
-function PaletteCard({ deckId, card }: { deckId: string; card: Card }) {
+function PaletteCard({
+  deckId,
+  card,
+  picked,
+  onPick,
+}: {
+  deckId: string;
+  card: Card;
+  picked: boolean;
+  onPick?: (cardId: string) => void;
+}) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: card.id,
     data: { cardId: card.id },
@@ -32,9 +53,11 @@ function PaletteCard({ deckId, card }: { deckId: string; card: Card }) {
   return (
     <li
       ref={setNodeRef}
-      className={`palette-card${isDragging ? ' dragging' : ''}`}
+      className={`palette-card${isDragging ? ' dragging' : ''}${picked ? ' picked' : ''}`}
       {...listeners}
       {...attributes}
+      aria-pressed={picked}
+      onClick={() => onPick?.(card.id)}
     >
       <CardImage deckId={deckId} card={card} compact sizes="3em" />
     </li>

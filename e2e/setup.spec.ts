@@ -70,3 +70,28 @@ test('setup: place a card by keyboard drag', async ({ page }) => {
   await page.keyboard.press('Space'); // drop
   await expect(slot(page, 'present')).toContainText(name);
 });
+
+test('setup: place a card with clicks only', async ({ page }) => {
+  await openSetup(page);
+  const card = page.locator('.palette-card').first();
+  const name = (await card.locator('.card-face-name').innerText()).trim();
+
+  await card.click();
+  await expect(card).toHaveAttribute('aria-pressed', 'true');
+  await expect(
+    page.getByRole('status').filter({ hasText: name }),
+  ).toBeVisible();
+
+  await slot(page, 'present').click();
+  await expect(slot(page, 'present')).toContainText(name);
+  await expect(page.locator('.palette-card')).toHaveCount(77);
+  // The selection is spent: slots are plain again.
+  await expect(page.locator('.slot.armed')).toHaveCount(0);
+
+  // Clicking a selected card again puts it back.
+  const next = page.locator('.palette-card').first();
+  await next.click();
+  await expect(page.locator('.slot.armed')).toHaveCount(3);
+  await next.click();
+  await expect(page.locator('.slot.armed')).toHaveCount(0);
+});

@@ -1,4 +1,12 @@
-import { DndContext, type DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import { useState } from 'react';
 import { useI18n } from '../../ui/i18n';
 import { Field, Toggle } from '../../ui/kit';
 import { ReadingView } from '../../ui/Layout';
@@ -13,6 +21,12 @@ export function SetupView() {
   const { deckId, spreadId, placements, allowReversals, place, clearPosition } =
     useReadingStore();
   const { t, getDeck, getSpread } = useI18n();
+  const [picked, setPicked] = useState<string>();
+  // A few pixels of movement start a drag; a plain click selects instead.
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor),
+  );
   const deck = getDeck(deckId);
   const spread = getSpread(spreadId);
   if (!deck || !spread) return null;
@@ -54,6 +68,8 @@ export function SetupView() {
   const placedIds = new Set(placements.map((p) => p.cardId));
   const unplaced = deck.cards.filter((c) => !placedIds.has(c.id));
 
+  const armed = unplaced.find((c) => c.id === picked);
+
   function onDragEnd({ active, over }: DragEndEvent) {
     const positionId = over?.data.current?.positionId as string | undefined;
     const cardId = active.data.current?.cardId as string | undefined;
@@ -61,9 +77,30 @@ export function SetupView() {
   }
 
   return (
-    <DndContext onDragEnd={onDragEnd} accessibility={accessibility}>
-      <ReadingView droppable />
-      <CardPalette deckId={deck.id} cards={unplaced} />
+    <DndContext
+      sensors={sensors}
+      onDragEnd={onDragEnd}
+      accessibility={accessibility}
+    >
+      <ReadingView
+        droppable
+        armedCard={armed}
+        onSlotClick={(positionId) => {
+          if (!armed) return;
+          place(positionId, armed.id);
+          setPicked(undefined);
+        }}
+      />
+      <p className="meta">{t.placeHint}</p>
+      <p role="status" className="meta">
+        {armed ? t.cardSelected(armed.name) : ''}
+      </p>
+      <CardPalette
+        deckId={deck.id}
+        cards={unplaced}
+        pickedId={armed?.id}
+        onPick={(id) => setPicked((cur) => (cur === id ? undefined : id))}
+      />
       <details className="slot-menus">
         <summary>{t.placeWithMenus}</summary>
         {spread.positions.map((pos) => {

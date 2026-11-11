@@ -211,6 +211,18 @@ body {
   touch-action: none;
   font-size: var(--text-sm);
 }
+.palette-card.picked {
+  border-color: var(--accent);
+  outline: var(--border-w-strong) solid var(--accent);
+}
+.slot.armed {
+  cursor: pointer;
+  border-style: solid;
+  border-color: var(--accent);
+}
+.slot.armed:hover {
+  background: var(--bg);
+}
 .palette-card.dragging {
   opacity: 0.5;
   box-shadow: var(--lift);

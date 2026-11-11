@@ -142,3 +142,27 @@ describe('shared links', () => {
     location.hash = '';
   });
 });
+
+describe('click to place', () => {
+  it('places a card by clicking it and then a position', async () => {
+    const { container } = render(<App />);
+    await userEvent.click(screen.getByRole('tab', { name: 'Setup' }));
+    const card = container.querySelector('.palette-card')!;
+    await userEvent.click(card);
+    expect(card).toHaveAttribute('aria-pressed', 'true');
+    const slot = screen.getAllByRole('button', { name: /^Place .* in / })[0]!;
+    await userEvent.click(slot);
+    expect(container.querySelectorAll('.slot.filled')).toHaveLength(1);
+    expect(
+      screen.queryAllByRole('button', { name: /^Place .* in / }),
+    ).toHaveLength(0);
+  });
+
+  it('offers no positions to click until a card is selected', async () => {
+    render(<App />);
+    await userEvent.click(screen.getByRole('tab', { name: 'Setup' }));
+    expect(
+      screen.queryAllByRole('button', { name: /^Place .* in / }),
+    ).toHaveLength(0);
+  });
+});
