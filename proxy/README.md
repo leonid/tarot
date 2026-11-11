@@ -18,3 +18,7 @@ The browser never holds the Anthropic key; it calls this Worker, which validates
 ## Config
 
 `ALLOWED_ORIGINS` (a plain variable in `wrangler.toml`) lists the origins that may call the Worker: the GitHub Pages origin, and `http://localhost:5173` in `.dev.vars` for local work.
+
+## Evaluation (M4.11)
+
+`npm run eval` sends 15 fixture readings (every spread, reversals, no question, Russian, injection and tag break-out attempts, a medical and a financial question) to the real model through the same code the Worker runs, and checks each reply: within the schema, every card and position used exactly once, no invented card or hinge, no injection canary in the text. It needs `ANTHROPIC_API_KEY` in the environment or in `proxy/.dev.vars`, **spends real (small) money**, and is manual: it is not part of `npm test` or CI. The fixtures and the checker are unit-tested in CI (`proxy/eval/eval.test.ts`); read the replies themselves to judge the prose, and move `MODEL` to `claude-sonnet-5-5` only if Haiku's prose is poor.
