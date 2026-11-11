@@ -581,7 +581,7 @@ Numbers match the table above; each is a closed `decision` issue. Fifteen of six
 - **#15.** Entertainment-and-reflection disclaimer in the app plus an LLM prompt rule against medical, legal and financial instructions.
 - **#16.** Mark the question as untrusted data in the prompt, validate the reply with the Zod schema, render output as plain text.
 
-**Deviation:** #7 chose GitHub Pages instead of Cloudflare Pages, so the LLM proxy needs its own host. That host is not chosen yet; decide it before M4. Design decisions 1 to 8 are recorded in `DESIGN.md`.
+**Deviation:** #7 chose GitHub Pages instead of Cloudflare Pages, so the LLM proxy needs its own host. The host was chosen in M4.1: Cloudflare Workers, with `claude-haiku-5-5` to start (`llm-proxy-decision.md`). Design decisions 1 to 8 are recorded in `DESIGN.md`.
 
 Other risks: model ids and prices change (confirm at build time, as `docs/research/interpretation-design.md:38-39` already says); a service worker can serve stale code; big content PRs are hard to review (split per suit or per locale).
 
