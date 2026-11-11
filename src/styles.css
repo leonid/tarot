@@ -208,7 +208,9 @@ body {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius);
   cursor: grab;
-  touch-action: none;
+  touch-action: manipulation; /* swipes scroll; drag starts on press-and-hold */
+  -webkit-touch-callout: none;
+  user-select: none;
   font-size: var(--text-sm);
 }
 .palette-card.picked {

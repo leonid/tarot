@@ -61,6 +61,7 @@ async function keyboardPlace(page: Page, keys: string[], slotId: string) {
   await card.focus();
   await page.keyboard.press('Space'); // pick up
   await expect(live(page)).toContainText(`Picked up ${name}`);
+  await page.waitForTimeout(50); // let the sensor attach its key listener
   for (const k of keys) await page.keyboard.press(k);
   const label = (
     await slot(page, slotId).locator('.slot-label').innerText()

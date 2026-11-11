@@ -1,7 +1,8 @@
 import {
   DndContext,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -23,9 +24,13 @@ export function SetupView() {
     useReadingStore();
   const { t, getDeck, getSpread } = useI18n();
   const [picked, setPicked] = useState<string>();
-  // A few pixels of movement start a drag; a plain click selects instead.
+  // Mouse: a few pixels of movement start a drag; a plain click selects.
+  // Touch: a short press-and-hold starts it, so a swipe still scrolls the page.
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 8 },
+    }),
     useSensor(KeyboardSensor, { coordinateGetter: slotKeyboardCoordinates }),
   );
   const deck = getDeck(deckId);
