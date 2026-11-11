@@ -22,6 +22,10 @@ Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`, and `images` (rebu
 
 End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and serve it on port 4391. First run: `npx playwright install chromium firefox webkit`. Run one browser with `npm run e2e -- --project=chromium`.
 
+## Deploy
+
+`.github/workflows/deploy.yml` builds on every push to `main` and publishes to GitHub Pages (`https://<owner>.github.io/tarot/`), then smoke-tests the live URL. The build reads `BASE_PATH` (the workflow sets `/tarot/`); locally the base is `/`. One-time setup: repo Settings > Pages > Source: "GitHub Actions". GitHub Pages on a private repository needs a paid plan, and the published site is public.
+
 ## Docs
 
 - `docs/research/`: sources and licensing, deck and spread structure, interpretation design, and the Structural Tarot Method guide.
@@ -33,6 +37,6 @@ End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and se
 The plan, with current status at the top, is `docs/research/full-app-plan.md`; tasks are issues in the GitHub repo. In short:
 
 1. Done: hardening (M1) and the text and structure split (M2).
-2. Public-domain card images and click-to-place are done; first deploy remains (M3); touch drag is press-and-hold.
+2. Public-domain card images and click-to-place are done; first deploy is set up (needs Pages enabled) (M3); touch drag is press-and-hold.
 3. LLM interpretation behind a small proxy (M4).
 4. Journal, more spreads, daily card (M5); more content and locales (M6); PWA (M7).
