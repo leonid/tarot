@@ -1,6 +1,7 @@
 import { useReadingStore } from '../features/store';
 import { Field, Toggle } from './kit';
 import { useI18n } from './i18n';
+import { proxyUrl } from './useProvider';
 
 export function Controls() {
   const s = useReadingStore();
@@ -52,6 +53,19 @@ export function Controls() {
         checked={s.allowReversals}
         onChange={(e) => s.setAllowReversals(e.target.checked)}
       />
+      {proxyUrl() && (
+        <div className="ai-option">
+          <Toggle
+            label={t.aiToggle}
+            checked={s.useAi}
+            aria-describedby="ai-note"
+            onChange={(e) => s.setUseAi(e.target.checked)}
+          />
+          <p id="ai-note" className="meta">
+            {t.aiNote}
+          </p>
+        </div>
+      )}
     </section>
   );
 }

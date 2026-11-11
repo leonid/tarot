@@ -22,6 +22,10 @@ Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`, and `images` (rebu
 
 End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and serve it on port 4391. First run: `npx playwright install chromium firefox webkit`. Run one browser with `npm run e2e -- --project=chromium`.
 
+## AI reader (optional)
+
+The app writes readings itself, offline. If `VITE_PROXY_URL` is set at build time to the LLM proxy's interpret URL (see `proxy/README.md`), a "Write the reading with AI" switch appears. It is off by default, says what is sent and to whom, and every failure falls back to the built-in reader. Without the variable the switch is not shown.
+
 ## Deploy
 
 `.github/workflows/deploy.yml` builds on every push to `main` and publishes to GitHub Pages (`https://<owner>.github.io/tarot/`), then smoke-tests the live URL. The build reads `BASE_PATH` (the workflow sets `/tarot/`); locally the base is `/`. One-time setup: repo Settings > Pages > Source: "GitHub Actions". GitHub Pages on a private repository needs a paid plan, and the published site is public.

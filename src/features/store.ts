@@ -13,6 +13,16 @@ export type Mode = 'simulate' | 'setup';
 import { applyTheme, readTheme, saveTheme, type Theme } from '../ui/theme';
 
 const LOCALE_KEY = 'tarot.locale.v1';
+const AI_KEY = 'tarot.ai.v1';
+
+/** The AI reader is opt-in: only an explicit saved "on" turns it on. */
+function initialUseAi(): boolean {
+  try {
+    return localStorage.getItem(AI_KEY) === 'on';
+  } catch {
+    return false;
+  }
+}
 
 function initialLocale(): string {
   try {
@@ -32,6 +42,7 @@ interface State {
   mode: Mode;
   locale: string;
   theme: Theme;
+  useAi: boolean;
   deckId: string;
   spreadId: string;
   question: string;
@@ -41,6 +52,7 @@ interface State {
   setMode: (m: Mode) => void;
   setLocale: (code: string) => void;
   setTheme: (theme: Theme) => void;
+  setUseAi: (on: boolean) => void;
   setDeck: (id: string) => void;
   setSpread: (id: string) => void;
   setQuestion: (q: string) => void;
@@ -56,6 +68,7 @@ export const useReadingStore = create<State>((set, get) => ({
   mode: 'simulate',
   locale: initialLocale(),
   theme: readTheme(),
+  useAi: initialUseAi(),
   deckId: decks[0]!.id,
   spreadId: spreads[1]!.id,
   question: '',
@@ -74,6 +87,14 @@ export const useReadingStore = create<State>((set, get) => ({
     saveTheme(theme);
     applyTheme(theme);
     set({ theme });
+  },
+  setUseAi: (useAi) => {
+    try {
+      localStorage.setItem(AI_KEY, useAi ? 'on' : 'off');
+    } catch {
+      // Not persisting the choice is harmless; it then defaults to off.
+    }
+    set({ useAi });
   },
   setMode: (mode) => set({ mode, placements: [], seed: undefined }),
   setDeck: (deckId) => set({ deckId, placements: [], seed: undefined }),
