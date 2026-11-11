@@ -1,6 +1,6 @@
 import type { Element } from './elements';
 import type { Orientation, Suit } from './types';
-import type { Planet, Sign } from './zodiac';
+import type { Modality, Planet, Sign } from './zodiac';
 
 /**
  * The phrases the deterministic interpreter writes itself, per locale.
@@ -22,6 +22,16 @@ export interface ProviderStrings {
   mostlyMajors: string;
   suitDominates(suit: Suit, count: number, total: number): string;
   mostlyReversed: string;
+  /** Consecutive pips of one suit, in number order. */
+  suitRun(suit: Suit, cards: readonly string[]): string;
+  modalityDominates(modality: Modality, count: number, total: number): string;
+  /** Cards in sign `a` face cards in the opposite sign `b`. */
+  signOpposition(
+    a: Sign,
+    aCards: readonly string[],
+    b: Sign,
+    bCards: readonly string[],
+  ): string;
   /** Minor cards of one number: 1-10 pips, 11 page to 14 king. */
   numberRepeats(number: number, cards: readonly string[]): string;
   /** Cards whose numbers reduce to `root` (1-9), a Major among them. */

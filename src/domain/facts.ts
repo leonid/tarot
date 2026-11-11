@@ -1,7 +1,7 @@
 import type { Element } from './elements';
 import type { ProviderStrings } from './strings';
 import type { Suit } from './types';
-import type { Planet, Sign } from './zodiac';
+import type { Modality, Planet, Sign } from './zodiac';
 
 /**
  * One structural observation about a reading, as data: ids and enum values,
@@ -23,6 +23,21 @@ export type Fact =
    * Tens count with the Aces. The Fool and court cards belong to no family.
    */
   | { kind: 'number-family'; root: number; cardIds: readonly string[] }
+  /** Three or more consecutive pips (1-10) of one suit, in number order. */
+  | { kind: 'suit-run'; suit: Suit; cardIds: readonly string[] }
+  /** One modality holds more than half the cards that sit in a sign. */
+  | {
+      kind: 'modality-dominates';
+      modality: Modality;
+      count: number;
+      total: number;
+    }
+  /** Cards in two opposite signs, with the cards of each. */
+  | {
+      kind: 'sign-opposition';
+      signs: readonly [Sign, Sign];
+      cardIds: readonly [readonly string[], readonly string[]];
+    }
   /** One element holds more than half the cards that have an element. */
   | {
       kind: 'element-dominates';
@@ -80,6 +95,17 @@ export function renderFact(
       return strings.numberRepeats(fact.number, names(fact.cardIds));
     case 'number-family':
       return strings.numberFamily(fact.root, names(fact.cardIds));
+    case 'suit-run':
+      return strings.suitRun(fact.suit, names(fact.cardIds));
+    case 'modality-dominates':
+      return strings.modalityDominates(fact.modality, fact.count, fact.total);
+    case 'sign-opposition':
+      return strings.signOpposition(
+        fact.signs[0],
+        names(fact.cardIds[0]),
+        fact.signs[1],
+        names(fact.cardIds[1]),
+      );
     case 'element-dominates':
       return strings.elementDominates(fact.element, fact.count, fact.total);
     case 'planet-link':

@@ -371,3 +371,74 @@ describe('compare: number facts (M6.5)', () => {
       expect(renderFact(f, ru.provider, name)).toMatch(/[а-я]/);
   });
 });
+
+describe('compare: modality, oppositions and runs (M6.11)', () => {
+  it('names a dominant modality among cards that sit in a sign', () => {
+    // 2 of Wands is Aries, 2 of Cups is Cancer (cardinal); 5 of Swords is
+    // Aquarius (fixed).
+    const r = compare(ctx(['wands-02-two', 'cups-02-two', 'swords-05-five']));
+    expect(r.facts).toContainEqual({
+      kind: 'modality-dominates',
+      modality: 'cardinal',
+      count: 2,
+      total: 3,
+    });
+  });
+
+  it('finds cards in opposite signs', () => {
+    // The Emperor is Aries, Justice is Libra, the 2 of Swords is Libra I.
+    const r = compare(
+      ctx(['major-04-emperor', 'major-11-justice', 'swords-02-two']),
+    );
+    expect(r.facts).toContainEqual({
+      kind: 'sign-opposition',
+      signs: ['aries', 'libra'],
+      cardIds: [['major-04-emperor'], ['major-11-justice', 'swords-02-two']],
+    });
+  });
+
+  it('4-5-6 of Cups yields a suit run, in number order', () => {
+    const r = compare(ctx(['cups-06-six', 'cups-04-four', 'cups-05-five']));
+    expect(r.facts).toContainEqual({
+      kind: 'suit-run',
+      suit: 'cups',
+      cardIds: ['cups-04-four', 'cups-05-five', 'cups-06-six'],
+    });
+  });
+
+  it('needs three in a row, in one suit, among the pips', () => {
+    expect(
+      kinds(['cups-04-four', 'cups-05-five', 'cups-07-seven']),
+    ).not.toContain('suit-run');
+    expect(
+      kinds(['cups-04-four', 'wands-05-five', 'cups-06-six']),
+    ).not.toContain('suit-run');
+    expect(
+      kinds(['cups-09-nine', 'cups-10-ten', 'cups-11-page']),
+    ).not.toContain('suit-run');
+  });
+
+  it('renders all three in English and Russian', () => {
+    const name = (id: string) => findCard(rwsDeck, id)?.name ?? id;
+    const facts: Fact[] = [
+      { kind: 'modality-dominates', modality: 'cardinal', count: 2, total: 3 },
+      {
+        kind: 'sign-opposition',
+        signs: ['aries', 'libra'],
+        cardIds: [['major-04-emperor'], ['major-11-justice']],
+      },
+      {
+        kind: 'suit-run',
+        suit: 'cups',
+        cardIds: ['cups-04-four', 'cups-05-five', 'cups-06-six'],
+      },
+    ];
+    expect(facts.map((f) => renderFact(f, en.provider, name))).toEqual([
+      'Cardinal signs dominate (2 of 3 cards in a sign): things are starting.',
+      'Aries opposes Libra: The Emperor faces Justice.',
+      'A run in cups: Four of Cups, Five of Cups and Six of Cups.',
+    ]);
+    for (const f of facts)
+      expect(renderFact(f, ru.provider, name)).toMatch(/[а-я]/);
+  });
+});

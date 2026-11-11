@@ -1,7 +1,7 @@
 import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
 import type { Suit } from '../../domain/types';
-import type { Planet, Sign } from '../../domain/zodiac';
+import type { Modality, Planet, Sign } from '../../domain/zodiac';
 import { decks } from '../decks';
 import { ruAlts } from './ru-alts';
 import { ruMeanings } from './ru-meanings';
@@ -67,6 +67,16 @@ const suitGen: Record<Suit, string> = {
   cups: 'Кубков',
   swords: 'Мечей',
   pentacles: 'Пентаклей',
+};
+const modalityAdj: Record<Modality, string> = {
+  cardinal: 'кардинальные',
+  fixed: 'фиксированные',
+  mutable: 'мутабельные',
+};
+const modalitySense: Record<Modality, string> = {
+  cardinal: 'что-то начинается',
+  fixed: 'что-то удерживается',
+  mutable: 'что-то меняется',
 };
 const courtRank = ['Паж', 'Рыцарь', 'Королева', 'Король'];
 const ui: UiMessages = {
@@ -159,6 +169,12 @@ const provider: ProviderStrings = {
     `Преобладают ${suitPlural[suit]} (${count} из ${total}).`,
   mostlyReversed:
     'Преимущественно перевёрнутые карты: заблокированная или обращённая внутрь энергия.',
+  suitRun: (suit, cards) =>
+    `Последовательность в масти ${suitGen[suit]}: ${and(cards)}.`,
+  modalityDominates: (modality, count, total) =>
+    `Преобладают ${modalityAdj[modality]} знаки (${count} из ${total} карт со знаком): ${modalitySense[modality]}.`,
+  signOpposition: (a, aCards, b, bCards) =>
+    `Знаки ${signName[a]} и ${signName[b]} противоположны. ${signName[a]}: ${and(aCards)}. ${signName[b]}: ${and(bCards)}.`,
   numberRepeats: (number, cards) =>
     number > 10
       ? `Повторяется ранг «${courtRank[number - 11] ?? number}»: ${and(cards)}.`

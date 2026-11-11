@@ -1,6 +1,6 @@
 import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
-import type { Planet, Sign } from '../../domain/zodiac';
+import type { Modality, Planet, Sign } from '../../domain/zodiac';
 import type { LocaleBundle, UiMessages } from './types';
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -26,6 +26,12 @@ const NUMBER_WORDS = [
   'ten',
 ];
 const COURT_RANKS = ['Page', 'Knight', 'Queen', 'King'];
+
+const MODALITY_SENSE: Record<Modality, string> = {
+  cardinal: 'things are starting',
+  fixed: 'things are holding',
+  mutable: 'things are changing',
+};
 
 const ui: UiMessages = {
   appTitle: 'Tarot',
@@ -116,6 +122,11 @@ const provider: ProviderStrings = {
   suitDominates: (suit, count, total) =>
     `${suit} dominate (${count} of ${total}).`,
   mostlyReversed: 'Mostly reversed: blocked or internalised energy.',
+  suitRun: (suit, cards) => `A run in ${suit}: ${and(cards)}.`,
+  modalityDominates: (modality, count, total) =>
+    `${cap(modality)} signs dominate (${count} of ${total} cards in a sign): ${MODALITY_SENSE[modality]}.`,
+  signOpposition: (a, aCards, b, bCards) =>
+    `${cap(a)} opposes ${cap(b)}: ${and(aCards)} face${aCards.length === 1 ? 's' : ''} ${and(bCards)}.`,
   numberRepeats: (number, cards) =>
     number > 10
       ? `The rank of ${COURT_RANKS[number - 11] ?? number} repeats: ${and(cards)}.`

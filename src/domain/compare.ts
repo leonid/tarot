@@ -6,6 +6,9 @@ import {
   longitude,
   signElement,
   signIndex,
+  signModality,
+  SIGNS,
+  type Modality,
   type Planet,
   type Sign,
 } from './zodiac';
@@ -87,6 +90,33 @@ export function compare(ctx: ReadingContext): Comparison {
     facts.push({ kind: 'planet-link', planet, cardIds });
   for (const [sign, cardIds] of group(signOf))
     facts.push({ kind: 'sign-link', sign, cardIds });
+
+  // Modality and oppositions among cards that sit in a sign.
+  const bySign = new Map<Sign, string[]>();
+  for (const i of items) {
+    const s = signOf(i.c);
+    if (s) bySign.set(s, [...(bySign.get(s) ?? []), i.card.id]);
+  }
+  const inSign = [...bySign.values()].reduce((n, ids) => n + ids.length, 0);
+  const modalities = new Map<Modality, number>();
+  for (const [s, ids] of bySign) {
+    const m = signModality(s);
+    modalities.set(m, (modalities.get(m) ?? 0) + ids.length);
+  }
+  for (const [modality, count] of modalities)
+    if (count >= 2 && count * 2 > inSign)
+      facts.push({
+        kind: 'modality-dominates',
+        modality,
+        count,
+        total: inSign,
+      });
+  for (let a = 0; a < 6; a++) {
+    const [x, y] = [SIGNS[a]!, SIGNS[a + 6]!];
+    const [xs, ys] = [bySign.get(x), bySign.get(y)];
+    if (xs && ys)
+      facts.push({ kind: 'sign-opposition', signs: [x, y], cardIds: [xs, ys] });
+  }
 
   // Court cards: sub-element echoes and zodiac spans.
   for (const court of items) {
@@ -208,6 +238,26 @@ function structure(ctx: ReadingContext): Fact[] {
   for (const [root, { ids, major }] of byRoot)
     if (major && ids.length >= 2)
       out.push({ kind: 'number-family', root, cardIds: ids });
+
+  // Runs: three or more consecutive pips of one suit.
+  for (const suit of suitCounts.keys()) {
+    const pips = cards
+      .filter((c) => c.suit === suit && c.number <= 10)
+      .sort((a, b) => a.number - b.number);
+    let run: Card[] = [];
+    const flush = () => {
+      if (run.length >= 3)
+        out.push({ kind: 'suit-run', suit, cardIds: run.map((c) => c.id) });
+    };
+    for (const c of pips) {
+      if (run.length && c.number !== run[run.length - 1]!.number + 1) {
+        flush();
+        run = [];
+      }
+      run.push(c);
+    }
+    flush();
+  }
 
   const reversed = ctx.placements.filter((p) => p.orientation === 'reversed');
   if (reversed.length * 2 > ctx.placements.length)

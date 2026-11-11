@@ -3,8 +3,10 @@
 exports[`relation text, 'en' > cups-01-ace cups-02-two cups-03-three 1`] = `
 [
   "cups dominate (3 of 3).",
+  "A run in cups: Ace of Cups, Two of Cups and Three of Cups.",
   "Water dominates (3 of 3 cards with an element).",
   "Cancer links Two of Cups and Three of Cups.",
+  "Cardinal signs dominate (2 of 2 cards in a sign): things are starting.",
 ]
 `;
 
@@ -27,6 +29,7 @@ exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 2`] = `
   "The number five repeats: Five of Swords and Five of Cups.",
   "Mars links Ten of Cups, The Tower and Five of Cups.",
   "Scorpio links Death and Five of Cups.",
+  "Fixed signs dominate (3 of 5 cards in a sign): things are holding.",
   "Queen of Wands (Water of Fire) echoes water in Death, Ace of Cups, Ten of Cups and Five of Cups.",
   "Ten of Cups and Three of Wands fall within the span of Queen of Wands.",
   "King of Pentacles (Air of Earth) echoes air in The Fool and Five of Swords.",
@@ -50,6 +53,7 @@ exports[`relation text, 'en' > major-13-death cups-06-six swords-01-ace 1`] = `
 [
   "Water dominates (2 of 3 cards with an element).",
   "Scorpio links Death and Six of Cups.",
+  "Fixed signs dominate (2 of 2 cards in a sign): things are holding.",
   "Water against air: Death and Six of Cups conflict with Ace of Swords.",
 ]
 `;
@@ -110,8 +114,10 @@ exports[`relation text, 'en' > wands-13-queen cups-10-ten wands-03-three 1`] = `
 exports[`relation text, 'ru' > cups-01-ace cups-02-two cups-03-three 1`] = `
 [
   "Преобладают Кубки (3 из 3).",
+  "Последовательность в масти Кубков: Туз Кубков, Двойка Кубков и Тройка Кубков.",
   "Преобладает стихия воды (3 из 3 карт со стихией).",
   "Знак Рак связывает карты: Двойка Кубков и Тройка Кубков.",
+  "Преобладают кардинальные знаки (2 из 2 карт со знаком): что-то начинается.",
 ]
 `;
 
@@ -134,6 +140,7 @@ exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 2`] = `
   "Повторяется число 5: Пятёрка Мечей и Пятёрка Кубков.",
   "Планета Марс связывает карты: Десятка Кубков, Башня и Пятёрка Кубков.",
   "Знак Скорпион связывает карты: Смерть и Пятёрка Кубков.",
+  "Преобладают фиксированные знаки (3 из 5 карт со знаком): что-то удерживается.",
   "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Смерть, Туз Кубков, Десятка Кубков и Пятёрка Кубков.",
   "Десятка Кубков и Тройка Жезлов попадают в зодиакальный диапазон карты «Королева Жезлов».",
   "Король Пентаклей (Воздух земли) перекликается со стихией воздуха в картах: Шут и Пятёрка Мечей.",
@@ -157,6 +164,7 @@ exports[`relation text, 'ru' > major-13-death cups-06-six swords-01-ace 1`] = `
 [
   "Преобладает стихия воды (2 из 3 карт со стихией).",
   "Знак Скорпион связывает карты: Смерть и Шестёрка Кубков.",
+  "Преобладают фиксированные знаки (2 из 2 карт со знаком): что-то удерживается.",
   "Вода и Воздух конфликтуют. Вода: Смерть и Шестёрка Кубков. Воздух: Туз Мечей.",
 ]
 `;
