@@ -33,6 +33,6 @@ End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and se
 The plan, with current status at the top, is `docs/research/full-app-plan.md`; tasks are issues in the GitHub repo. In short:
 
 1. Done: hardening (M1) and the text and structure split (M2).
-2. Public-domain card images and click-to-place are done; touch and first deploy remain (M3).
+2. Public-domain card images and click-to-place are done; first deploy remains (M3); touch drag is press-and-hold.
 3. LLM interpretation behind a small proxy (M4).
 4. Journal, more spreads, daily card (M5); more content and locales (M6); PWA (M7).

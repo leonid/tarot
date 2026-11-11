@@ -10,6 +10,13 @@ Needs Node >= 20.19 (`.nvmrc` says 22); Vite 8 will not install its native bindi
 - `npm run typecheck`, `npm run lint`, `npm test`
 - `npm run format`
 
+## Workflow (dev rule)
+
+- One GitHub issue = one new branch off `main` (`m3.11-touch` style) = one pull request. Never commit to `main` directly.
+- The PR body says `Closes #N`, so merging marks the issue resolved. Merge only after CI is green.
+- When an issue is done, make sure it is closed as completed (resolved) with a comment saying what was proved.
+- Pushes and merges happen only when the user says so ("push", "go").
+
 ## Layout
 
 - `src/domain/`: pure TypeScript (types, seeded RNG, deal, validation, elements, interpretation contract, fallback provider). **No React, Zustand or dnd-kit imports**; ESLint enforces this. Same for `src/content/`.
