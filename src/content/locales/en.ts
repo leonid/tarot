@@ -57,6 +57,13 @@ const ui: UiMessages = {
   interpretationFailed: 'The interpretation could not be made.',
   tryAgain: 'Try again',
   updateInterpretation: 'Update for the new question',
+  aiToggle: 'Write the reading with AI',
+  aiNote:
+    'Off by default. When on, your question and the cards are sent to our server and processed by Anthropic (Claude), which may keep them for up to 30 days. For reflection and entertainment, not advice. If the service is unavailable the built-in reader writes the reading instead.',
+  sourceAi: 'Written by AI (Claude)',
+  sourceBuiltIn: 'Written by the built-in reader',
+  sourceFellBack:
+    'The AI service did not answer, so the built-in reader wrote this.',
   hinge: 'Hinge',
   hingeTitle: 'Most connected to the other cards',
   hingeLabel: 'Hinge:',

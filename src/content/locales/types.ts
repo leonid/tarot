@@ -48,6 +48,16 @@ export interface UiMessages {
   interpretationFailed: string;
   tryAgain: string;
   updateInterpretation: string;
+  /** Opt-in to the AI reader; off by default. */
+  aiToggle: string;
+  /** What is sent, who processes it and for how long. Shown beside the toggle. */
+  aiNote: string;
+  /** Label over a reading written by the AI. */
+  sourceAi: string;
+  /** Label over a reading written by the built-in reader. */
+  sourceBuiltIn: string;
+  /** Label when the AI was on but could not answer. */
+  sourceFellBack: string;
   hinge: string;
   hingeTitle: string;
   hingeLabel: string;
