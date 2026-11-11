@@ -26,3 +26,7 @@ dist-ssr
 # Playwright
 playwright-report
 test-results
+
+# Original card scans, downloaded by scripts/optimise-images.mjs
+.cache
+graphify-out

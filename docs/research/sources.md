@@ -92,7 +92,25 @@ the check date (the UTC day).
   malformed, or a card is paired with the wrong file.
 - Rerun the script before a release that changes the images, or if Commons
   flags a file. It makes three API requests a few seconds apart.
-- No image file is in the repository yet; downloading and optimising is M3.4.
+- Optimised copies are made by M3.4 (see "Image files" below).
+
+### Image files (M3.4, 2026-11-11)
+
+`npm run images` (`node scripts/optimise-images.mjs`, Node 22.18+) downloads
+each original named in the manifest into `.cache/card-images/` (ignored by
+git, about 21 MB, one request at a time; Commons may ask for waits of ten
+minutes, which the script obeys), trims the scanner background, stretches each
+card to one shape (the scans differ from it by under 3%) and writes
+`public/cards/rws-1909/<cardId>-<width>.webp` at 240 and 480 px wide.
+
+- Total: 6.84 MB for 156 files, budget 8 MB (`src/content/images/files.ts`).
+  The script and `files.test.ts` both enforce the budget.
+- Settings: WebP quality 65 (240 px) and 60 (480 px). The scans are grainy;
+  quality 78 at the same widths came to 9.3 MB.
+- The 480 px size is for large cards and sharp screens; the 240 px size serves
+  a board card at 2x. Other widths can be added to `IMAGE_WIDTHS`.
+- The files are the licence-checked originals, resized. Attribution still
+  follows the manifest.
 
 ## Open items
 
