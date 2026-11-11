@@ -25,7 +25,7 @@ export function ReadingView({
   const chosen = useProvider();
   const provider = given ?? chosen;
   const { deckId, spreadId, question, placements } = useReadingStore();
-  const { t, locale, getDeck, getSpread, meanings, formula } = useI18n();
+  const { t, locale, getDeck, getSpread, meanings, formula, waite } = useI18n();
   const deck = getDeck(deckId);
   const spread = getSpread(spreadId);
   const complete =
@@ -135,6 +135,18 @@ export function ReadingView({
                               <dt>{t.schoolStructure}</dt>
                               <dd>{formula(card, deck)}</dd>
                             </div>
+                            {waite[card.id] && (
+                              <div>
+                                <dt>{t.schoolWaite}</dt>
+                                <dd>
+                                  {
+                                    waite[card.id]![
+                                      placed?.orientation ?? 'upright'
+                                    ]
+                                  }
+                                </dd>
+                              </div>
+                            )}
                           </dl>
                         </details>
                       )}

@@ -4,6 +4,7 @@ import type { Modality } from '../../domain/zodiac';
 import { decks } from '../decks';
 import { ruAlts } from './ru-alts';
 import { cardFormula } from './ru-formula';
+import { ruWaite } from './ru-waite';
 import { ruMeanings } from './ru-meanings';
 import { and, elementGen, elementNom, planetName, signName } from './ru-terms';
 import type { LocaleBundle, SpreadText, UiMessages } from './types';
@@ -89,6 +90,7 @@ const ui: UiMessages = {
     'ИИ-сервис не ответил, поэтому толкование составил встроенный алгоритм.',
   otherSchools: 'Другие прочтения этой карты',
   schoolStructure: 'По структуре',
+  schoolWaite: 'Уэйт, 1911',
   hinge: 'Ось',
   hingeTitle: 'Больше всего связана с остальными картами',
   hingeLabel: 'Ось:',
@@ -270,4 +272,5 @@ export const ru: LocaleBundle = {
   alts: ruAlts,
   spreads,
   meanings: ruMeanings,
+  waite: ruWaite,
 };

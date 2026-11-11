@@ -3,6 +3,7 @@ import type {
   CardMeaning,
   Deck,
   MeaningTable,
+  SchoolTable,
   Spread,
 } from '../../domain/types';
 import { altEnglish } from '../images/alt';
@@ -62,4 +63,12 @@ export function localizeMeanings(
   const merged: Record<string, CardMeaning> = { ...base };
   for (const [id, m] of Object.entries(locale.meanings)) merged[id] = m;
   return merged;
+}
+
+/** A school's table with the locale's entries replacing English card by card. */
+export function localizeSchool(
+  base: SchoolTable,
+  local: SchoolTable | undefined,
+): SchoolTable {
+  return local ? { ...base, ...local } : base;
 }

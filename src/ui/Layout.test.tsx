@@ -1,3 +1,4 @@
+import { waiteMeanings } from '../content/meanings/waite';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -100,5 +101,22 @@ describe('other schools on a card (M6.12)', () => {
       );
       expect(dt.nextElementSibling?.textContent).toMatch(/Number|×|:/);
     }
+  });
+});
+
+describe('Waite 1911 beside the modern meaning (M6.13)', () => {
+  it("gives each card Waite's meaning for the way it fell", async () => {
+    render(<ReadingView provider={fallbackProvider} />);
+    act(() => store().dealRandom(1));
+    await screen.findByText(/3 cards were read/);
+    const labels = screen.getAllByText('Waite, 1911');
+    expect(labels).toHaveLength(3);
+    const { placements } = store();
+    labels.forEach((dt, i) => {
+      const p = placements[i]!;
+      expect(dt.nextElementSibling).toHaveTextContent(
+        waiteMeanings[p.cardId]![p.orientation],
+      );
+    });
   });
 });

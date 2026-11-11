@@ -8,6 +8,7 @@ export {
   cardAlt,
   localizeDeck,
   localizeMeanings,
+  localizeSchool,
   localizeSpread,
 } from './localize';
 

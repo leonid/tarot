@@ -87,6 +87,7 @@ const ui: UiMessages = {
     'The AI service did not answer, so the built-in reader wrote this.',
   otherSchools: 'Other readings of this card',
   schoolStructure: 'By structure',
+  schoolWaite: 'Waite, 1911',
   hinge: 'Hinge',
   hingeTitle: 'Most connected to the other cards',
   hingeLabel: 'Hinge:',

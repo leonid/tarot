@@ -2,6 +2,7 @@ import type { CardMeaning } from '../../domain/types';
 import { decks } from '../decks';
 import { altEnglish } from '../images/alt';
 import { meanings } from '../meanings';
+import { waiteMeanings } from '../meanings/waite';
 import { spreads } from '../spreads';
 import { en } from './en';
 import type { LocaleBundle, SpreadText } from './types';
@@ -75,4 +76,5 @@ export const pseudo: LocaleBundle = {
   alts: altText,
   spreads: spreadText,
   meanings: meaningText,
+  waite: wrapAll(waiteMeanings),
 };

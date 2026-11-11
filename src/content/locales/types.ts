@@ -1,4 +1,4 @@
-import type { CardMeaning, Spread } from '../../domain/types';
+import type { CardMeaning, SchoolTable, Spread } from '../../domain/types';
 import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
 
@@ -62,6 +62,8 @@ export interface UiMessages {
   otherSchools: string;
   /** Label of the reading built from the card's parts (the card formula). */
   schoolStructure: string;
+  /** Label of Waite's own 1911 divinatory meaning. */
+  schoolWaite: string;
   hinge: string;
   hingeTitle: string;
   hingeLabel: string;
@@ -113,6 +115,8 @@ export interface LocaleBundle {
   alts?: Record<string, string>;
   spreads?: Record<string, SpreadText>;
   meanings?: Record<string, CardMeaning>;
+  /** Waite's 1911 meanings in this language (base: content/meanings/waite.ts). */
+  waite?: SchoolTable;
 }
 
 export type SpreadLike = Pick<Spread, 'id'>;
