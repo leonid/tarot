@@ -12,6 +12,7 @@ import { Field, Toggle } from '../../ui/kit';
 import { ReadingView } from '../../ui/Layout';
 import { useReadingStore } from '../store';
 import { CardPalette } from './CardPalette';
+import { slotKeyboardCoordinates } from './keyboardCoordinates';
 
 /**
  * Setup mode. Drag a card from the palette onto a slot; the select list under
@@ -25,7 +26,7 @@ export function SetupView() {
   // A few pixels of movement start a drag; a plain click selects instead.
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: slotKeyboardCoordinates }),
   );
   const deck = getDeck(deckId);
   const spread = getSpread(spreadId);
