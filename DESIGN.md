@@ -1,6 +1,6 @@
 # Design system
 
-Status: **proposal, provisional.** The project had no design language before this file (maturity L0: no `DESIGN.md`, no `.ds-context.md`; today's `src/styles.css` is 100 lines of unthemed defaults). Every value below was chosen here, not extracted from an existing system, and is meant to be reconciled once it is built in code (task D1). Contrast ratios were computed, not eyeballed (see Colour).
+Status: **built and reconciled (D10, 2026-11-11).** This file started as a proposal written before any code (maturity L0). Every token, type, breakpoint and component below now exists in `src/ui/tokens.css`, `src/ui/fonts.css`, `src/styles.css` and `src/ui/kit.*`, and a `/design-review` pass at maturity L1 (this file, no `.ds-context.md`, no Figma) found the doc and the build in agreement. Where they differ, the code wins and this file says so. Contrast ratios are enforced by `src/ui/contrast.test.ts` and an axe-core e2e check (`e2e/a11y.spec.ts`), not by eye.
 
 Direction in one line: **a quiet reading room, not a fortune-teller's shop.** The app is a reasoning tool (decompose, compare, interpret) with a contemplative mood. So: calm surfaces, high legibility, one accent, and the card art, once it exists, carries the mystery. No stars, moons or gradients as decoration.
 
@@ -16,7 +16,7 @@ Direction in one line: **a quiet reading room, not a fortune-teller's shop.** Th
 
 All tokens are CSS custom properties on `:root`, redefined for dark under `@media (prefers-color-scheme: dark)` and for an explicit override on `:root[data-theme]` (the manual picker, built in D6: System, Light or Dark, saved under `tarot.theme.v1`; "System" removes the attribute; an inline script in `index.html` applies a saved choice before first paint). Components reference **semantic** tokens only; raw hex lives in one file.
 
-### Colour (provisional)
+### Colour
 
 | Token               | Light     | Dark      | Use                                              |
 | ------------------- | --------- | --------- | ------------------------------------------------ |
@@ -39,7 +39,7 @@ Computed contrast (WCAG formula), foreground on `--surface`:
 - Light: text 15.9, muted 7.0, accent 10.5, gold 6.7, danger 7.2, fire 6.1, water 6.9, air 6.8, earth 6.7; border on `--bg` 3.3; white on accent 11.0.
 - Dark: text 14.5, muted 7.7, accent 9.2, gold 9.6, danger 7.7, fire 7.5, water 8.2, air 11.1, earth 9.4; border on `--bg` 4.2; dark on accent 10.0.
 
-All text pairs clear 4.5:1 and the border clears 3:1 in both themes. These do not cover text drawn **over card images**; that needs its own check once images exist (M3.12).
+All text pairs clear 4.5:1 and the border clears 3:1 in both themes. Card captions are real text on `--surface`, not drawn over the images, so the pairs above cover them. Axe-core (WCAG 2.2 AA) passes on both themes in Simulate and Setup (M3.12).
 
 ### Type
 
@@ -52,7 +52,7 @@ All text pairs clear 4.5:1 and the border clears 3:1 in both themes. These do no
 
 - Space scale (rem): 0.25, 0.5, 0.75, 1, 1.5, 2, 3. Page gutter 1rem on phones (spec: 16px side gutter), content max width 52rem as now.
 - Radius: 6px controls and slots, 999px chips. Borders over shadows; a single soft shadow token `--lift` only for a card being dragged.
-- Target size: interactive controls at least 44 by 44 CSS px on touch layouts (the WCAG 2.5.8 AA minimum is 24 by 24; the plan marks that figure unverified, re-check on w3.org). 44 is the stricter comfort target.
+- Target size: `--target` is 2rem (32px) by default and 2.75rem (44px) under `(pointer: coarse)`; controls take it as `min-height`. The stricter 44px figure applies on touch layouts (the WCAG 2.5.8 AA minimum is 24 by 24; the plan marks that figure unverified, re-check on w3.org). 44 is the stricter comfort target.
 - Focus: 3px `--accent` outline with 2px offset on every interactive element; never removed.
 
 ### Motion
@@ -61,15 +61,15 @@ Two durations (120ms state changes, 240ms card flip or move), one easing. All mo
 
 ## Component inventory
 
-Derived from what is in `src/` today; names are the proposed shared components in `src/ui/`.
+Shared components live in `src/ui/`; the table lists what each is built from.
 
 | Component           | Exists as                            | States and variants                                                             | Notes                                                                                                                                                                              |
 | ------------------- | ------------------------------------ | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Button              | bare `<button>`                      | primary, secondary, danger; default, hover, focus, disabled, busy               | "Shuffle and deal" is primary; "Delete" danger                                                                                                                                     |
 | Field               | label + input/select (`Controls`)    | default, focus, disabled, invalid                                               | Label above; no placeholder-as-label                                                                                                                                               |
 | Toggle              | checkbox (Reversals, Reversed)       | on, off, disabled                                                               | Native input restyled, not replaced                                                                                                                                                |
-| Tabs                | `role="tablist"` (mode)              | selected, focus                                                                 | Selected is bold today; needs an indicator that is not weight alone                                                                                                                |
-| Slot                | `ui/SpreadBoard.tsx`                 | empty, filled, drag-over, rotated, hinge                                        | The rotated slot rotates its label too (plan gap 8); fix in D4                                                                                                                     |
+| Tabs                | `role="tablist"` (mode)              | selected, focus                                                                 | Selected tab is filled with `--accent` (not weight alone)                                                                                                                          |
+| Slot                | `ui/SpreadBoard.tsx`                 | empty, filled, drag-over, rotated, hinge                                        | Positions that share a cell (Celtic Cross crossing card) are stacked, never rotated, so labels stay horizontal                                                                     |
 | CardFace            | text only                            | image or typographic fallback; upright, reversed; loading                       | One component for slot, palette and history; image optional per deck                                                                                                               |
 | PaletteCard         | `features/setup/CardPalette.tsx`     | idle, dragging, placed (hidden)                                                 | Uses compact `CardFace` (D7). Drag handle on touch (M3.11)                                                                                                                         |
 | Chip / Badge        | `ui/kit.tsx` (`Chip`, `ElementChip`) | neutral, hinge, element (fire/water/air/earth); provider (rules / AI) not built | Built in D5. Always a word; elements add a triangle glyph (`ElementIcon`); colour only reinforces. Element chips are not shown in the reading yet                                  |
@@ -102,7 +102,7 @@ Page furniture (built 2026-11-10):
 - **Save and share:** set apart by a top rule.
 - **Phones:** card width 5.5rem so position labels do not break mid-word.
 
-Not built yet: the palette as a side drawer on wide screens and as a scroll strip on phones (M3.11); the palette is still a wrapping list, now of compact `CardFace`s.
+Not built, and no longer planned: the palette as a side drawer or scroll strip. The palette stays a bordered, self-scrolling wrapping list of compact `CardFace`s; touch drag is press-and-hold (M3.11), so swipes still scroll it.
 
 ## Imagery rule
 
@@ -110,7 +110,7 @@ Card art arrives in M3 (public-domain Rider-Waite-Smith scans, per-file licence 
 
 ## Decisions to clarify
 
-**Decided 2026-11-10: the owner accepted the recommended option (the bold one, option A) in all 8 rows.** Tracked and closed as issues; colour and type values stay provisional until D1 and D2.
+**Decided 2026-11-10: the owner accepted the recommended option (the bold one, option A) in all 8 rows.** Tracked and closed as issues; colour and type were reconciled with the built values in D10.
 
 | #   | Decision                    | Options                                                                                                                                                                             | Recommendation and reason                                                                                                                                                      |
 | --- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
