@@ -1,0 +1,9 @@
+# Cloudflare Worker config. Holds no secrets: the API key is set with
+# `npx wrangler secret put ANTHROPIC_API_KEY` (see proxy/README.md).
+name = "tarot-proxy"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+
+[vars]
+# Comma-separated origins allowed to call the proxy. Replace with the real site.
+ALLOWED_ORIGINS = "https://OWNER.github.io"

@@ -3,6 +3,8 @@ import { MAX_BODY_BYTES, parseRequest, type InterpretRequest } from './request';
 export interface Env {
   /** Comma-separated origins allowed to call the proxy, e.g. "https://owner.github.io". */
   ALLOWED_ORIGINS?: string;
+  /** Secret. Set with `wrangler secret put`; never in the repo or the client. */
+  ANTHROPIC_API_KEY?: string;
 }
 
 /** The upstream call (M4.6). Only ever reached with a validated request. */
