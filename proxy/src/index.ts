@@ -1,6 +1,9 @@
 import { handle, type Env } from './handler';
+import { makeInterpret } from './upstream';
 
-/** Cloudflare Worker entry. Deploy config and secrets come in M4.3. */
+const interpret = makeInterpret();
+
+/** Cloudflare Worker entry. Deploy config and secrets: see proxy/README.md. */
 export default {
-  fetch: (request: Request, env: Env) => handle(request, env),
+  fetch: (request: Request, env: Env) => handle(request, env, interpret),
 };
