@@ -98,13 +98,17 @@ export function compare(ctx: ReadingContext): Comparison {
     if (s) bySign.set(s, [...(bySign.get(s) ?? []), i.card.id]);
   }
   const inSign = [...bySign.values()].reduce((n, ids) => n + ids.length, 0);
-  const modalities = new Map<Modality, number>();
+  // One sign alone is already a sign-link, so a modality needs two signs.
+  const modalities = new Map<Modality, { count: number; signs: number }>();
   for (const [s, ids] of bySign) {
-    const m = signModality(s);
-    modalities.set(m, (modalities.get(m) ?? 0) + ids.length);
+    const m = modalities.get(signModality(s)) ?? { count: 0, signs: 0 };
+    modalities.set(signModality(s), {
+      count: m.count + ids.length,
+      signs: m.signs + 1,
+    });
   }
-  for (const [modality, count] of modalities)
-    if (count >= 2 && count * 2 > inSign)
+  for (const [modality, { count, signs }] of modalities)
+    if (signs >= 2 && count * 2 > inSign)
       facts.push({
         kind: 'modality-dominates',
         modality,

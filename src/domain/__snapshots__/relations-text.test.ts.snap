@@ -6,7 +6,6 @@ exports[`relation text, 'en' > cups-01-ace cups-02-two cups-03-three 1`] = `
   "A run in cups: Ace of Cups, Two of Cups and Three of Cups.",
   "Water dominates (3 of 3 cards with an element).",
   "Cancer links Two of Cups and Three of Cups.",
-  "Cardinal signs dominate (2 of 2 cards in a sign): things are starting.",
 ]
 `;
 
@@ -53,7 +52,6 @@ exports[`relation text, 'en' > major-13-death cups-06-six swords-01-ace 1`] = `
 [
   "Water dominates (2 of 3 cards with an element).",
   "Scorpio links Death and Six of Cups.",
-  "Fixed signs dominate (2 of 2 cards in a sign): things are holding.",
   "Water against air: Death and Six of Cups conflict with Ace of Swords.",
 ]
 `;
@@ -117,7 +115,6 @@ exports[`relation text, 'ru' > cups-01-ace cups-02-two cups-03-three 1`] = `
   "Последовательность в масти Кубков: Туз Кубков, Двойка Кубков и Тройка Кубков.",
   "Преобладает стихия воды (3 из 3 карт со стихией).",
   "Знак Рак связывает карты: Двойка Кубков и Тройка Кубков.",
-  "Преобладают кардинальные знаки (2 из 2 карт со знаком): что-то начинается.",
 ]
 `;
 
@@ -164,7 +161,6 @@ exports[`relation text, 'ru' > major-13-death cups-06-six swords-01-ace 1`] = `
 [
   "Преобладает стихия воды (2 из 3 карт со стихией).",
   "Знак Скорпион связывает карты: Смерть и Шестёрка Кубков.",
-  "Преобладают фиксированные знаки (2 из 2 карт со знаком): что-то удерживается.",
   "Вода и Воздух конфликтуют. Вода: Смерть и Шестёрка Кубков. Воздух: Туз Мечей.",
 ]
 `;
