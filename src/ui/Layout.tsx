@@ -35,6 +35,7 @@ export function ReadingView({
     complete
       ? {
           question,
+          locale: locale.code,
           deck,
           spread,
           placements,
