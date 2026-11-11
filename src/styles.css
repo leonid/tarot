@@ -150,6 +150,22 @@ body {
 .suit-pentacles {
   color: var(--earth);
 }
+.card-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+.card-image-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+.card-image.reversed .card-image-img {
+  transform: rotate(180deg);
+}
 .card-face.reversed .suit-icon {
   transform: rotate(180deg);
 }
