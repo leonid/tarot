@@ -23,6 +23,7 @@ Needs Node >= 20.19 (`.nvmrc` says 22); Vite 8 will not install its native bindi
 - `src/content/`: decks, spreads, base meanings, all as typed data.
 - `src/features/`: `simulate/`, `setup/`, and the Zustand store.
 - `src/ui/`: shared components.
+- `proxy/`: the LLM proxy (Cloudflare Worker, M4). A pure `handle(request, env, interpret)` that rejects bad input before any upstream call. May import `src/domain/` and `src/content/`, never React or `src/ui/`.
 
 ## Conventions
 

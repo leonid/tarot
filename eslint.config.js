@@ -14,7 +14,7 @@ export default tseslint.config(
   },
   {
     // The domain layer must stay framework-free so it can be extracted later.
-    files: ['src/domain/**/*.ts', 'src/content/**/*.ts'],
+    files: ['src/domain/**/*.ts', 'src/content/**/*.ts', 'proxy/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
