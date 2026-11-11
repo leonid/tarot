@@ -30,3 +30,7 @@ test-results
 # Original card scans, downloaded by scripts/optimise-images.mjs
 .cache
 graphify-out
+
+# Local secrets for the proxy (wrangler dev); never commit
+.dev.vars
+.wrangler
