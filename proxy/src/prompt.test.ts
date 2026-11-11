@@ -32,6 +32,40 @@ const fixtures: [string, InterpretRequest][] = [
   ['Celtic Cross', request('celtic-cross', 42, 'What is next for my work?')],
 ];
 
+const withLocale = (req: InterpretRequest, locale?: string) =>
+  ({ ...req, ...(locale ? { locale } : {}) }) as InterpretRequest;
+
+describe('prompt per locale (M4.10)', () => {
+  const base = request('three-card', 7, 'Should I move?');
+
+  it('snapshot: Russian', () => {
+    expect(buildPrompt(withLocale(base, 'ru'))).toMatchSnapshot();
+  });
+
+  it("asks for the locale's language and gives localized names", () => {
+    const { system, user } = buildPrompt(withLocale(base, 'ru'));
+    expect(system).toContain('Write in Russian');
+    expect(user).toMatch(/"cardName":"[^"]*[А-Яа-я]/);
+    expect(user).toMatch(/"positionLabel":"[А-Яа-я]/);
+    expect(user).toMatch(/"summary":"[^"]*[А-Яа-я]/);
+  });
+
+  it('treats ru-RU like ru', () => {
+    expect(buildPrompt(withLocale(base, 'ru-RU'))).toEqual(
+      buildPrompt(withLocale(base, 'ru')),
+    );
+  });
+
+  it.each(['xx', 'en-XA', 'klingon', ''])(
+    'falls back to English for the unknown locale %j',
+    (code) => {
+      const english = buildPrompt(base);
+      expect(buildPrompt(withLocale(base, code))).toEqual(english);
+      expect(english.system).toContain('Write in English');
+    },
+  );
+});
+
 describe('prompt builder', () => {
   it.each(fixtures)('snapshot: %s', (_n, req) => {
     expect(buildPrompt(req)).toMatchSnapshot();

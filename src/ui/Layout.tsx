@@ -1,5 +1,5 @@
-import { fallbackProvider } from '../domain/fallback';
 import type { InterpretationProvider } from '../domain/interpretation';
+import type { Interpreted } from '../domain/llmProvider';
 import { correspondences } from '../content/correspondences';
 import { useReadingStore } from '../features/store';
 import type { Card } from '../domain/types';
@@ -7,11 +7,12 @@ import { SpreadBoard } from './SpreadBoard';
 import { useI18n } from './i18n';
 import { Button } from './kit';
 import { useInterpretation } from './useInterpretation';
+import { useProvider } from './useProvider';
 
 /** Renders the spread board with its cards and the interpretation. */
 export function ReadingView({
   droppable = false,
-  provider = fallbackProvider,
+  provider: given,
   armedCard,
   onSlotClick,
 }: {
@@ -21,6 +22,8 @@ export function ReadingView({
   onSlotClick?: (positionId: string) => void;
   provider?: InterpretationProvider;
 }) {
+  const chosen = useProvider();
+  const provider = given ?? chosen;
   const { deckId, spreadId, question, placements } = useReadingStore();
   const { t, locale, getDeck, getSpread, meanings } = useI18n();
   const deck = getDeck(deckId);
@@ -32,6 +35,7 @@ export function ReadingView({
     complete
       ? {
           question,
+          locale: locale.code,
           deck,
           spread,
           placements,
@@ -41,7 +45,13 @@ export function ReadingView({
         }
       : null,
     complete
-      ? JSON.stringify([deck.id, spread.id, locale.code, placements])
+      ? JSON.stringify([
+          deck.id,
+          spread.id,
+          locale.code,
+          placements,
+          provider.id,
+        ])
       : '',
   );
 
@@ -82,6 +92,15 @@ export function ReadingView({
                 {t.updateInterpretation}
               </Button>
             </div>
+          )}
+          {result && (
+            <p className="meta source" data-source={sourceOf(result)}>
+              {sourceOf(result) === 'llm'
+                ? t.sourceAi
+                : provider.id === 'llm'
+                  ? t.sourceFellBack
+                  : t.sourceBuiltIn}
+            </p>
           )}
           {result && <p className="reading-summary">{result.summary}</p>}
           {result && (
@@ -139,4 +158,9 @@ export function ReadingView({
       )}
     </section>
   );
+}
+
+/** Who wrote the result: only the LLM provider tags it; anything else is built in. */
+function sourceOf(result: object): 'llm' | 'fallback' {
+  return (result as Partial<Interpreted>).source === 'llm' ? 'llm' : 'fallback';
 }

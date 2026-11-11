@@ -6,6 +6,8 @@ import type { Card, CardMeaning, Deck, PlacedCard, Spread } from './types';
 /** Everything an interpreter needs, with ids already resolved. */
 export interface ReadingContext {
   question: string;
+  /** Language code of the reading's text, sent to the LLM proxy. */
+  locale?: string;
   deck: Deck;
   spread: Spread;
   placements: readonly PlacedCard[];
