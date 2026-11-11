@@ -3,6 +3,7 @@ import type { ProviderStrings } from '../../domain/strings';
 import type { Suit } from '../../domain/types';
 import type { Planet, Sign } from '../../domain/zodiac';
 import { decks } from '../decks';
+import { ruAlts } from './ru-alts';
 import { ruMeanings } from './ru-meanings';
 import type { LocaleBundle, SpreadText, UiMessages } from './types';
 
@@ -268,6 +269,7 @@ export const ru: LocaleBundle = {
     'major-22': 'Только Старшие арканы (22 карты)',
   },
   cards,
+  alts: ruAlts,
   spreads,
   meanings: ruMeanings,
 };

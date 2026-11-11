@@ -88,6 +88,8 @@ export interface LocaleBundle {
   provider: ProviderStrings;
   decks?: Record<string, string>;
   cards?: Record<string, string>;
+  /** What each card's picture shows, by card id (see src/content/images/alt.ts). */
+  alts?: Record<string, string>;
   spreads?: Record<string, SpreadText>;
   meanings?: Record<string, CardMeaning>;
 }

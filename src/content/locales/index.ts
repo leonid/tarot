@@ -1,9 +1,11 @@
 import type {
+  Card,
   CardMeaning,
   Deck,
   MeaningTable,
   Spread,
 } from '../../domain/types';
+import { altEnglish } from '../images/alt';
 import { en } from './en';
 import { pseudo } from './pseudo';
 import { ru } from './ru';
@@ -34,6 +36,16 @@ export function localizeDeck(deck: Deck, locale: LocaleBundle): Deck {
       return name ? { ...c, name } : c;
     }),
   };
+}
+
+/**
+ * Alt text for a card's picture: the (localized) card name and what the
+ * picture shows. English description where the locale has none. `card` should
+ * already carry the localized name (see `localizeDeck`).
+ */
+export function cardAlt(card: Card, locale: LocaleBundle): string {
+  const scene = locale.alts?.[card.id] ?? altEnglish[card.id];
+  return scene ? `${card.name}: ${scene}` : card.name;
 }
 
 /** The spread with text in the locale; positions keep their coordinates. */

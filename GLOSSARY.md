@@ -18,3 +18,4 @@
 - **Fact:** one structural observation about a reading as data (ids and enum values, no text), for example a shared planet, or two conflicting elements with the cards of each. Compare returns facts; a locale's templates render each as a relation sentence.
 - **Hinge card:** the card that most changes the meaning of the others.
 - **DCAS:** Decompose, Compare, Anchor, Synthesize, the interpretation method in `docs/research`.
+- **Card alt text:** the name of a card followed by a description of what its picture shows (the scene, not the meaning). English descriptions are in `src/content/images/alt.ts`; locales override them with `alts`. `cardAlt` and `useI18n().alt` put the localized name in front.

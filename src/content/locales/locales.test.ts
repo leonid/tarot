@@ -5,12 +5,14 @@ import { meanings } from '../meanings';
 import { spreads, threeCard } from '../spreads';
 import {
   DEFAULT_LOCALE,
+  cardAlt,
   getLocale,
   localizeDeck,
   localizeMeanings,
   localizeSpread,
   locales,
 } from '.';
+import { altEnglish } from '../images/alt';
 import { en } from './en';
 import { pseudo } from './pseudo';
 
@@ -85,6 +87,52 @@ describe('translation completeness', () => {
       }
     });
   }
+});
+
+describe('card alt text', () => {
+  const cards = decks[0]!.cards;
+
+  it('has an English description for every card and nothing else', () => {
+    expect(Object.keys(altEnglish).sort()).toEqual(
+      cards.map((c) => c.id).sort(),
+    );
+    for (const c of cards)
+      expect(altEnglish[c.id]!.trim().length).toBeGreaterThan(20);
+  });
+
+  it('leaves the card name out of the description (it is added in front)', () => {
+    for (const c of cards)
+      expect(altEnglish[c.id]!.startsWith(c.name), c.id).toBe(false);
+  });
+
+  it('gives every card a different description', () => {
+    expect(new Set(Object.values(altEnglish)).size).toBe(cards.length);
+  });
+
+  for (const l of locales.filter((x) => x !== en)) {
+    it(`${l.code} describes every card`, () => {
+      expect(Object.keys(l.alts ?? {}).sort()).toEqual(
+        cards.map((c) => c.id).sort(),
+      );
+      for (const c of cards) expect(l.alts![c.id]!.trim(), c.id).not.toBe('');
+    });
+  }
+
+  it('puts the localized name first and falls back to English', () => {
+    const fool = cards[0]!;
+    expect(cardAlt(fool, en)).toBe(`The Fool: ${altEnglish[fool.id]}`);
+    const ru = getLocale('ru');
+    const ruFool = localizeDeck(decks[0]!, ru).cards[0]!;
+    expect(cardAlt(ruFool, ru)).toBe(`${ruFool.name}: ${ru.alts![fool.id]}`);
+    const partial = { ...en, alts: {} };
+    expect(cardAlt(fool, partial)).toBe(cardAlt(fool, en));
+  });
+
+  it('is never empty even for an unknown card', () => {
+    expect(
+      cardAlt({ id: 'x', name: 'Nameless', arcana: 'major', number: 0 }, en),
+    ).toBe('Nameless');
+  });
 });
 
 describe('localization', () => {

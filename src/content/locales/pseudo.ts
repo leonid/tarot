@@ -1,5 +1,6 @@
 import type { CardMeaning } from '../../domain/types';
 import { decks } from '../decks';
+import { altEnglish } from '../images/alt';
 import { meanings } from '../meanings';
 import { spreads } from '../spreads';
 import { en } from './en';
@@ -31,6 +32,9 @@ function wrapAll<T>(value: T): T {
 
 const cardNames = Object.fromEntries(
   decks.flatMap((d) => d.cards.map((c) => [c.id, wrap(c.name)] as const)),
+);
+const altText = Object.fromEntries(
+  Object.entries(altEnglish).map(([id, t]) => [id, wrap(t)]),
 );
 const deckNames = Object.fromEntries(decks.map((d) => [d.id, wrap(d.name)]));
 
@@ -68,6 +72,7 @@ export const pseudo: LocaleBundle = {
   provider: wrapAll(en.provider),
   decks: deckNames,
   cards: cardNames,
+  alts: altText,
   spreads: spreadText,
   meanings: meaningText,
 };
