@@ -61,6 +61,7 @@ describe('Celtic Cross crossing card', () => {
   it('is stacked with Present in one cell and keeps a readable label', () => {
     const { container } = render(
       <SpreadBoard
+        deckId="rws-78"
         spread={celticCross}
         cards={rwsDeck.cards}
         placements={[

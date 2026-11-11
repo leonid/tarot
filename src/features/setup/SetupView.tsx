@@ -63,7 +63,7 @@ export function SetupView() {
   return (
     <DndContext onDragEnd={onDragEnd} accessibility={accessibility}>
       <ReadingView droppable />
-      <CardPalette cards={unplaced} />
+      <CardPalette deckId={deck.id} cards={unplaced} />
       <details className="slot-menus">
         <summary>{t.placeWithMenus}</summary>
         {spread.positions.map((pos) => {

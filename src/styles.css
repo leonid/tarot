@@ -166,6 +166,13 @@ body {
 .card-image.reversed .card-image-img {
   transform: rotate(180deg);
 }
+.card-image.compact .card-image-img {
+  width: var(--thumb-w);
+  flex: none;
+}
+.card-image.compact.reversed .card-face-rev {
+  white-space: nowrap;
+}
 .card-face.reversed .suit-icon {
   transform: rotate(180deg);
 }

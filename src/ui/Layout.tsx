@@ -43,6 +43,7 @@ export function ReadingView({
   return (
     <section className="reading">
       <SpreadBoard
+        deckId={deck.id}
         spread={spread}
         cards={deck.cards}
         placements={placements}

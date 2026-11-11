@@ -6,7 +6,7 @@ A React app for interpreting tarot readings.
 - **Setup:** pick a deck and a spread, then place specific cards in specific positions to analyse a reading.
 - Each card is interpreted by its meaning, its position, and the other cards in the reading.
 
-Status: working app, not yet deployed. Both modes work with 2 decks, 3 spreads, base meanings for all 78 cards and Golden Dawn (Book T) correspondences. A deterministic interpreter reads each card in its position and compares the cards. The interface is in English and Russian (the Russian text is machine-written and awaits native review), with light and dark themes and typographic card faces (no card images yet). Readings can be saved locally and shared as a link (`#r=...`).
+Status: working app, not yet deployed. Both modes work with 2 decks, 3 spreads, base meanings for all 78 cards and Golden Dawn (Book T) correspondences. A deterministic interpreter reads each card in its position and compares the cards. The interface is in English and Russian (the Russian text is machine-written and awaits native review), with light and dark themes and public-domain card images (1909 Roses & Lilies scans) with a typographic fallback. Readings can be saved locally and shared as a link (`#r=...`).
 
 ## Develop
 

@@ -1,10 +1,11 @@
 import { useDroppable } from '@dnd-kit/core';
 import type { Card, PlacedCard, Spread, SpreadPosition } from '../domain/types';
 import { Chip } from './kit';
-import { CardFace } from './CardFace';
+import { CardImage } from './CardImage';
 import { useI18n } from './i18n';
 
 interface Props {
+  deckId: string;
   spread: Spread;
   cards: readonly Card[];
   placements: readonly PlacedCard[];
@@ -16,6 +17,7 @@ interface Props {
 
 /** Lays positions out on a grid using their x/y coordinates. */
 export function SpreadBoard({
+  deckId,
   spread,
   cards,
   placements,
@@ -50,6 +52,7 @@ export function SpreadBoard({
               const placed = placements.find((p) => p.positionId === pos.id);
               const card = cards.find((c) => c.id === placed?.cardId);
               const props = {
+                deckId,
                 pos,
                 card,
                 orientation: placed?.orientation,
@@ -69,6 +72,7 @@ export function SpreadBoard({
 }
 
 interface SlotProps {
+  deckId: string;
   pos: SpreadPosition;
   card?: Card;
   orientation?: PlacedCard['orientation'];
@@ -77,7 +81,15 @@ interface SlotProps {
   hinge?: boolean;
 }
 
-function Slot({ pos, card, orientation, setRef, over, hinge }: SlotProps) {
+function Slot({
+  deckId,
+  pos,
+  card,
+  orientation,
+  setRef,
+  over,
+  hinge,
+}: SlotProps) {
   const { t } = useI18n();
   return (
     <div
@@ -87,7 +99,7 @@ function Slot({ pos, card, orientation, setRef, over, hinge }: SlotProps) {
     >
       <span className="slot-label">{pos.label}</span>
       {card ? (
-        <CardFace card={card} orientation={orientation} />
+        <CardImage deckId={deckId} card={card} orientation={orientation} />
       ) : (
         <span className="slot-empty">{t.slotEmpty}</span>
       )}
