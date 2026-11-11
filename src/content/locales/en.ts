@@ -13,6 +13,20 @@ const and = (items: readonly string[]) =>
 const cardsRead = (n: number) =>
   n === 1 ? 'one card was read' : `${n} cards were read`;
 
+const NUMBER_WORDS = [
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+];
+const COURT_RANKS = ['Page', 'Knight', 'Queen', 'King'];
+
 const ui: UiMessages = {
   appTitle: 'Tarot',
   language: 'Language',
@@ -102,6 +116,14 @@ const provider: ProviderStrings = {
   suitDominates: (suit, count, total) =>
     `${suit} dominate (${count} of ${total}).`,
   mostlyReversed: 'Mostly reversed: blocked or internalised energy.',
+  numberRepeats: (number, cards) =>
+    number > 10
+      ? `The rank of ${COURT_RANKS[number - 11] ?? number} repeats: ${and(cards)}.`
+      : number === 1
+        ? `The Aces repeat: ${and(cards)}.`
+        : `The number ${NUMBER_WORDS[number - 1] ?? number} repeats: ${and(cards)}.`,
+  numberFamily: (root, cards) =>
+    `${and(cards)} share the number ${NUMBER_WORDS[root - 1] ?? root}.`,
   summary: (question, cards) =>
     question
       ? `For the question "${question}", ${cardsRead(cards)}.`

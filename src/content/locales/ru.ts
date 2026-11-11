@@ -68,6 +68,7 @@ const suitGen: Record<Suit, string> = {
   swords: 'Мечей',
   pentacles: 'Пентаклей',
 };
+const courtRank = ['Паж', 'Рыцарь', 'Королева', 'Король'];
 const ui: UiMessages = {
   appTitle: 'Таро',
   language: 'Язык',
@@ -158,6 +159,14 @@ const provider: ProviderStrings = {
     `Преобладают ${suitPlural[suit]} (${count} из ${total}).`,
   mostlyReversed:
     'Преимущественно перевёрнутые карты: заблокированная или обращённая внутрь энергия.',
+  numberRepeats: (number, cards) =>
+    number > 10
+      ? `Повторяется ранг «${courtRank[number - 11] ?? number}»: ${and(cards)}.`
+      : number === 1
+        ? `Повторяются Тузы: ${and(cards)}.`
+        : `Повторяется число ${number}: ${and(cards)}.`,
+  numberFamily: (root, cards) =>
+    `Число ${root} объединяет карты: ${and(cards)}.`,
   summary: (question, cards) =>
     question
       ? `По вопросу «${question}» прочитано карт: ${cards}.`

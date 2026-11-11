@@ -161,7 +161,17 @@ export function compare(ctx: ReadingContext): Comparison {
   return { facts, ...(hingeCardId ? { hingeCardId } : {}) };
 }
 
-/** Facts that need no correspondences: arcana, suit and orientation counts. */
+/**
+ * The single digit a card's number reduces to by adding its digits: 15 gives
+ * 6, 19 gives 10 and then 1. The Fool (0) and court cards have none.
+ */
+export function numberRoot(card: Card): number | undefined {
+  if (card.number < 1 || (card.arcana === 'minor' && card.number > 10))
+    return undefined;
+  return ((card.number - 1) % 9) + 1;
+}
+
+/** Facts that need no correspondences: arcana, suit, number and orientation. */
 function structure(ctx: ReadingContext): Fact[] {
   const out: Fact[] = [];
   const cards = ctx.placements
@@ -178,6 +188,26 @@ function structure(ctx: ReadingContext): Fact[] {
   for (const [suit, count] of suitCounts)
     if (count >= 2 && count * 2 > cards.length)
       out.push({ kind: 'suit-dominates', suit, count, total: cards.length });
+
+  // Repeated numbers among the Minors, then the families a Major joins.
+  const byNumber = new Map<number, string[]>();
+  const byRoot = new Map<number, { ids: string[]; major: boolean }>();
+  for (const c of cards) {
+    if (c.arcana === 'minor')
+      byNumber.set(c.number, [...(byNumber.get(c.number) ?? []), c.id]);
+    const root = numberRoot(c);
+    if (root === undefined) continue;
+    const group = byRoot.get(root) ?? { ids: [], major: false };
+    group.ids.push(c.id);
+    group.major ||= c.arcana === 'major';
+    byRoot.set(root, group);
+  }
+  for (const [number, cardIds] of byNumber)
+    if (cardIds.length >= 2)
+      out.push({ kind: 'number-repeats', number, cardIds });
+  for (const [root, { ids, major }] of byRoot)
+    if (major && ids.length >= 2)
+      out.push({ kind: 'number-family', root, cardIds: ids });
 
   const reversed = ctx.placements.filter((p) => p.orientation === 'reversed');
   if (reversed.length * 2 > ctx.placements.length)

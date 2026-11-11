@@ -292,3 +292,82 @@ describe('renderFact', () => {
     );
   });
 });
+
+describe('compare: number facts (M6.5)', () => {
+  it('two 5s yield a repeated-number fact', () => {
+    const r = compare(ctx(['cups-05-five', 'swords-05-five', 'wands-01-ace']));
+    expect(r.facts).toContainEqual({
+      kind: 'number-repeats',
+      number: 5,
+      cardIds: ['cups-05-five', 'swords-05-five'],
+    });
+  });
+
+  it('two courts of one rank repeat too', () => {
+    const r = compare(ctx(['cups-13-queen', 'wands-13-queen', 'wands-01-ace']));
+    expect(r.facts).toContainEqual({
+      kind: 'number-repeats',
+      number: 13,
+      cardIds: ['cups-13-queen', 'wands-13-queen'],
+    });
+  });
+
+  it('ties a Major to the pips of the number it reduces to', () => {
+    // The Devil is 15, and 1 + 5 = 6: the Lovers and the Sixes are its family.
+    const r = compare(ctx(['major-15-devil', 'cups-06-six', 'wands-01-ace']));
+    expect(r.facts).toContainEqual({
+      kind: 'number-family',
+      root: 6,
+      cardIds: ['major-15-devil', 'cups-06-six'],
+    });
+  });
+
+  it('reduces twice where needed and counts Tens with the Aces', () => {
+    // The Sun is 19: 1 + 9 = 10, 1 + 0 = 1.
+    const r = compare(
+      ctx(['major-19-sun', 'major-01-magician', 'pentacles-10-ten']),
+    );
+    expect(r.facts).toContainEqual({
+      kind: 'number-family',
+      root: 1,
+      cardIds: ['major-19-sun', 'major-01-magician', 'pentacles-10-ten'],
+    });
+  });
+
+  it('leaves the Fool, courts and pip-only groups out of families', () => {
+    expect(
+      kinds(['major-00-fool', 'wands-01-ace', 'cups-10-ten'], false),
+    ).not.toContain('number-family');
+    expect(
+      kinds(['major-04-emperor', 'cups-13-queen', 'wands-02-two'], false),
+    ).not.toContain('number-family');
+  });
+
+  it('a lone number is not a repeat', () => {
+    expect(
+      kinds(['cups-05-five', 'swords-06-six', 'wands-01-ace']),
+    ).not.toContain('number-repeats');
+  });
+
+  it('renders both in English and Russian', () => {
+    const name = (id: string) => findCard(rwsDeck, id)?.name ?? id;
+    const repeat: Fact = {
+      kind: 'number-repeats',
+      number: 5,
+      cardIds: ['cups-05-five', 'swords-05-five'],
+    };
+    const family: Fact = {
+      kind: 'number-family',
+      root: 6,
+      cardIds: ['major-15-devil', 'cups-06-six'],
+    };
+    expect(renderFact(repeat, en.provider, name)).toBe(
+      'The number five repeats: Five of Cups and Five of Swords.',
+    );
+    expect(renderFact(family, en.provider, name)).toBe(
+      'The Devil and Six of Cups share the number six.',
+    );
+    for (const f of [repeat, family])
+      expect(renderFact(f, ru.provider, name)).toMatch(/[а-я]/);
+  });
+});

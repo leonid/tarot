@@ -15,6 +15,14 @@ export type Fact =
   | { kind: 'mostly-reversed' }
   /** One suit holds more than half the cards. */
   | { kind: 'suit-dominates'; suit: Suit; count: number; total: number }
+  /** Two or more Minor cards of one number or court rank (1-14). */
+  | { kind: 'number-repeats'; number: number; cardIds: readonly string[] }
+  /**
+   * Cards whose numbers reduce to one root (1-9) by adding digits, at least
+   * one of them a Major: the Devil (15) with the Lovers (6) and the Sixes.
+   * Tens count with the Aces. The Fool and court cards belong to no family.
+   */
+  | { kind: 'number-family'; root: number; cardIds: readonly string[] }
   /** One element holds more than half the cards that have an element. */
   | {
       kind: 'element-dominates';
@@ -68,6 +76,10 @@ export function renderFact(
       return strings.mostlyReversed;
     case 'suit-dominates':
       return strings.suitDominates(fact.suit, fact.count, fact.total);
+    case 'number-repeats':
+      return strings.numberRepeats(fact.number, names(fact.cardIds));
+    case 'number-family':
+      return strings.numberFamily(fact.root, names(fact.cardIds));
     case 'element-dominates':
       return strings.elementDominates(fact.element, fact.count, fact.total);
     case 'planet-link':

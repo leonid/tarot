@@ -22,6 +22,10 @@ export interface ProviderStrings {
   mostlyMajors: string;
   suitDominates(suit: Suit, count: number, total: number): string;
   mostlyReversed: string;
+  /** Minor cards of one number: 1-10 pips, 11 page to 14 king. */
+  numberRepeats(number: number, cards: readonly string[]): string;
+  /** Cards whose numbers reduce to `root` (1-9), a Major among them. */
+  numberFamily(root: number, cards: readonly string[]): string;
   summary(question: string, cards: number): string;
   advice: string;
 

@@ -24,6 +24,7 @@ exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 1`] = `
 
 exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 2`] = `
 [
+  "The number five repeats: Five of Swords and Five of Cups.",
   "Mars links Ten of Cups, The Tower and Five of Cups.",
   "Scorpio links Death and Five of Cups.",
   "Queen of Wands (Water of Fire) echoes water in Death, Ace of Cups, Ten of Cups and Five of Cups.",
@@ -62,6 +63,7 @@ exports[`relation text, 'en' > major-16-tower cups-05-five wands-01-ace 1`] = `
 
 exports[`relation text, 'en' > major-21-world pentacles-01-ace swords-01-ace 1`] = `
 [
+  "The Aces repeat: Ace of Pentacles and Ace of Swords.",
   "Earth dominates (2 of 3 cards with an element).",
   "Air against earth: Ace of Swords conflicts with The World and Ace of Pentacles.",
 ]
@@ -70,6 +72,7 @@ exports[`relation text, 'en' > major-21-world pentacles-01-ace swords-01-ace 1`]
 exports[`relation text, 'en' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
 [
   "wands dominate (2 of 3).",
+  "The Aces repeat: Ace of Wands and Ace of Cups.",
   "Fire dominates (2 of 3 cards with an element).",
   "Fire against water: Knight of Wands and Ace of Wands conflict with Ace of Cups.",
 ]
@@ -77,6 +80,7 @@ exports[`relation text, 'en' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
 
 exports[`relation text, 'en' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
 [
+  "The Aces repeat: Ace of Cups and Ace of Swords.",
   "Queen of Wands (Water of Fire) echoes water in Ace of Cups.",
   "Fire against water: Queen of Wands conflicts with Ace of Cups.",
   "Water against air: Ace of Cups conflicts with Ace of Swords.",
@@ -127,6 +131,7 @@ exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 1`] = `
 
 exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 2`] = `
 [
+  "Повторяется число 5: Пятёрка Мечей и Пятёрка Кубков.",
   "Планета Марс связывает карты: Десятка Кубков, Башня и Пятёрка Кубков.",
   "Знак Скорпион связывает карты: Смерть и Пятёрка Кубков.",
   "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Смерть, Туз Кубков, Десятка Кубков и Пятёрка Кубков.",
@@ -165,6 +170,7 @@ exports[`relation text, 'ru' > major-16-tower cups-05-five wands-01-ace 1`] = `
 
 exports[`relation text, 'ru' > major-21-world pentacles-01-ace swords-01-ace 1`] = `
 [
+  "Повторяются Тузы: Туз Пентаклей и Туз Мечей.",
   "Преобладает стихия земли (2 из 3 карт со стихией).",
   "Воздух и Земля конфликтуют. Воздух: Туз Мечей. Земля: Мир и Туз Пентаклей.",
 ]
@@ -173,6 +179,7 @@ exports[`relation text, 'ru' > major-21-world pentacles-01-ace swords-01-ace 1`]
 exports[`relation text, 'ru' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
 [
   "Преобладают Жезлы (2 из 3).",
+  "Повторяются Тузы: Туз Жезлов и Туз Кубков.",
   "Преобладает стихия огня (2 из 3 карт со стихией).",
   "Огонь и Вода конфликтуют. Огонь: Рыцарь Жезлов и Туз Жезлов. Вода: Туз Кубков.",
 ]
@@ -180,6 +187,7 @@ exports[`relation text, 'ru' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
 
 exports[`relation text, 'ru' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
 [
+  "Повторяются Тузы: Туз Кубков и Туз Мечей.",
   "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Туз Кубков.",
   "Огонь и Вода конфликтуют. Огонь: Королева Жезлов. Вода: Туз Кубков.",
   "Вода и Воздух конфликтуют. Вода: Туз Кубков. Воздух: Туз Мечей.",
