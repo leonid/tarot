@@ -20,7 +20,7 @@ export function CardPalette({
   return (
     <section className="palette-box">
       <h2 aria-hidden="true">{t.availableCards}</h2>
-      <ul className="palette" aria-label={t.availableCards}>
+      <div className="palette" role="group" aria-label={t.availableCards}>
         {cards.map((c) => (
           <PaletteCard
             key={c.id}
@@ -30,7 +30,7 @@ export function CardPalette({
             onPick={onPick}
           />
         ))}
-      </ul>
+      </div>
     </section>
   );
 }
@@ -51,7 +51,7 @@ function PaletteCard({
     data: { cardId: card.id },
   });
   return (
-    <li
+    <div
       ref={setNodeRef}
       className={`palette-card${isDragging ? ' dragging' : ''}${picked ? ' picked' : ''}`}
       {...listeners}
@@ -60,6 +60,6 @@ function PaletteCard({
       onClick={() => onPick?.(card.id)}
     >
       <CardImage deckId={deckId} card={card} compact sizes="3em" />
-    </li>
+    </div>
   );
 }

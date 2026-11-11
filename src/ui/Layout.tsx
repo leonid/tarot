@@ -59,7 +59,11 @@ export function ReadingView({
         hingeCardId={result?.hingeCardId}
       />
       {complete && (
-        <aside className="interpretation" aria-label={t.interpretation}>
+        <aside
+          className="interpretation"
+          aria-label={t.interpretation}
+          tabIndex={0} // it scrolls on wide screens, so the keyboard must reach it
+        >
           <h2>{t.interpretation}</h2>
           <p role="status" className="meta">
             {loading ? t.interpreting : ''}
