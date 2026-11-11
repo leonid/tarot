@@ -467,7 +467,7 @@ Each task should fit one commit. Convention: write the failing test first, keep 
 
 ### 5.3a Design system (runs alongside M3; proposal in `DESIGN.md`)
 
-All values in `DESIGN.md` are provisional until D1 lands. Do D1 to D5 before M3.7 and M3.8 (card image component and board), so images drop into a finished frame.
+`DESIGN.md` was reconciled with the built values in D10. Do D1 to D5 before M3.7 and M3.8 (card image component and board), so images drop into a finished frame.
 
 | ID  | Task                                                                                                         | Acceptance                                                                                       | Proof                                          |
 | --- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ---------------------------------------------- |

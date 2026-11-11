@@ -1,6 +1,6 @@
 /*
  * Design tokens. The only file that may contain raw colour, px or rem values.
- * Provisional: see DESIGN.md. Components use semantic tokens only.
+ * Reconciled with DESIGN.md (D10). Components use semantic tokens only.
  * Light is the default; dark follows the OS, and `data-theme` on <html>
  * overrides either way (manual toggle: task D6).
  */
