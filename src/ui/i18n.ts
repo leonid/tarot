@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { correspondences } from '../content/correspondences';
 import { meanings } from '../content/meanings';
 import { decks } from '../content/decks';
 import { spreads } from '../content/spreads';
@@ -9,7 +10,8 @@ import {
   localizeMeanings,
   localizeSpread,
 } from '../content/locales';
-import type { Card } from '../domain/types';
+import { formula } from '../domain/formula';
+import type { Card, Deck } from '../domain/types';
 import { useReadingStore } from '../features/store';
 
 /** The active language's strings and localized content, in one place. */
@@ -29,6 +31,12 @@ export function useI18n() {
       meanings: localizeMeanings(meanings, locale),
       /** Alt text for a card picture; pass a card from a localized deck. */
       alt: (card: Card) => cardAlt(card, locale),
+      /** A card read from its parts; pass a localized deck for the names. */
+      formula: (card: Card, deck: Deck) =>
+        locale.provider.cardFormula(
+          formula(card, deck, correspondences),
+          (id) => deck.cards.find((c) => c.id === id)?.name ?? id,
+        ),
     };
   }, [code]);
 }

@@ -1,4 +1,5 @@
 import type { Element } from './elements';
+import type { CardFormula } from './formula';
 import type { Orientation, Suit } from './types';
 import type { Modality, Planet, Sign } from './zodiac';
 
@@ -19,6 +20,11 @@ export interface ProviderStrings {
     position?: { label: string; meaning: string };
     base?: { summary: string; keywords: readonly string[] };
   }): string;
+  /**
+   * A card read from its parts alone (number, element, planet, sign), whatever
+   * its orientation. `name` gives a card's name in this locale.
+   */
+  cardFormula(formula: CardFormula, name: (cardId: string) => string): string;
   mostlyMajors: string;
   suitDominates(suit: Suit, count: number, total: number): string;
   mostlyReversed: string;

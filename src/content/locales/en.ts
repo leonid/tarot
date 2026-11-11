@@ -1,6 +1,7 @@
 import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
 import type { Modality, Planet, Sign } from '../../domain/zodiac';
+import { cardFormula } from './en-formula';
 import type { LocaleBundle, UiMessages } from './types';
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -84,6 +85,8 @@ const ui: UiMessages = {
   sourceBuiltIn: 'Written by the built-in reader',
   sourceFellBack:
     'The AI service did not answer, so the built-in reader wrote this.',
+  otherSchools: 'Other readings of this card',
+  schoolStructure: 'By structure',
   hinge: 'Hinge',
   hingeTitle: 'Most connected to the other cards',
   hingeLabel: 'Hinge:',
@@ -118,6 +121,7 @@ const provider: ProviderStrings = {
     base
       ? `${base.summary} Keywords: ${base.keywords.join(', ')}.`
       : 'No base meaning written for this card yet.',
+  cardFormula,
   mostlyMajors: 'Mostly Major Arcana: weighty, fated themes.',
   suitDominates: (suit, count, total) =>
     `${suit} dominate (${count} of ${total}).`,

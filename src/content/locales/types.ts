@@ -58,6 +58,10 @@ export interface UiMessages {
   sourceBuiltIn: string;
   /** Label when the AI was on but could not answer. */
   sourceFellBack: string;
+  /** Opens the other schools' readings under a card's note. */
+  otherSchools: string;
+  /** Label of the reading built from the card's parts (the card formula). */
+  schoolStructure: string;
   hinge: string;
   hingeTitle: string;
   hingeLabel: string;

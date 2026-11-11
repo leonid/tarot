@@ -356,6 +356,27 @@ body {
 .interpretation .note-meaning {
   margin: 0;
 }
+/* Other schools' readings of one card, side by side under its note. */
+.schools {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+}
+.schools summary {
+  cursor: pointer;
+  color: var(--text-muted);
+}
+.schools dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--card-w) * 2), 1fr));
+  gap: var(--space-3);
+  margin: var(--space-2) 0 0;
+}
+.schools dt {
+  font-weight: 600;
+}
+.schools dd {
+  margin: 0;
+}
 .connections {
   padding-top: var(--space-3);
   border-top: var(--border-w) solid var(--border);

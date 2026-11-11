@@ -85,3 +85,20 @@ describe('interpretation trigger (M1.11)', () => {
     expect(screen.queryByRole('alert')).toBeNull();
   });
 });
+
+describe('other schools on a card (M6.12)', () => {
+  it('shows each card read by its structure beside its note', async () => {
+    render(<ReadingView provider={fallbackProvider} />);
+    act(() => store().dealRandom(1));
+    await screen.findByText(/3 cards were read/);
+    const labels = screen.getAllByText('By structure');
+    expect(labels).toHaveLength(3);
+    for (const dt of labels) {
+      const item = dt.closest('li')!;
+      expect(item.querySelector('details summary')).toHaveTextContent(
+        'Other readings of this card',
+      );
+      expect(dt.nextElementSibling?.textContent).toMatch(/Number|×|:/);
+    }
+  });
+});

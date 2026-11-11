@@ -25,7 +25,7 @@ export function ReadingView({
   const chosen = useProvider();
   const provider = given ?? chosen;
   const { deckId, spreadId, question, placements } = useReadingStore();
-  const { t, locale, getDeck, getSpread, meanings } = useI18n();
+  const { t, locale, getDeck, getSpread, meanings, formula } = useI18n();
   const deck = getDeck(deckId);
   const spread = getSpread(spreadId);
   const complete =
@@ -113,13 +113,12 @@ export function ReadingView({
                   const placed = placements.find(
                     (p) => p.positionId === c.positionId,
                   );
+                  const card = deck.cards.find((d) => d.id === c.cardId);
                   return (
                     <li key={c.positionId} className="note-card">
                       <h3>
                         <span className="note-position">{pos?.label}</span>
-                        <span className="note-name">
-                          {deck.cards.find((d) => d.id === c.cardId)?.name}
-                        </span>
+                        <span className="note-name">{card?.name}</span>
                         {placed?.orientation === 'reversed' && (
                           <span className="note-reversed">
                             {t.slotReversed}
@@ -128,6 +127,17 @@ export function ReadingView({
                       </h3>
                       {pos && <p className="note-meaning">{pos.meaning}</p>}
                       <p>{c.note}</p>
+                      {card && (
+                        <details className="schools">
+                          <summary>{t.otherSchools}</summary>
+                          <dl>
+                            <div>
+                              <dt>{t.schoolStructure}</dt>
+                              <dd>{formula(card, deck)}</dd>
+                            </div>
+                          </dl>
+                        </details>
+                      )}
                     </li>
                   );
                 })}

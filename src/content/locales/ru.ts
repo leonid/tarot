@@ -1,10 +1,11 @@
-import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
 import type { Suit } from '../../domain/types';
-import type { Modality, Planet, Sign } from '../../domain/zodiac';
+import type { Modality } from '../../domain/zodiac';
 import { decks } from '../decks';
 import { ruAlts } from './ru-alts';
+import { cardFormula } from './ru-formula';
 import { ruMeanings } from './ru-meanings';
+import { and, elementGen, elementNom, planetName, signName } from './ru-terms';
 import type { LocaleBundle, SpreadText, UiMessages } from './types';
 
 /**
@@ -12,50 +13,6 @@ import type { LocaleBundle, SpreadText, UiMessages } from './types';
  * (Старшие и Младшие арканы). Needs review by a native speaker who reads tarot.
  */
 
-/** «А», «А и Б», «А, Б и В». */
-const and = (items: readonly string[]) =>
-  items.length <= 1
-    ? items.join('')
-    : `${items.slice(0, -1).join(', ')} и ${items[items.length - 1]!}`;
-
-const elementNom: Record<Element, string> = {
-  fire: 'Огонь',
-  water: 'Вода',
-  air: 'Воздух',
-  earth: 'Земля',
-};
-const elementGen: Record<Element, string> = {
-  fire: 'огня',
-  water: 'воды',
-  air: 'воздуха',
-  earth: 'земли',
-};
-const planetName: Record<Planet, string> = {
-  sun: 'Солнце',
-  moon: 'Луна',
-  mercury: 'Меркурий',
-  venus: 'Венера',
-  mars: 'Марс',
-  jupiter: 'Юпитер',
-  saturn: 'Сатурн',
-  uranus: 'Уран',
-  neptune: 'Нептун',
-  pluto: 'Плутон',
-};
-const signName: Record<Sign, string> = {
-  aries: 'Овен',
-  taurus: 'Телец',
-  gemini: 'Близнецы',
-  cancer: 'Рак',
-  leo: 'Лев',
-  virgo: 'Дева',
-  libra: 'Весы',
-  scorpio: 'Скорпион',
-  sagittarius: 'Стрелец',
-  capricorn: 'Козерог',
-  aquarius: 'Водолей',
-  pisces: 'Рыбы',
-};
 const suitPlural: Record<Suit, string> = {
   wands: 'Жезлы',
   cups: 'Кубки',
@@ -130,6 +87,8 @@ const ui: UiMessages = {
   sourceBuiltIn: 'Составлено встроенным алгоритмом',
   sourceFellBack:
     'ИИ-сервис не ответил, поэтому толкование составил встроенный алгоритм.',
+  otherSchools: 'Другие прочтения этой карты',
+  schoolStructure: 'По структуре',
   hinge: 'Ось',
   hingeTitle: 'Больше всего связана с остальными картами',
   hingeLabel: 'Ось:',
@@ -164,6 +123,7 @@ const provider: ProviderStrings = {
     base
       ? `${base.summary} Ключевые слова: ${base.keywords.join(', ')}.`
       : 'Для этой карты пока нет базового значения.',
+  cardFormula,
   mostlyMajors: 'Преимущественно Старшие арканы: весомые, судьбоносные темы.',
   suitDominates: (suit, count, total) =>
     `Преобладают ${suitPlural[suit]} (${count} из ${total}).`,
