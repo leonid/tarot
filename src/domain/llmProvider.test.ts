@@ -55,6 +55,17 @@ describe('llmProvider', () => {
     });
   });
 
+  it('sends the reading language when the context has one', async () => {
+    const f = reply(good);
+    await make(f).interpret({ ...ctx, locale: 'ru' });
+    expect(JSON.parse(f.mock.calls[0]![1]!.body as string).locale).toBe('ru');
+    const g = reply(good);
+    await make(g).interpret(ctx);
+    expect(JSON.parse(g.mock.calls[0]![1]!.body as string)).not.toHaveProperty(
+      'locale',
+    );
+  });
+
   it('sends no key and no card text', async () => {
     const f = reply(good);
     await make(f).interpret(ctx);

@@ -49,6 +49,7 @@ export function llmProvider(opts: LlmProviderOptions): InterpretationProvider {
           body: JSON.stringify({
             v: 1,
             question: ctx.question,
+            ...(ctx.locale ? { locale: ctx.locale } : {}),
             deckId: ctx.deck.id,
             spreadId: ctx.spread.id,
             placements: ctx.placements,
