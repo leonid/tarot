@@ -1,3 +1,4 @@
+import type { CacheStore } from './cache';
 import { MAX_BODY_BYTES, parseRequest, type InterpretRequest } from './request';
 
 export interface Env {
@@ -5,6 +6,15 @@ export interface Env {
   ALLOWED_ORIGINS?: string;
   /** Secret. Set with `wrangler secret put`; never in the repo or the client. */
   ANTHROPIC_API_KEY?: string;
+  /** Cloudflare KV namespace for the reading cache (optional). */
+  CACHE?: CacheStore;
+  /**
+   * Cloudflare rate-limit binding (optional). Counts are per Cloudflare
+   * location and eventually consistent, so this is a soft shield against
+   * bursts, not a hard quota: the spend cap in the Anthropic workspace is the
+   * real limit.
+   */
+  RATE_LIMITER?: { limit(o: { key: string }): Promise<{ success: boolean }> };
 }
 
 /** The upstream call (M4.6). Only ever reached with a validated request. */
@@ -106,6 +116,23 @@ export async function handle(
 
   const parsed = parseRequest(raw);
   if (!parsed.ok) return json(422, { error: parsed.error }, cors);
+
+  if (env.RATE_LIMITER) {
+    const key = request.headers.get('cf-connecting-ip') ?? origin;
+    let ok = true;
+    try {
+      ok = (await env.RATE_LIMITER.limit({ key })).success;
+    } catch {
+      // If the limiter itself fails, let the request through: the spend cap
+      // still bounds cost, and a broken shield should not take the app down.
+    }
+    if (!ok)
+      return json(
+        429,
+        { error: 'rate-limited' },
+        { ...cors, 'retry-after': '60' },
+      );
+  }
 
   const res = await interpret(parsed.request, env);
   const out = new Response(res.body, res);
