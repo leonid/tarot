@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import { encodeShared } from './domain/share';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
@@ -340,6 +340,77 @@ describe('click to place', () => {
     expect(
       screen.queryAllByRole('button', { name: /^Place .* in / }),
     ).toHaveLength(0);
+  });
+});
+
+describe('recording a spread (R9)', () => {
+  const start = () => {
+    history.replaceState(null, '', '#/record');
+    return render(<App />);
+  };
+
+  it('reads each card as it is placed and the connections at the end', async () => {
+    const { container } = start();
+    const slots = () => container.querySelectorAll<HTMLElement>('.slot');
+    for (let i = 0; i < 3; i++) {
+      await userEvent.click(container.querySelector('.palette-card')!);
+      await userEvent.click(slots()[i]!);
+      expect(container.querySelectorAll('.note-card')).toHaveLength(i + 1);
+      if (i < 2) {
+        expect(
+          screen.getByText(new RegExp(`${i + 1} of 3 cards placed`)),
+        ).toBeInTheDocument();
+        expect(container.querySelector('.advice')).toBeNull();
+      }
+    }
+    await waitFor(() =>
+      expect(container.querySelector('.advice')).not.toBeNull(),
+    );
+    expect(screen.queryByText(/of 3 cards placed/)).toBeNull();
+  });
+
+  it('turns a placed card over and takes it off with its own buttons', async () => {
+    const { container } = start();
+    await userEvent.click(container.querySelector('.palette-card')!);
+    await userEvent.click(container.querySelector('.slot')!);
+    const turn = screen.getByRole('button', { name: 'Turn The Fool over' });
+    expect(turn).toHaveAttribute('aria-pressed', 'false');
+    await userEvent.click(turn);
+    expect(useReadingStore.getState().placements[0]!.orientation).toBe(
+      'reversed',
+    );
+    expect(
+      screen.getByRole('button', { name: 'Turn The Fool over' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Take The Fool off the board' }),
+    );
+    expect(useReadingStore.getState().placements).toEqual([]);
+  });
+
+  it('offers no turn button when reversals are off', async () => {
+    const { container } = start();
+    await userEvent.click(screen.getByLabelText('Reversals'));
+    await userEvent.click(container.querySelector('.palette-card')!);
+    await userEvent.click(container.querySelector('.slot')!);
+    expect(screen.queryByRole('button', { name: /^Turn / })).toBeNull();
+    expect(
+      screen.getByRole('button', { name: /off the board$/ }),
+    ).toBeInTheDocument();
+    await userEvent.click(screen.getByLabelText('Reversals'));
+  });
+
+  it('shows the deck in parts, with a search across all of it', async () => {
+    const { container } = start();
+    const count = () => container.querySelectorAll('.palette-card').length;
+    expect(count()).toBe(22);
+    await userEvent.click(screen.getByRole('button', { name: /^Swords/ }));
+    expect(count()).toBe(14);
+    await userEvent.type(screen.getByLabelText('Find a card'), 'ace');
+    expect(count()).toBe(4);
+    await userEvent.click(screen.getByRole('button', { name: /^All/ }));
+    expect(count()).toBe(78);
+    expect(screen.getByLabelText('Find a card')).toHaveValue('');
   });
 });
 

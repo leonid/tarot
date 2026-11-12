@@ -68,6 +68,13 @@ const ui: UiMessages = {
   cardNext: 'Next card',
   cardAbout: (card) => `More about ${card}`,
   cardUnknown: 'There is no such card. Choose one from the list.',
+  paletteGroups: 'Which cards to show',
+  groupAll: 'All',
+  paletteGroupEmpty: 'Every card of this part is on the board.',
+  flipCard: (card) => `Turn ${card} over`,
+  removeCard: (card) => `Take ${card} off the board`,
+  partialReading: (placed, total) =>
+    `${placed} of ${total} cards placed. Each card is read as you place it; how they connect appears when every position has a card.`,
   homeIntro:
     'Tarot as a way to think a question through. Each card is read in its position and against the other cards. For reflection, not prediction or advice.',
   homeChoose: 'What would you like to do?',
@@ -118,7 +125,7 @@ const ui: UiMessages = {
   dragInstructions:
     'To pick up a card, press the space bar. While dragging, use the arrow keys to move it. Press space again to drop it on a position, or escape to cancel.',
   placeHint:
-    'Click a card, then click a position to place it. You can also drag a card, or use the lists below.',
+    'Click a card, then click a position to place it. You can also drag a card, or use the lists below. A placed card has buttons to turn it over or take it off.',
   dealt: (count) =>
     `Cards dealt: ${count}. The interpretation is below the board.`,
   cardSelected: (card) =>

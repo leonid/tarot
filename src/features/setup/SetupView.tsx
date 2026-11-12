@@ -117,6 +117,24 @@ export function SetupView() {
               place(positionId, armed.id);
               setPicked(undefined);
             }}
+            onRemove={clearPosition}
+            onFlip={
+              allowReversals
+                ? (positionId) => {
+                    const placed = placements.find(
+                      (p) => p.positionId === positionId,
+                    );
+                    if (placed)
+                      place(
+                        positionId,
+                        placed.cardId,
+                        placed.orientation === 'reversed'
+                          ? 'upright'
+                          : 'reversed',
+                      );
+                  }
+                : undefined
+            }
           />
           <CardPalette
             deckId={deck.id}

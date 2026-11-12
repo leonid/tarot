@@ -41,6 +41,15 @@ export interface UiMessages {
   /** Link from a card's note in a reading to the card's own page. */
   cardAbout(card: string): string;
   cardUnknown: string;
+  /** Record a spread: the parts of the deck the list of cards can show. */
+  paletteGroups: string;
+  groupAll: string;
+  paletteGroupEmpty: string;
+  /** Buttons on a placed card. */
+  flipCard(card: string): string;
+  removeCard(card: string): string;
+  /** Over the notes while the spread is still being filled. */
+  partialReading(placed: number, total: number): string;
   /** Home: what the app is, then one sentence per goal. */
   homeIntro: string;
   homeChoose: string;

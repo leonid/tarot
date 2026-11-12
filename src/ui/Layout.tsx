@@ -17,12 +17,17 @@ export function ReadingView({
   provider: given,
   armedCard,
   onSlotClick,
+  onFlip,
+  onRemove,
   reading,
 }: {
   droppable?: boolean;
   /** Setup: the card picked by clicking; slots then accept a click. */
   armedCard?: Card;
   onSlotClick?: (positionId: string) => void;
+  /** Record a spread: turn or remove a placed card, on the card itself. */
+  onFlip?: (positionId: string) => void;
+  onRemove?: (positionId: string) => void;
   provider?: InterpretationProvider;
   /** A reading to show instead of the one on the table (a shared link). */
   reading?: Pick<
@@ -76,7 +81,61 @@ export function ReadingView({
         armedCard={armedCard}
         onSlotClick={onSlotClick}
         hingeCardId={result?.hingeCardId}
+        onFlip={onFlip}
+        onRemove={onRemove}
       />
+      {/* Record a spread: each card is read as soon as it is placed. The
+          connections need every card, so they wait for the last one. */}
+      {!complete && droppable && placements.length > 0 && (
+        <aside className="interpretation" aria-label={t.interpretation}>
+          <h2>{t.interpretation}</h2>
+          <p role="status" className="meta">
+            {t.partialReading(placements.length, spread.positions.length)}
+          </p>
+          <ol className="notes">
+            {placements.map((placed) => {
+              const pos = spread.positions.find(
+                (p) => p.id === placed.positionId,
+              );
+              const card = deck.cards.find((d) => d.id === placed.cardId);
+              const base = meanings[placed.cardId]?.[placed.orientation];
+              if (!card) return null;
+              return (
+                <li key={placed.positionId} className="note-card">
+                  <h3>
+                    <span className="note-position">{pos?.label}</span>
+                    <span className="note-name">{card.name}</span>
+                    {placed.orientation === 'reversed' && (
+                      <span className="note-reversed">{t.slotReversed}</span>
+                    )}
+                  </h3>
+                  {pos && <p className="note-meaning">{pos.meaning}</p>}
+                  <p>
+                    {locale.provider.cardNote({
+                      card: card.name,
+                      orientation: placed.orientation,
+                      ...(pos
+                        ? {
+                            position: {
+                              label: pos.label,
+                              meaning: pos.meaning,
+                            },
+                          }
+                        : {}),
+                      ...(base ? { base } : {}),
+                    })}
+                  </p>
+                  <p className="note-more">
+                    <PageLink page="cards" sub={card.id}>
+                      {t.cardAbout(card.name)}
+                    </PageLink>
+                  </p>
+                </li>
+              );
+            })}
+          </ol>
+        </aside>
+      )}
       {complete && (
         <aside
           className="interpretation"

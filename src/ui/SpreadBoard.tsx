@@ -16,6 +16,9 @@ interface Props {
   onSlotClick?: (positionId: string) => void;
   /** Card the Compare step found most connected to the others. */
   hingeCardId?: string;
+  /** Record a spread: each placed card carries its own turn and remove buttons. */
+  onFlip?: (positionId: string) => void;
+  onRemove?: (positionId: string) => void;
 }
 
 /** Lays positions out on a grid using their x/y coordinates. */
@@ -28,6 +31,8 @@ export function SpreadBoard({
   armedCard,
   onSlotClick,
   hingeCardId,
+  onFlip,
+  onRemove,
 }: Props) {
   const cols = Math.max(...spread.positions.map((p) => p.x)) + 1;
   // Positions that share a grid cell (the Celtic Cross crossing card) are
@@ -64,6 +69,8 @@ export function SpreadBoard({
                 card,
                 orientation: placed?.orientation,
                 hinge: !!card && card.id === hingeCardId,
+                onFlip,
+                onRemove,
               };
               return droppable ? (
                 <DroppableSlot key={pos.id} {...props} />
@@ -88,6 +95,8 @@ interface SlotProps {
   hinge?: boolean;
   armedCard?: Card;
   onSlotClick?: (positionId: string) => void;
+  onFlip?: (positionId: string) => void;
+  onRemove?: (positionId: string) => void;
 }
 
 function Slot({
@@ -100,6 +109,8 @@ function Slot({
   hinge,
   armedCard,
   onSlotClick,
+  onFlip,
+  onRemove,
 }: SlotProps) {
   const { t } = useI18n();
   const press = () => onSlotClick?.(pos.id);
@@ -133,6 +144,35 @@ function Slot({
         <Chip tone="hinge" title={t.hingeTitle}>
           {t.hinge}
         </Chip>
+      )}
+      {/* While a card is selected the whole slot is one button, so its own
+          buttons step aside. */}
+      {card && !armedCard && (onFlip || onRemove) && (
+        <span className="slot-actions">
+          {onFlip && (
+            <button
+              type="button"
+              className="slot-action"
+              aria-label={t.flipCard(card.name)}
+              title={t.flipCard(card.name)}
+              aria-pressed={orientation === 'reversed'}
+              onClick={() => onFlip(pos.id)}
+            >
+              <span aria-hidden="true">↻</span>
+            </button>
+          )}
+          {onRemove && (
+            <button
+              type="button"
+              className="slot-action"
+              aria-label={t.removeCard(card.name)}
+              title={t.removeCard(card.name)}
+              onClick={() => onRemove(pos.id)}
+            >
+              <span aria-hidden="true">✕</span>
+            </button>
+          )}
+        </span>
       )}
     </div>
   );

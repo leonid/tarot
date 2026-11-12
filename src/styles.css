@@ -188,8 +188,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1);
-  max-height: var(--palette-max-h);
-  overflow: auto;
 }
 .card-face.compact {
   flex-direction: row;
@@ -398,8 +396,8 @@ body {
   font-style: italic;
 }
 
-/* Setup: the palette is a framed scroll area, so a cut-off row reads as
-   "scroll for more" and not as a broken layout. */
+/* Setup: the palette shows one part of the deck at a time, whole, with no
+   scroll box of its own. */
 .palette-box {
   margin: var(--space-4) 0;
 }
@@ -697,26 +695,6 @@ a.btn {
   .steps > .step:nth-child(n + 3) {
     grid-column: 1 / -1;
   }
-  .record-table {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-6);
-  }
-  .record-table > .reading {
-    display: block;
-  }
-  .record-table > .reading > .interpretation {
-    position: static;
-    max-height: none;
-    overflow: visible;
-  }
-  .record-table.placing .board {
-    position: sticky;
-    top: var(--space-4);
-  }
-  .record-table .palette {
-    max-height: none;
-  }
 }
 
 /* The card library and a card's own page. */
@@ -818,4 +796,105 @@ a.btn {
 .note-more {
   margin: var(--space-1) 0 0;
   font-size: var(--text-sm);
+}
+
+/* Record a spread: the board, then the cards to choose from, then the notes,
+   so a card and the position it goes to stay close together on a phone. On a
+   wide screen the cards sit beside the board. */
+.record-table {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'board'
+    'palette'
+    'notes';
+}
+.record-table > .reading {
+  display: contents;
+}
+.record-table .board {
+  grid-area: board;
+}
+.record-table .palette-box {
+  grid-area: palette;
+}
+.record-table .interpretation {
+  grid-area: notes;
+  position: static;
+  max-height: none;
+  overflow: visible;
+}
+@media (min-width: 56em) {
+  .record-table {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-areas:
+      'board palette'
+      'notes palette';
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+}
+
+/* Record a spread: buttons on each placed card, and the deck in parts. */
+.slot-actions {
+  display: flex;
+  gap: var(--space-1);
+  margin-top: auto;
+}
+.slot-action {
+  flex: 1;
+  font: inherit;
+  min-height: var(--target);
+  padding: 0;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+.slot-action:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.slot-action[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.palette-search input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.palette-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: var(--space-2) 0;
+}
+.palette-group {
+  font: inherit;
+  font-size: var(--text-sm);
+  min-height: var(--target);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-pill, var(--radius));
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+.palette-group:hover {
+  border-color: var(--accent);
+}
+.palette-group[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+.palette-count {
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+.palette-none {
+  margin: var(--space-2);
 }

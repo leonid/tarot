@@ -58,7 +58,7 @@ test('touch: a quick swipe over a card scrolls and does not drag', async ({
   const end = await touchDrag(page, from, { x: from.x, y: from.y - 120 }, 0);
   await end();
   await expect(page.locator('.board .slot.filled')).toHaveCount(0);
-  await expect(page.locator('.palette-card')).toHaveCount(78);
+  await expect(page.locator('.palette-card')).toHaveCount(22);
 });
 
 test('touch: press and hold a card, drag it onto a position', async ({
@@ -69,10 +69,13 @@ test('touch: press and hold a card, drag it onto a position', async ({
   await openSetup(page);
   const card = page.locator('.palette-card').first();
   const name = (await card.locator('.card-face-name').innerText()).trim();
-  // The cards sit under the board on a phone: with the first card in view,
-  // the position it goes to is still on screen above it.
-  await card.scrollIntoViewIfNeeded();
-  await expect(page.locator('[data-position="present"]')).toBeInViewport();
+  // The cards sit under the board on a phone, so both fit on one screen.
+  // Keep them clear of the screen edges, where a drag scrolls the page.
+  await page.locator('.board').evaluate((el) => {
+    el.scrollIntoView();
+    window.scrollBy(0, -160);
+  });
+  await expect(card).toBeInViewport({ ratio: 1 });
   const from = await centre(page, '.palette-card');
   const to = await centre(page, '[data-position="present"]');
   const end = await touchDrag(page, from, to, 400); // hold > 250 ms
@@ -81,5 +84,5 @@ test('touch: press and hold a card, drag it onto a position', async ({
   );
   await end();
   await expect(page.locator('[data-position="present"]')).toHaveClass(/filled/);
-  await expect(page.locator('.palette-card')).toHaveCount(77);
+  await expect(page.locator('.palette-card')).toHaveCount(21);
 });
