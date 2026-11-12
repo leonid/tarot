@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 
 async function openSetup(page: Page) {
-  await page.goto('/');
-  await page.getByRole('tab', { name: 'Setup' }).click();
+  await page.goto('/#/reading');
+  await page.getByRole('link', { name: 'Record a spread' }).click();
   await page.getByLabel('Spread').selectOption('three-card');
 }
 
@@ -69,7 +69,10 @@ test('touch: press and hold a card, drag it onto a position', async ({
   await openSetup(page);
   const card = page.locator('.palette-card').first();
   const name = (await card.locator('.card-face-name').innerText()).trim();
-  await page.locator('[data-position="present"]').scrollIntoViewIfNeeded();
+  // The cards sit under the board on a phone: with the first card in view,
+  // the position it goes to is still on screen above it.
+  await card.scrollIntoViewIfNeeded();
+  await expect(page.locator('[data-position="present"]')).toBeInViewport();
   const from = await centre(page, '.palette-card');
   const to = await centre(page, '[data-position="present"]');
   const end = await touchDrag(page, from, to, 400); // hold > 250 ms

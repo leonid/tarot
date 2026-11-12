@@ -10,8 +10,40 @@ export interface UiMessages {
   themeSystem: string;
   themeLight: string;
   themeDark: string;
-  modeSimulate: string;
-  modeSetup: string;
+  /** Accessible name of the main navigation. */
+  navLabel: string;
+  navHome: string;
+  /** The four goals: names for the navigation, the home screen and page titles. */
+  goalReading: string;
+  goalRecord: string;
+  goalJournal: string;
+  /** Home: what the app is, then one sentence per goal. */
+  homeIntro: string;
+  homeChoose: string;
+  goalReadingText: string;
+  goalRecordText: string;
+  goalJournalText(count: number): string;
+  /** One sentence of purpose under each page title. */
+  readingPurpose: string;
+  recordPurpose: string;
+  journalPurpose: string;
+  /** Numbered steps on the reading screens. */
+  stepQuestion: string;
+  stepQuestionHint: string;
+  stepSpread: string;
+  stepDeal: string;
+  stepPlace: string;
+  /** How many cards a spread takes. */
+  cardCount(count: number): string;
+  journalEmpty: string;
+  openJournal: string;
+  /** A reading opened from a share link: read-only until kept or opened. */
+  sharedTitle: string;
+  sharedPurpose: string;
+  sharedKeep: string;
+  sharedKept: string;
+  sharedOpen: string;
+  sharedOwn: string;
 
   question: string;
   questionPlaceholder: string;
@@ -77,7 +109,6 @@ export interface UiMessages {
   copyShareLink: string;
   linkCopied: string;
   saved: string;
-  savedReadings(count: number): string;
   noQuestion: string;
   open: string;
   delete: string;

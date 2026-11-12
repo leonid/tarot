@@ -8,7 +8,7 @@ const spreads = [
 
 for (const { id, positions } of spreads) {
   test(`simulate deals ${positions} card(s) for ${id}`, async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/#/reading');
     await page.getByLabel('Spread').selectOption(id);
     await expect(page.locator('.board .slot')).toHaveCount(positions);
     await expect(page.locator('.board .slot.filled')).toHaveCount(0);
@@ -26,7 +26,7 @@ for (const { id, positions } of spreads) {
 }
 
 test('a new deal changes the seed', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#/reading');
   const deal = page.getByRole('button', { name: 'Shuffle and deal' });
   await deal.click();
   const first = await page.getByText(/seed \d+/).textContent();
@@ -42,10 +42,15 @@ test('a bad share link shows a dismissible message and the app still works', asy
   await expect(alert).toContainText('could not be read');
   await page.screenshot({ path: testInfo.outputPath('bad-link.png') });
 
+  // A bad link opened cold shows the home screen; the app works from there.
+  await page.getByRole('link', { name: 'Get a reading' }).first().click();
   await page.getByRole('button', { name: 'Shuffle and deal' }).click();
   await expect(page.locator('.board .slot.filled').first()).toBeVisible();
-  await expect(alert).toBeVisible();
+  // Moving on leaves the bad link, and its message, behind.
+  await expect(alert).toHaveCount(0);
+  await expect(page).not.toHaveURL(/#r=/);
 
+  await page.goto('/#r=garbage');
   await expect(page).toHaveURL(/#r=garbage$/);
   await alert.getByRole('button', { name: 'Dismiss' }).click();
   await expect(alert).toHaveCount(0);

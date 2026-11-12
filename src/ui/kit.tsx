@@ -214,6 +214,45 @@ export function ActionNote({
   );
 }
 
+/** A screen's title and the one sentence that says what it is for. */
+export function PageHead({
+  title,
+  purpose,
+}: {
+  title: string;
+  purpose: string;
+}) {
+  return (
+    <header className="page-head">
+      <h2 tabIndex={-1}>{title}</h2>
+      <p className="lead">{purpose}</p>
+    </header>
+  );
+}
+
+/** One numbered step of a screen. Use inside `<ol className="steps">`. */
+export function Step({
+  n,
+  title,
+  children,
+}: {
+  n: number;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <li className="step">
+      <h3>
+        <span className="step-n" aria-hidden="true">
+          {n}
+        </span>
+        {title}
+      </h3>
+      <div className="step-body">{children}</div>
+    </li>
+  );
+}
+
 /** A small label pill. Always carries a word; the colour only reinforces it. */
 export function Chip({
   tone = 'neutral',

@@ -3,6 +3,7 @@ import type { Interpreted } from '../domain/llmProvider';
 import { correspondences } from '../content/correspondences';
 import { useReadingStore } from '../features/store';
 import type { Card } from '../domain/types';
+import type { SharedReading } from '../domain/share';
 import { SpreadBoard } from './SpreadBoard';
 import { useI18n } from './i18n';
 import { Button } from './kit';
@@ -15,16 +16,23 @@ export function ReadingView({
   provider: given,
   armedCard,
   onSlotClick,
+  reading,
 }: {
   droppable?: boolean;
   /** Setup: the card picked by clicking; slots then accept a click. */
   armedCard?: Card;
   onSlotClick?: (positionId: string) => void;
   provider?: InterpretationProvider;
+  /** A reading to show instead of the one on the table (a shared link). */
+  reading?: Pick<
+    SharedReading,
+    'deckId' | 'spreadId' | 'question' | 'placements'
+  >;
 }) {
   const chosen = useProvider();
   const provider = given ?? chosen;
-  const { deckId, spreadId, question, placements } = useReadingStore();
+  const table = useReadingStore();
+  const { deckId, spreadId, question, placements } = reading ?? table;
   const { t, locale, getDeck, getSpread, meanings, formula, waite } = useI18n();
   const deck = getDeck(deckId);
   const spread = getSpread(spreadId);

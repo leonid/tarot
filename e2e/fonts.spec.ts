@@ -14,7 +14,7 @@ test('headings and card names use the self-hosted serif in English and Russian',
   const requests: string[] = [];
   page.on('request', (r) => requests.push(new URL(r.url()).host));
 
-  await page.goto('/');
+  await page.goto('/#/reading');
   await page.getByLabel('Spread').selectOption('three-card');
   await page.getByRole('button', { name: 'Shuffle and deal' }).click();
 

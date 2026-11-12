@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 
 async function openSetup(page: Page, spread = 'three-card') {
-  await page.goto('/');
-  await page.getByRole('tab', { name: 'Setup' }).click();
+  await page.goto('/#/reading');
+  await page.getByRole('link', { name: 'Record a spread' }).click();
   await page.getByLabel('Spread').selectOption(spread);
 }
 
@@ -13,7 +13,6 @@ test('setup: place cards with the menus, flip one, clear one', async ({
   page,
 }) => {
   await openSetup(page);
-  await page.getByText('Place with menus').click();
 
   await page.getByLabel('Past').selectOption({ label: 'The Fool' });
   await page.getByLabel('Present').selectOption({ label: 'The Tower' });
@@ -85,8 +84,8 @@ test('setup: fill a whole three-card spread with the keyboard only', async ({
   page,
 }) => {
   await openSetup(page);
-  // Arrow keys jump from position to position; the first Up from the palette
-  // lands on the nearest one (Past, the leftmost).
+  // The first arrow takes the card to the spread's first position (Past);
+  // after that the arrows jump from position to position.
   await keyboardPlace(page, ['ArrowUp'], 'past');
   await keyboardPlace(page, ['ArrowUp', 'ArrowRight'], 'present');
   await keyboardPlace(page, ['ArrowUp', 'ArrowRight', 'ArrowRight'], 'future');

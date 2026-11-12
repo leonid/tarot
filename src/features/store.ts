@@ -231,13 +231,19 @@ export const useReadingStore = create<State>((set, get) => ({
   loadShared: (r) => {
     // Ignore readings that point at decks or spreads we no longer ship.
     if (!getDeck(r.deckId) || !getSpread(r.spreadId)) return;
+    const next = inSpreadOrder(r.placements, r.spreadId);
     set((s) => ({
-      undo: lost(s, 'replaced'),
+      // Opening what is already on the table loses nothing.
+      undo:
+        JSON.stringify(s.placements) === JSON.stringify(next) &&
+        s.question === r.question
+          ? undefined
+          : lost(s, 'replaced'),
       mode: r.mode,
       deckId: r.deckId,
       spreadId: r.spreadId,
       question: r.question,
-      placements: inSpreadOrder(r.placements, r.spreadId),
+      placements: next,
       seed: r.seed,
     }));
   },

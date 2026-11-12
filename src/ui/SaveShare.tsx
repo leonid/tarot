@@ -2,22 +2,17 @@ import { useState } from 'react';
 import { encodeShared, toShared } from '../domain/share';
 import { isComplete, validateReading } from '../domain/validate';
 import { useI18n } from './i18n';
-import { ActionNote, Button, StatusNote } from './kit';
-import {
-  deleteReading,
-  loadHistory,
-  restoreReading,
-  saveReading,
-  type HistoryEntry,
-} from '../features/history';
+import { Button, StatusNote } from './kit';
+import { PageLink } from './Nav';
+import { saveReading } from '../features/history';
 import { useReadingStore } from '../features/store';
 
+/** Keep the finished reading in the journal, or copy a link to it. */
 export function SaveShare() {
   const s = useReadingStore();
-  const [history, setHistory] = useState(loadHistory);
   const [notice, setNotice] = useState('');
-  const [deleted, setDeleted] = useState<HistoryEntry | null>(null);
-  const { t, locale, getDeck, getSpread } = useI18n();
+  const [saved, setSaved] = useState(false);
+  const { t, getDeck, getSpread } = useI18n();
   const deck = getDeck(s.deckId);
   const spread = getSpread(s.spreadId);
   if (!deck || !spread) return null;
@@ -36,6 +31,7 @@ export function SaveShare() {
 
   async function copyLink() {
     const url = `${location.origin}${location.pathname}#r=${encodeShared(shared())}`;
+    setSaved(false);
     try {
       await navigator.clipboard.writeText(url);
       setNotice(t.linkCopied);
@@ -46,58 +42,23 @@ export function SaveShare() {
 
   return (
     <section className="save-share">
-      <Button
-        disabled={!ready}
-        onClick={() => {
-          setHistory(saveReading(shared()));
-          setNotice(t.saved);
-        }}
-      >
-        {t.saveReading}
-      </Button>{' '}
-      <Button disabled={!ready} onClick={copyLink}>
-        {t.copyShareLink}
-      </Button>{' '}
-      <StatusNote>{notice}</StatusNote>
-      {deleted && (
-        <ActionNote
-          actionLabel={t.undo}
-          onAction={() => {
-            setHistory(restoreReading(deleted));
-            setDeleted(null);
+      <div className="actions">
+        <Button
+          disabled={!ready}
+          onClick={() => {
+            saveReading(shared());
+            setNotice(t.saved);
+            setSaved(true);
           }}
-          dismissLabel={t.dismiss}
-          onDismiss={() => setDeleted(null)}
         >
-          {t.savedDeleted}
-        </ActionNote>
-      )}
-      {history.length > 0 && (
-        <details>
-          <summary>{t.savedReadings(history.length)}</summary>
-          <ul>
-            {history.map((e) => (
-              <li key={e.id}>
-                {new Date(e.savedAt).toLocaleString(locale.code)} —{' '}
-                {e.reading.question || t.noQuestion} (
-                {getSpread(e.reading.spreadId)?.name ?? e.reading.spreadId}){' '}
-                <Button onClick={() => s.loadShared(e.reading)}>
-                  {t.open}
-                </Button>{' '}
-                <Button
-                  variant="danger"
-                  onClick={() => {
-                    setHistory(deleteReading(e.id));
-                    setDeleted(e);
-                  }}
-                >
-                  {t.delete}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </details>
-      )}
+          {t.saveReading}
+        </Button>
+        <Button disabled={!ready} onClick={copyLink}>
+          {t.copyShareLink}
+        </Button>
+      </div>
+      <StatusNote>{notice}</StatusNote>
+      {saved && <PageLink page="journal">{t.openJournal}</PageLink>}
     </section>
   );
 }

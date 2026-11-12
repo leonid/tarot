@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useReadingStore } from '../features/store';
-import { Controls } from './Controls';
+import { SpreadControls as Controls } from './Controls';
 import { ReadingView } from './Layout';
 
 const initial = useReadingStore.getState();

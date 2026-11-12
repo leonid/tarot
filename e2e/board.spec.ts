@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('Celtic Cross: the crossing card is readable and does not cover Present', async ({
   page,
 }, testInfo) => {
-  await page.goto('/');
+  await page.goto('/#/reading');
   await page.getByLabel('Spread').selectOption('celtic-cross');
   await page.getByRole('button', { name: 'Shuffle and deal' }).click();
   await expect(page.locator('.board .slot.filled')).toHaveCount(10);
@@ -30,7 +30,7 @@ test('Celtic Cross: the crossing card is readable and does not cover Present', a
 });
 
 test('a reversed card shows the word', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#/reading');
   await page.getByLabel('Spread').selectOption('celtic-cross');
   // Deal until some card is reversed (about half are).
   for (let i = 0; i < 20; i++) {
@@ -47,7 +47,7 @@ for (const width of [360, 600, 1280]) {
     page,
   }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto('/');
+    await page.goto('/#/reading');
     await page.getByLabel('Spread').selectOption('celtic-cross');
     await page.getByRole('button', { name: 'Shuffle and deal' }).click();
     await expect(page.locator('.board .slot.filled')).toHaveCount(10);
@@ -68,8 +68,8 @@ for (const width of [360, 600, 1280]) {
 }
 
 test('setup palette cards use the card face', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('tab', { name: 'Setup' }).click();
+  await page.goto('/#/reading');
+  await page.getByRole('link', { name: 'Record a spread' }).click();
   const first = page.locator('.palette-card').first();
   await expect(first.locator('.card-face-name')).toBeVisible();
 });

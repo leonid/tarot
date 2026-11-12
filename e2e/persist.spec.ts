@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 /** Everything a reading shows that must survive saving and sharing. */
 async function readingState(page: Page) {
   return {
-    mode: await page.getByRole('tab', { selected: true }).textContent(),
+    mode: await page.locator('.nav a[aria-current]').textContent(),
     question: await page.getByLabel('Question').inputValue(),
     deck: await page.getByLabel('Deck').inputValue(),
     spread: await page.getByLabel('Spread').inputValue(),
@@ -17,7 +17,7 @@ async function readingState(page: Page) {
 test('a saved reading survives a reload and opens as it was', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/#/reading');
   await page.getByLabel('Question').fill('Should I move?');
   await page.getByLabel('Spread').selectOption('celtic-cross');
   await page.getByRole('button', { name: 'Shuffle and deal' }).click();
@@ -33,10 +33,11 @@ test('a saved reading survives a reload and opens as it was', async ({
   await expect(page.locator('.board .slot.filled')).toHaveCount(0);
   await expect(page.getByLabel('Question')).toHaveValue('');
 
-  await page.getByText('Saved readings (1)').click();
+  await page.getByRole('link', { name: 'Journal' }).click();
   await expect(
-    page.getByText(/Should I move\? \(Celtic Cross\)/),
+    page.getByRole('heading', { name: 'Should I move?' }),
   ).toBeVisible();
+  await expect(page.getByText(/Celtic Cross/)).toBeVisible();
   await page.getByRole('button', { name: 'Open', exact: true }).click();
 
   await expect(page.locator('.board .slot.filled')).toHaveCount(10);
@@ -61,10 +62,9 @@ test('a copied share link opens the same reading in a fresh browser', async ({
     });
   });
 
-  await page.goto('/');
-  await page.getByRole('tab', { name: 'Setup' }).click();
+  await page.goto('/#/reading');
+  await page.getByRole('link', { name: 'Record a spread' }).click();
   await page.getByLabel('Question').fill('What about "this" & that?');
-  await page.getByText('Place with menus').click();
   await page.getByLabel('Past').selectOption({ label: 'The Fool' });
   await page.getByLabel('Present').selectOption({ label: 'The Tower' });
   await page.getByLabel('Future').selectOption({ label: 'Queen of Cups' });
@@ -83,20 +83,30 @@ test('a copied share link opens the same reading in a fresh browser', async ({
   const other = await browser.newContext();
   const fresh = await other.newPage();
   await fresh.goto(url);
+  // The link opens in its own read-only view and stays in the address bar.
+  await expect(
+    fresh.getByRole('heading', { name: 'A reading shared with you' }),
+  ).toBeVisible();
   await expect(fresh.locator('.board .slot.filled')).toHaveCount(3);
   await expect(fresh.getByRole('alert')).toHaveCount(0);
+  await expect(fresh).toHaveURL(/#r=/);
+  await fresh.reload();
+  await expect(fresh.locator('.board .slot.filled')).toHaveCount(3);
+
+  // Opened on the table, it is the reading that was shared.
+  await fresh.getByRole('button', { name: 'Open it to change it' }).click();
+  await expect(fresh).toHaveURL(/#\/record$/);
   expect(await readingState(fresh)).toEqual(original);
 
-  // The opened link leaves the address bar, so a reload starts fresh and does
-  // not bring the shared reading back over later work.
-  await expect(fresh).not.toHaveURL(/#r=/);
+  // A reload starts fresh and does not bring the shared reading back.
   await fresh.reload();
   await expect(fresh.locator('.board .slot.filled')).toHaveCount(0);
 
   // Pasting the link into the loaded page opens it without a reload.
   await fresh.goto(url);
+  await expect(
+    fresh.getByRole('heading', { name: 'A reading shared with you' }),
+  ).toBeVisible();
   await expect(fresh.locator('.board .slot.filled')).toHaveCount(3);
-  await expect(fresh).not.toHaveURL(/#r=/);
-  expect(await readingState(fresh)).toEqual(original);
   await other.close();
 });

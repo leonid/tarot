@@ -460,3 +460,260 @@ body {
 .app-error h2 {
   margin-top: 0;
 }
+
+/* Shell: the title, the places you can go, then one screen. */
+.app-header h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+.nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: var(--space-3) 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  padding: 0 var(--space-3);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+.nav a:hover {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.nav a[aria-current='page'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+a {
+  color: var(--accent);
+}
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+.page h2 {
+  margin: 0;
+  font-size: var(--text-2xl);
+  line-height: 1.2;
+}
+.page h2:focus {
+  outline: none;
+}
+.lead {
+  max-width: var(--measure);
+  margin: var(--space-1) 0 var(--space-4);
+  font-size: var(--text-lg);
+  color: var(--text-muted);
+}
+.home-intro {
+  color: var(--text);
+}
+
+/* Home: the goals, each one a whole block you can press. */
+.goals {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, calc(var(--aside-w) * 0.6)), 1fr)
+  );
+  gap: var(--space-4);
+  margin: var(--space-4) 0;
+  padding: 0;
+  list-style: none;
+}
+.goal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--space-4);
+  border: var(--border-w-strong) solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+.goal:hover {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.goal-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--accent);
+}
+.goal-title::after {
+  content: ' →';
+}
+
+/* Numbered steps: what to do, in order. */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.step h3,
+.slot-menus h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg);
+}
+.step-n {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: var(--text-sm);
+}
+.step .controls {
+  margin: 0;
+}
+.step p {
+  margin: var(--space-2) 0 0;
+  max-width: var(--measure);
+}
+.step [role='status']:empty {
+  display: none;
+}
+.spread-about,
+.hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+/* The step title already names the field; the label stays for screen readers. */
+.label-hidden > label {
+  position: absolute;
+  width: var(--border-w);
+  height: var(--border-w);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.slot-menus-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(100%, calc(var(--aside-w) * 0.6)), 1fr)
+  );
+  gap: var(--space-2) var(--space-4);
+}
+.slot-menus .field select {
+  max-width: 100%;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.save-share .note,
+.save-share a {
+  display: inline-block;
+  margin: var(--space-2) var(--space-2) 0 0;
+}
+
+/* Journal: one block per saved reading, its actions always in view. */
+.journal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.entry-text {
+  flex: 1 1 var(--aside-w);
+  min-width: 0;
+}
+.entry h3 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+.entry p {
+  margin: var(--space-1) 0 0;
+}
+.entry-cards {
+  font-size: var(--text-sm);
+}
+.empty {
+  max-width: var(--measure);
+}
+.shared-question {
+  max-width: var(--measure);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+}
+.shared-question .meta {
+  display: block;
+  font-family: var(--font-body);
+}
+
+.spread-count {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Wide screens: question and spread side by side, and on the record screen
+   the cards to choose from sit beside the board, so a card and the position
+   it goes to are on screen together. */
+@media (min-width: 56em) {
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-6);
+  }
+  .steps > .step:nth-child(n + 3) {
+    grid-column: 1 / -1;
+  }
+  .record-table {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .record-table > .reading {
+    display: block;
+  }
+  .record-table > .reading > .interpretation {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  .record-table.placing .board {
+    position: sticky;
+    top: var(--space-4);
+  }
+  .record-table .palette {
+    max-height: none;
+  }
+}

@@ -41,8 +41,45 @@ const ui: UiMessages = {
   themeSystem: 'System',
   themeLight: 'Light',
   themeDark: 'Dark',
-  modeSimulate: 'Simulate',
-  modeSetup: 'Setup',
+  navLabel: 'Main',
+  navHome: 'Home',
+  goalReading: 'Get a reading',
+  goalRecord: 'Record a spread',
+  goalJournal: 'Journal',
+  homeIntro:
+    'Tarot as a way to think a question through. Each card is read in its position and against the other cards. For reflection, not prediction or advice.',
+  homeChoose: 'What would you like to do?',
+  goalReadingText:
+    'Ask a question and let the app shuffle and deal. You get a reading of every card in its place.',
+  goalRecordText:
+    'Laid out real cards? Enter them position by position and read the spread.',
+  goalJournalText: (count) =>
+    count === 0
+      ? 'Readings you save are kept here, on this device.'
+      : `Come back to your saved readings (${count}).`,
+  readingPurpose:
+    'Ask, deal, and read what each card says in its position. Three steps.',
+  recordPurpose:
+    'Enter the cards you drew yourself, then read them here. Three steps.',
+  journalPurpose:
+    'Readings you saved, newest first. They are kept on this device only.',
+  stepQuestion: 'Your question',
+  stepQuestionHint:
+    'Optional. Open questions work best: "What should I keep in mind about…?"',
+  stepSpread: 'Choose a spread',
+  stepDeal: 'Deal the cards',
+  stepPlace: 'Place your cards',
+  cardCount: (count) => (count === 1 ? '1 card' : `${count} cards`),
+  journalEmpty:
+    'Nothing saved yet. Finish a reading and press "Save reading" to keep it here.',
+  openJournal: 'Open the journal',
+  sharedTitle: 'A reading shared with you',
+  sharedPurpose:
+    'Someone sent you this reading. It is not saved, and it does not change your own cards.',
+  sharedKeep: 'Keep it in my journal',
+  sharedKept: 'Kept in your journal.',
+  sharedOpen: 'Open it to change it',
+  sharedOwn: 'Start my own reading',
 
   question: 'Question',
   questionPlaceholder: 'What do you want to ask?',
@@ -53,13 +90,13 @@ const ui: UiMessages = {
   shuffleAndDeal: 'Shuffle and deal',
   seed: (seed) => `seed ${seed}`,
 
-  placeWithMenus: 'Place with menus',
+  placeWithMenus: 'Or choose each card from a list',
   chooseCard: '-- choose a card --',
   availableCards: 'Available cards',
   dragInstructions:
     'To pick up a card, press the space bar. While dragging, use the arrow keys to move it. Press space again to drop it on a position, or escape to cancel.',
   placeHint:
-    'Click a card, then click a position to place it. You can also drag a card, or use the menus below.',
+    'Click a card, then click a position to place it. You can also drag a card, or use the lists below.',
   dealt: (count) =>
     `Cards dealt: ${count}. The interpretation is below the board.`,
   cardSelected: (card) =>
@@ -115,7 +152,6 @@ const ui: UiMessages = {
   shareLinkUnknown:
     'This share link uses a deck or spread this version does not have. Your current reading is unchanged.',
   saved: 'Saved.',
-  savedReadings: (count) => `Saved readings (${count})`,
   noQuestion: 'no question',
   open: 'Open',
   delete: 'Delete',

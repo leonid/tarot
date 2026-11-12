@@ -75,7 +75,9 @@ describe('ErrorBoundary (M1.12)', () => {
     );
     broken = false;
     await userEvent.click(screen.getByRole('button', { name: 'Start over' }));
-    await userEvent.click(screen.getByText('Shuffle and deal'));
+    // Starting over lands on the home screen.
+    await userEvent.click(screen.getByRole('link', { name: 'Get a reading' }));
+    await userEvent.click(await screen.findByText('Shuffle and deal'));
     expect(await screen.findByText('Interpretation')).toBeInTheDocument();
   });
 });
