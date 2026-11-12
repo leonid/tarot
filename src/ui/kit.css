@@ -56,6 +56,20 @@
   padding: var(--space-1) var(--space-2);
   min-height: var(--target);
 }
+/* Drawn by the page, not the system: a native menu ignores min-height on
+   Safari, which made it a 24 px target on a phone. */
+.field select {
+  appearance: none;
+  padding-inline-end: calc(var(--space-2) * 2 + 0.75em);
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - var(--space-2) - 0.75em) 55%,
+    calc(100% - var(--space-2) - 0.375em) 55%;
+  background-size: 0.375em 0.375em;
+  background-repeat: no-repeat;
+}
 .field input:disabled,
 .field select:disabled {
   opacity: var(--opacity-disabled);

@@ -171,7 +171,11 @@ body {
 }
 .slot.hinge {
   position: relative;
-  border: var(--border-w-strong) solid var(--gold);
+  /* The heavier line is drawn inside, so the hinge does not grow the grid. */
+  border-color: var(--gold);
+  border-style: solid;
+  box-shadow: inset 0 0 0 calc(var(--border-w-strong) - var(--border-w))
+    var(--gold);
 }
 /* The hinge badge sits on the border, so it takes no room in the position. */
 .slot > .chip-hinge {
