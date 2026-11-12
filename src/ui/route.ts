@@ -1,12 +1,20 @@
 import { useSyncExternalStore } from 'react';
 
 /** The screens of the app. Each is one goal; the hash names it. */
-export const PAGES = ['home', 'reading', 'record', 'journal', 'cards'] as const;
+export const PAGES = [
+  'home',
+  'reading',
+  'record',
+  'journal',
+  'cards',
+  'about',
+] as const;
 export type Page = (typeof PAGES)[number];
 
 /**
  * `#/reading` and the like; home is the bare address. `sub` names one thing
- * on the page: `#/cards/cups-12-queen` is one card of the library.
+ * on the page: `#/cards/cups-12-queen` is one card of the library,
+ * `#/about/sources` one section of the about page.
  */
 export const hrefOf = (page: Page, sub?: string): string =>
   page === 'home' ? '#/' : sub ? `#/${page}/${sub}` : `#/${page}`;
@@ -17,7 +25,7 @@ const ROUTE = /^#\/([a-z]+)(?:\/([a-z0-9-]+))?$/;
 export function pageOf(hash: string): Page | null {
   if (hash === '' || hash === '#' || hash === '#/') return 'home';
   const m = ROUTE.exec(hash);
-  if (m?.[2] && m[1] !== 'cards') return null;
+  if (m?.[2] && m[1] !== 'cards' && m[1] !== 'about') return null;
   return PAGES.find((p) => p === m?.[1]) ?? null;
 }
 

@@ -77,6 +77,36 @@ const ui: UiMessages = {
     `${placed} of ${total} cards placed. Each card is read as you place it; how they connect appears when every position has a card.`,
   homeIntro:
     'Tarot as a way to think a question through. Each card is read in its position and against the other cards. For reflection, not prediction or advice.',
+  homeDraw: 'Deal a reading now',
+  homeDrawHint: (spread, cards) =>
+    `One tap: ${spread}, ${cards} cards. You can add a question afterwards.`,
+  homeContinue: 'Continue your reading',
+  footerNote: 'For reflection, not prediction or advice.',
+  footerLabel: 'About this app',
+  aboutTitle: 'About',
+  aboutWhatTitle: 'What this is',
+  aboutWhat: [
+    'A place to lay out tarot cards and read them: deal a spread, or enter the cards you drew yourself. Each card is read in its position and against the other cards, and the reading says how it got there.',
+    'The reading is written by fixed rules in your browser. The same cards in the same positions always give the same text.',
+    'Tarot here is a way to think a question through. It does not predict events, and it is not medical, legal, financial or psychological advice.',
+  ],
+  aboutSourcesTitle: 'Sources',
+  aboutSources: [
+    'Pictures: the 1909 Rider-Waite-Smith deck drawn by Pamela Colman Smith, from scans of a first-edition deck on Wikimedia Commons. They are in the public domain.',
+    'Meanings: written for this app. The second set of meanings restates A. E. Waite, The Pictorial Key to the Tarot (1911), in our own words.',
+    'Elements, planets, signs and decans follow the Golden Dawn attributions (Book T).',
+  ],
+  aboutPrivacyTitle: 'Your readings',
+  aboutPrivacy: [
+    'Saved readings stay in this browser, on this device. There is no account, and nothing is sent anywhere when you deal, record or save.',
+    'A share link holds the whole reading, your question included, inside the link itself. Anyone with the link can read it.',
+    'If the AI reader is offered and you switch it on, your question and cards are sent to our server and to Anthropic to write the text. It is off unless you turn it on.',
+  ],
+  aboutLicenceTitle: 'Licence',
+  aboutLicence: [
+    'The card pictures are in the public domain and free to reuse.',
+    'No open licence has been chosen yet for the code and the texts of this app.',
+  ],
   homeChoose: 'What would you like to do?',
   goalReadingText:
     'Ask a question and let the app shuffle and deal. You get a reading of every card in its place.',

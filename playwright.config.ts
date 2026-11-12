@@ -12,6 +12,8 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
+    // Cards turn over when dealt; tests measure the board once it is still.
+    contextOptions: { reducedMotion: 'reduce' },
   },
   projects: [
     {

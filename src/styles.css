@@ -148,12 +148,6 @@ body {
 }
 .board:not(.stacked)
   .cell.crossed:not(:has(.card-face:not(.card-image)))
-  > .slot:not(.crossing)
-  .chip {
-  order: -1;
-}
-.board:not(.stacked)
-  .cell.crossed:not(:has(.card-face:not(.card-image)))
   > .slot.crossing {
   position: absolute;
   left: calc(-1 * var(--space-1));
@@ -175,7 +169,16 @@ body {
   width: 100%;
 }
 .slot.hinge {
+  position: relative;
   border: var(--border-w-strong) solid var(--gold);
+}
+/* The hinge badge sits on the border, so it takes no room in the position. */
+.slot > .chip-hinge {
+  position: absolute;
+  top: 0;
+  right: var(--space-2);
+  transform: translateY(-50%);
+  z-index: 1;
 }
 .slot-empty {
   color: var(--text-muted);
@@ -969,4 +972,66 @@ a.btn {
 }
 .palette-none {
   margin: var(--space-2);
+}
+
+/* A dealt card turns face up, one after another. Not while placing cards by
+   hand, and not at all when the visitor asked for less motion (the durations
+   are then zero). */
+@keyframes card-turn {
+  from {
+    transform: perspective(40em) rotateY(90deg);
+  }
+  to {
+    transform: none;
+  }
+}
+.board:not(.stacked) .slot > .card-face {
+  animation: card-turn var(--dur-reveal) var(--ease) backwards;
+  animation-delay: calc(var(--i) * var(--reveal-step));
+}
+
+/* Home: one tap to a first reading. */
+.home-start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-4) 0 var(--space-6);
+}
+.home-start .btn {
+  font-size: var(--text-lg);
+  padding: var(--space-2) var(--space-5);
+}
+.home-start .meta {
+  margin: 0;
+}
+
+/* The footer: what the app is for, and where to read more. */
+.app-footer {
+  margin-top: var(--space-7);
+  padding: var(--space-4) 0;
+  border-top: var(--border-w) solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+.app-footer p {
+  margin: 0 0 var(--space-2);
+}
+.app-footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.app-footer a {
+  display: inline-block;
+  padding: var(--space-2) 0;
+}
+.about {
+  max-width: var(--measure);
+}
+.about h3 {
+  margin: var(--space-5) 0 var(--space-2);
 }

@@ -6,6 +6,7 @@ import { Journal } from './ui/Journal';
 import { SharedView } from './ui/SharedView';
 import { navigate, pageOf, subOf, useHash, type Page } from './ui/route';
 import { Cards } from './ui/Cards';
+import { About } from './ui/About';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { decodeSharedResult, type SharedReading } from './domain/share';
 import { locales } from './content/locales';
@@ -41,6 +42,7 @@ export function App() {
   if (named && named !== last) setLast(named);
   const page = named ?? last;
   const cardId = page === 'cards' && named ? subOf(hash) : undefined;
+  const section = page === 'about' && named ? subOf(hash) : undefined;
 
   // A share link (#r=...) is shown in its own read-only view and stays in the
   // address bar, so it can be reloaded or passed on. A link that cannot be
@@ -77,6 +79,7 @@ export function App() {
         reading: t.goalReading,
         record: t.goalRecord,
         journal: t.goalJournal,
+        about: t.aboutTitle,
         cards:
           getDeck(deckId)?.cards.find((c) => c.id === cardId)?.name ??
           t.goalCards,
@@ -90,16 +93,19 @@ export function App() {
 
   // After a move to another screen, focus goes to its heading, so keyboard
   // and screen reader users start where the new content starts.
-  const screen = shared ? 'shared' : `${page}/${cardId ?? ''}`;
+  const screen = shared ? 'shared' : `${page}/${cardId ?? section ?? ''}`;
   const shown = useRef(screen);
   useEffect(() => {
     if (screen === shown.current) return;
     shown.current = screen;
-    document.querySelector<HTMLElement>('.page h2')?.focus();
+    (
+      document.querySelector<HTMLElement>('.page [data-focus]') ??
+      document.querySelector<HTMLElement>('.page h2')
+    )?.focus();
   }, [screen]);
 
   return (
-    <main className="app">
+    <div className="app">
       <header className="app-header">
         <h1>
           <PageLink page="home">{t.appTitle}</PageLink>
@@ -146,48 +152,77 @@ export function App() {
         </div>
       </header>
       <Nav page={shared ? null : page} />
-      {link && 'error' in link && (
-        <Alert
-          dismissLabel={t.dismiss}
-          onDismiss={() => navigate(last, { replace: true })}
-        >
-          {
+      <main>
+        {link && 'error' in link && (
+          <Alert
+            dismissLabel={t.dismiss}
+            onDismiss={() => navigate(last, { replace: true })}
+          >
             {
-              malformed: t.shareLinkMalformed,
-              newer: t.shareLinkNewer,
-              unknown: t.shareLinkUnknown,
-            }[link.error]
-          }
-        </Alert>
-      )}
-      {undo && (
-        <ActionNote
-          actionLabel={t.undo}
-          onAction={() => {
-            navigate(pageOfMode(undo.mode), { replace: true });
-            undoLast();
-          }}
-          dismissLabel={t.dismiss}
-          onDismiss={dismissUndo}
-        >
-          {undo.kind === 'cleared' ? t.readingCleared : t.readingReplaced}
-        </ActionNote>
-      )}
-      <div className="page">
-        {shared ? (
-          <SharedView key={hash} reading={shared} />
-        ) : page === 'home' ? (
-          <Home />
-        ) : page === 'journal' ? (
-          <Journal />
-        ) : page === 'cards' ? (
-          <Cards cardId={cardId} />
-        ) : mode !== wanted ? null : page === 'record' ? (
-          <SetupView />
-        ) : (
-          <SimulateView />
+              {
+                malformed: t.shareLinkMalformed,
+                newer: t.shareLinkNewer,
+                unknown: t.shareLinkUnknown,
+              }[link.error]
+            }
+          </Alert>
         )}
-      </div>
-    </main>
+        {undo && (
+          <ActionNote
+            actionLabel={t.undo}
+            onAction={() => {
+              navigate(pageOfMode(undo.mode), { replace: true });
+              undoLast();
+            }}
+            dismissLabel={t.dismiss}
+            onDismiss={dismissUndo}
+          >
+            {undo.kind === 'cleared' ? t.readingCleared : t.readingReplaced}
+          </ActionNote>
+        )}
+        <div className="page">
+          {shared ? (
+            <SharedView key={hash} reading={shared} />
+          ) : page === 'home' ? (
+            <Home />
+          ) : page === 'journal' ? (
+            <Journal />
+          ) : page === 'cards' ? (
+            <Cards cardId={cardId} />
+          ) : page === 'about' ? (
+            <About section={section} />
+          ) : mode !== wanted ? null : page === 'record' ? (
+            <SetupView />
+          ) : (
+            <SimulateView />
+          )}
+        </div>
+      </main>
+      <footer className="app-footer">
+        <p>{t.footerNote}</p>
+        <nav aria-label={t.footerLabel}>
+          <ul>
+            <li>
+              <PageLink page="about">{t.aboutTitle}</PageLink>
+            </li>
+            <li>
+              <PageLink page="about" sub="sources">
+                {t.aboutSourcesTitle}
+              </PageLink>
+            </li>
+            <li>
+              <PageLink page="about" sub="privacy">
+                {t.aboutPrivacyTitle}
+              </PageLink>
+            </li>
+            <li>
+              <PageLink page="about" sub="licence">
+                {t.aboutLicenceTitle}
+              </PageLink>
+            </li>
+          </ul>
+        </nav>
+      </footer>
+    </div>
   );
 }

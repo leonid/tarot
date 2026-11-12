@@ -70,6 +70,8 @@ export function SpreadBoard({
                 card,
                 orientation: placed?.orientation,
                 hinge: !!card && card.id === hingeCardId,
+                // The order the cards are turned in when a reading is dealt.
+                index: spread.positions.indexOf(pos),
                 onFlip,
                 onRemove,
               };
@@ -94,6 +96,7 @@ interface SlotProps {
   setRef?: (el: HTMLElement | null) => void;
   over?: boolean;
   hinge?: boolean;
+  index?: number;
   armedCard?: Card;
   onSlotClick?: (positionId: string) => void;
   onFlip?: (positionId: string) => void;
@@ -108,6 +111,7 @@ function Slot({
   setRef,
   over,
   hinge,
+  index = 0,
   armedCard,
   onSlotClick,
   onFlip,
@@ -120,6 +124,7 @@ function Slot({
       ref={setRef}
       className={`slot${card ? ' filled' : ''}${over ? ' over' : ''}${pos.rotated ? ' crossing' : ''}${hinge ? ' hinge' : ''}${armedCard ? ' armed' : ''}`}
       data-position={pos.id}
+      style={{ '--i': index } as React.CSSProperties}
       {...(armedCard
         ? {
             role: 'button',
@@ -137,7 +142,13 @@ function Slot({
     >
       <span className="slot-label">{pos.label}</span>
       {card ? (
-        <CardImage deckId={deckId} card={card} orientation={orientation} />
+        // Keyed by card, so a newly dealt card is turned over afresh.
+        <CardImage
+          key={card.id}
+          deckId={deckId}
+          card={card}
+          orientation={orientation}
+        />
       ) : (
         <span className="slot-empty">{t.slotEmpty}</span>
       )}

@@ -51,7 +51,7 @@ describe('locale switching', () => {
     expect(found).toEqual([]);
   });
 
-  it.each(['#/', '#/journal', '#/cards', '#/cards/cups-13-queen'])(
+  it.each(['#/', '#/journal', '#/cards', '#/cards/cups-13-queen', '#/about'])(
     'leaves no English on screen at %s',
     (hash) => {
       useReadingStore.setState({ locale: 'en-XA' });

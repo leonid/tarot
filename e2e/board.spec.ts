@@ -6,12 +6,16 @@ test('Celtic Cross: the crossing card lies across Present and both stay readable
   await page.goto('/#/reading');
   await page.getByLabel('Spread').selectOption('celtic-cross');
   const empty = (await page.locator('.board').boundingBox())!;
-  await page.getByRole('button', { name: 'Shuffle and deal' }).click();
-  await expect(page.locator('.board .slot.filled')).toHaveCount(10);
-  // The grid is the same size empty and filled: nothing moves on dealing.
-  const dealt = (await page.locator('.board').boundingBox())!;
-  expect(dealt.width).toBeCloseTo(empty.width, 0);
-  expect(dealt.height).toBeCloseTo(empty.height, 0);
+  // The grid is the same size empty and filled, whatever is dealt: nothing
+  // moves on dealing.
+  for (let i = 0; i < 6; i++) {
+    await page.getByRole('button', { name: 'Shuffle and deal' }).click();
+    await expect(page.locator('.board .slot.filled')).toHaveCount(10);
+    await expect(page.locator('.interpretation .advice')).toBeVisible();
+    const dealt = (await page.locator('.board').boundingBox())!;
+    expect(dealt.width).toBeCloseTo(empty.width, 0);
+    expect(dealt.height).toBeCloseTo(empty.height, 0);
+  }
 
   const present = page.locator('[data-position="present"]');
   const challenge = page.locator('[data-position="challenge"]');

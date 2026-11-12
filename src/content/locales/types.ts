@@ -52,6 +52,22 @@ export interface UiMessages {
   partialReading(placed: number, total: number): string;
   /** Home: what the app is, then one sentence per goal. */
   homeIntro: string;
+  /** Home: one tap to a dealt reading. */
+  homeDraw: string;
+  homeDrawHint(spread: string, cards: number): string;
+  homeContinue: string;
+  /** Footer and the about page. */
+  footerNote: string;
+  footerLabel: string;
+  aboutTitle: string;
+  aboutWhatTitle: string;
+  aboutWhat: readonly string[];
+  aboutSourcesTitle: string;
+  aboutSources: readonly string[];
+  aboutPrivacyTitle: string;
+  aboutPrivacy: readonly string[];
+  aboutLicenceTitle: string;
+  aboutLicence: readonly string[];
   homeChoose: string;
   goalReadingText: string;
   goalRecordText: string;

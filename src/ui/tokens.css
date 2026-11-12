@@ -58,9 +58,9 @@
   --content-max: 52rem;
   --content-wide: 76rem;
   --aside-w: 26rem;
-  /* A position is as tall empty as filled: label, picture, a name of two
-     lines and the word "reversed". The crossing card lies on its side. */
-  --slot-text-h: 6.5rem;
+  /* A position is as tall empty as filled: label, picture, a label and a name of two
+     lines each and the word "reversed". The crossing card lies on its side. */
+  --slot-text-h: 7.75rem;
   --slot-min-h: calc(
     (var(--card-w) - var(--space-4)) * 1.75 + var(--slot-text-h)
   );
@@ -72,6 +72,9 @@
   /* Motion */
   --dur-fast: 120ms;
   --dur-slow: 240ms;
+  /* A dealt card turning face up, and the pause before the next one. */
+  --dur-reveal: 420ms;
+  --reveal-step: 110ms;
   --ease: ease-out;
 }
 
@@ -120,6 +123,8 @@
   :root {
     --dur-fast: 0ms;
     --dur-slow: 0ms;
+    --dur-reveal: 0ms;
+    --reveal-step: 0ms;
   }
 }
 /* Phones: smaller cards so the 4-column Celtic Cross fits 360px. */

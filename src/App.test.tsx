@@ -343,6 +343,80 @@ describe('click to place', () => {
   });
 });
 
+describe('the first visit (R11)', () => {
+  const home = () => {
+    history.replaceState(null, '', '#/');
+    return render(<App />);
+  };
+
+  it('says what the app is and deals a reading in one tap', async () => {
+    const { container } = home();
+    expect(
+      screen.getByText(/For reflection, not prediction or advice\.$/, {
+        selector: '.home-intro',
+      }),
+    ).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Deal a reading now' }),
+    );
+    expect(location.hash).toBe('#/reading');
+    expect(container.querySelectorAll('.slot.filled')).toHaveLength(3);
+    expect(useReadingStore.getState().mode).toBe('simulate');
+  });
+
+  it('offers to continue a reading that is on the table, and keeps it', async () => {
+    useReadingStore.getState().dealRandom(7);
+    const dealt = useReadingStore.getState().placements;
+    home();
+    expect(
+      screen.queryByRole('button', { name: 'Deal a reading now' }),
+    ).toBeNull();
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Continue your reading' }),
+    );
+    expect(location.hash).toBe('#/reading');
+    expect(useReadingStore.getState().placements).toEqual(dealt);
+  });
+
+  it('has a footer on every screen that leads to about, sources and licence', async () => {
+    home();
+    const footer = within(screen.getByRole('contentinfo'));
+    expect(
+      footer.getByText('For reflection, not prediction or advice.'),
+    ).toBeInTheDocument();
+    expect(
+      footer.getAllByRole('link').map((a) => a.getAttribute('href')),
+    ).toEqual([
+      '#/about',
+      '#/about/sources',
+      '#/about/privacy',
+      '#/about/licence',
+    ]);
+    await userEvent.click(footer.getByRole('link', { name: 'Sources' }));
+    expect(document.title).toBe('About · Tarot');
+    const heading = screen.getByRole('heading', { name: 'Sources' });
+    expect(heading).toHaveFocus();
+    expect(screen.getByText(/Pamela Colman Smith/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/public domain and free to reuse/),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/stay in this browser/)).toBeInTheDocument();
+  });
+
+  it('gives each dealt card its turn in the reveal', async () => {
+    history.replaceState(null, '', '#/reading');
+    const { container } = render(<App />);
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Shuffle and deal' }),
+    );
+    expect(
+      [...container.querySelectorAll<HTMLElement>('.slot')].map((el) =>
+        el.style.getPropertyValue('--i'),
+      ),
+    ).toEqual(['0', '1', '2']);
+  });
+});
+
 describe('recording a spread (R9)', () => {
   const start = () => {
     history.replaceState(null, '', '#/record');

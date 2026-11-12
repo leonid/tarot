@@ -16,6 +16,13 @@ const views: [string, (page: Page) => Promise<void>][] = [
     },
   ],
   [
+    'about',
+    async (page) => {
+      await page.goto('/#/about');
+      await page.getByRole('heading', { name: 'Sources' }).waitFor();
+    },
+  ],
+  [
     'one card',
     async (page) => {
       await page.goto('/#/cards/swords-03-three');
