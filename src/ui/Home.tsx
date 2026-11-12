@@ -11,6 +11,7 @@ export function Home() {
   const goals: [Page, string, string][] = [
     ['reading', t.goalReading, t.goalReadingText],
     ['record', t.goalRecord, t.goalRecordText],
+    ['cards', t.goalCards, t.goalCardsText],
     ['journal', t.goalJournal, t.goalJournalText(saved)],
   ];
   return (

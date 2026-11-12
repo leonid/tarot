@@ -7,6 +7,7 @@ import type { SharedReading } from '../domain/share';
 import { SpreadBoard } from './SpreadBoard';
 import { useI18n } from './i18n';
 import { Button } from './kit';
+import { PageLink } from './Nav';
 import { useInterpretation } from './useInterpretation';
 import { useProvider } from './useProvider';
 
@@ -157,6 +158,13 @@ export function ReadingView({
                             )}
                           </dl>
                         </details>
+                      )}
+                      {card && (
+                        <p className="note-more">
+                          <PageLink page="cards" sub={card.id}>
+                            {t.cardAbout(card.name)}
+                          </PageLink>
+                        </p>
                       )}
                     </li>
                   );

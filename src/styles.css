@@ -601,6 +601,7 @@ a.btn {
   font-size: var(--text-sm);
 }
 /* The step title already names the field; the label stays for screen readers. */
+.visually-hidden,
 .label-hidden > label {
   position: absolute;
   width: var(--border-w);
@@ -716,4 +717,105 @@ a.btn {
   .record-table .palette {
     max-height: none;
   }
+}
+
+/* The card library and a card's own page. */
+.cards-search input {
+  width: 100%;
+  max-width: var(--aside-w);
+  box-sizing: border-box;
+}
+.card-group h3 {
+  margin: var(--space-4) 0 var(--space-2);
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card-link {
+  display: block;
+  padding: var(--space-1);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+.card-link:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.card-page {
+  display: grid;
+  gap: var(--space-6);
+}
+.card-page-art {
+  width: min(70%, calc(var(--card-w) * 2.5));
+  margin: 0 auto;
+}
+.card-page-art .card-face-name {
+  display: none;
+}
+@media (min-width: 48em) {
+  .card-page {
+    grid-template-columns: calc(var(--card-w) * 2.5) minmax(0, 1fr);
+    align-items: start;
+  }
+  .card-page-art {
+    width: auto;
+    margin: 0;
+    position: sticky;
+    top: var(--space-4);
+  }
+}
+.card-page-text {
+  max-width: 44em;
+}
+.chips,
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+  padding: 0;
+  list-style: none;
+}
+.card-side h3 {
+  margin: var(--space-4) 0 var(--space-1);
+}
+.card-side p {
+  margin: 0;
+}
+.card-waite {
+  margin: 0;
+}
+.card-waite dt {
+  font-weight: 600;
+  margin-top: var(--space-2);
+}
+.card-waite dd {
+  margin: 0;
+}
+.card-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: var(--border-w) solid var(--border);
+}
+.card-prev::before {
+  content: '← ';
+}
+.card-next::after {
+  content: ' →';
+}
+.note-more {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
 }

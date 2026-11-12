@@ -32,7 +32,7 @@ describe('finding your way (R18)', () => {
       .getAllByRole('link')
       .filter((a) => a.classList.contains('goal'))
       .map((a) => a.getAttribute('href'));
-    expect(goals).toEqual(['#/reading', '#/record', '#/journal']);
+    expect(goals).toEqual(['#/reading', '#/record', '#/cards', '#/journal']);
     expect(screen.queryByLabelText('Question')).toBeNull();
   });
 
@@ -86,6 +86,86 @@ describe('finding your way (R18)', () => {
     expect(screen.getByRole('heading', { name: 'kept?' })).toBeInTheDocument();
     localStorage.clear();
     useReadingStore.getState().setQuestion('');
+  });
+});
+
+describe('learning the cards (R8)', () => {
+  it('lists all 78 cards in groups and narrows them by name or keyword', async () => {
+    history.replaceState(null, '', '#/cards');
+    const { container } = render(<App />);
+    expect(container.querySelectorAll('.card-link')).toHaveLength(78);
+    expect(
+      screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent),
+    ).toEqual(['Major Arcana', 'Wands', 'Cups', 'Swords', 'Pentacles']);
+
+    const search = screen.getByLabelText('Find a card');
+    await userEvent.type(search, 'queen');
+    expect(container.querySelectorAll('.card-link')).toHaveLength(4);
+    expect(screen.getByRole('status')).toHaveTextContent('4 of 78 cards');
+
+    // A keyword of a meaning finds the card too.
+    await userEvent.clear(search);
+    await userEvent.type(search, 'beginnings');
+    expect(
+      container.querySelector('.card-link[href="#/cards/major-00-fool"]'),
+    ).not.toBeNull();
+
+    await userEvent.clear(search);
+    await userEvent.type(search, 'zzzz');
+    expect(container.querySelectorAll('.card-link')).toHaveLength(0);
+    expect(screen.getByRole('status')).toHaveTextContent('No card matches');
+    await userEvent.clear(search);
+  });
+
+  it('shows one card with both meanings, its parts and Waite', async () => {
+    history.replaceState(null, '', '#/cards');
+    const { container } = render(<App />);
+    await userEvent.click(
+      container.querySelector('.card-link[href="#/cards/cups-13-queen"]')!,
+    );
+    expect(location.hash).toBe('#/cards/cups-13-queen');
+    const title = screen.getByRole('heading', { level: 2 });
+    expect(title).toHaveTextContent('Queen of Cups');
+    expect(title).toHaveFocus();
+    expect(document.title).toBe('Queen of Cups · Tarot');
+    expect(container.querySelector('.card-page-art img')).not.toBeNull();
+    expect(
+      screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent),
+    ).toEqual(['Upright', 'Reversed', 'What it is built from', 'Waite, 1911']);
+    expect(container.querySelector('.chip-water')).not.toBeNull();
+    expect(container.querySelectorAll('.keywords li').length).toBeGreaterThan(
+      3,
+    );
+
+    // Next and previous walk the deck; the list is one step away.
+    await userEvent.click(screen.getByRole('link', { name: /King of Cups/ }));
+    expect(location.hash).toBe('#/cards/cups-14-king');
+    expect(screen.getByRole('heading', { level: 2 })).toHaveFocus();
+    await userEvent.click(screen.getByRole('link', { name: 'All cards' }));
+    expect(location.hash).toBe('#/cards');
+    expect(
+      screen.getByRole('link', { name: 'Learn the cards' }),
+    ).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('says so when the address names no card', () => {
+    history.replaceState(null, '', '#/cards/no-such-card');
+    render(<App />);
+    expect(screen.getByText(/There is no such card/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'All cards' })).toBeVisible();
+  });
+
+  it('links each card of a reading to its page', async () => {
+    render(<App />);
+    await userEvent.click(screen.getByText('Shuffle and deal'));
+    await screen.findByText('Interpretation');
+    const more = screen.getAllByRole('link', { name: /^More about / });
+    expect(more).toHaveLength(3);
+    expect(more[0]!.getAttribute('href')).toMatch(/^#\/cards\/[a-z0-9-]+$/);
+    // The reading is still there after a look at the card.
+    await userEvent.click(more[0]!);
+    await userEvent.click(screen.getByRole('link', { name: 'Get a reading' }));
+    expect(await screen.findByText('Interpretation')).toBeInTheDocument();
   });
 });
 

@@ -1,4 +1,9 @@
-import type { CardMeaning, SchoolTable, Spread } from '../../domain/types';
+import type {
+  CardMeaning,
+  SchoolTable,
+  Spread,
+  Suit,
+} from '../../domain/types';
 import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
 
@@ -17,6 +22,25 @@ export interface UiMessages {
   goalReading: string;
   goalRecord: string;
   goalJournal: string;
+  goalCards: string;
+  goalCardsText: string;
+  /** The card library and a card's own page. */
+  cardsPurpose: string;
+  cardsSearch: string;
+  cardsSearchHint: string;
+  cardsNone: string;
+  cardsShown(shown: number, total: number): string;
+  groupMajor: string;
+  suits: Record<Suit, string>;
+  upright: string;
+  /** Heading over the card read from its number, element, planet and sign. */
+  cardParts: string;
+  cardAllCards: string;
+  cardPrevious: string;
+  cardNext: string;
+  /** Link from a card's note in a reading to the card's own page. */
+  cardAbout(card: string): string;
+  cardUnknown: string;
   /** Home: what the app is, then one sentence per goal. */
   homeIntro: string;
   homeChoose: string;

@@ -51,12 +51,16 @@ describe('locale switching', () => {
     expect(found).toEqual([]);
   });
 
-  it.each(['#/', '#/journal'])('leaves no English on screen at %s', (hash) => {
-    useReadingStore.setState({ locale: 'en-XA' });
-    history.replaceState(null, '', hash);
-    const { container } = render(<App />);
-    expect(leaks(container)).toEqual([]);
-  });
+  it.each(['#/', '#/journal', '#/cards', '#/cards/cups-13-queen'])(
+    'leaves no English on screen at %s',
+    (hash) => {
+      useReadingStore.setState({ locale: 'en-XA' });
+      history.replaceState(null, '', hash);
+      const { container } = render(<App />);
+      const found = leaks(container).filter((t) => !/^(\d+|[IVX]+)$/.test(t));
+      expect(found).toEqual([]);
+    },
+  );
 
   it('ignores an unknown locale code', () => {
     useReadingStore.getState().setLocale('xx');

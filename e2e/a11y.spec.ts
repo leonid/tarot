@@ -9,6 +9,20 @@ const views: [string, (page: Page) => Promise<void>][] = [
     },
   ],
   [
+    'card library',
+    async (page) => {
+      await page.getByRole('link', { name: 'Learn the cards' }).click();
+      await page.locator('.card-link').first().waitFor();
+    },
+  ],
+  [
+    'one card',
+    async (page) => {
+      await page.goto('/#/cards/swords-03-three');
+      await page.getByRole('heading', { name: 'Three of Swords' }).waitFor();
+    },
+  ],
+  [
     'journal, one saved reading',
     async (page) => {
       await page.getByRole('button', { name: 'Shuffle and deal' }).click();

@@ -4,7 +4,8 @@ import { SetupView } from './features/setup/SetupView';
 import { Home } from './ui/Home';
 import { Journal } from './ui/Journal';
 import { SharedView } from './ui/SharedView';
-import { navigate, pageOf, useHash, type Page } from './ui/route';
+import { navigate, pageOf, subOf, useHash, type Page } from './ui/route';
+import { Cards } from './ui/Cards';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { decodeSharedResult, type SharedReading } from './domain/share';
 import { locales } from './content/locales';
@@ -29,6 +30,7 @@ export function App() {
   const undo = useReadingStore((s) => s.undo);
   const undoLast = useReadingStore((s) => s.undoLast);
   const dismissUndo = useReadingStore((s) => s.dismissUndo);
+  const deckId = useReadingStore((s) => s.deckId);
   const { locale, t, getDeck, getSpread } = useI18n();
 
   // The hash names the screen. A hash that names none (a share link, or
@@ -38,6 +40,7 @@ export function App() {
   const [last, setLast] = useState<Page>(named ?? 'home');
   if (named && named !== last) setLast(named);
   const page = named ?? last;
+  const cardId = page === 'cards' && named ? subOf(hash) : undefined;
 
   // A share link (#r=...) is shown in its own read-only view and stays in the
   // address bar, so it can be reloaded or passed on. A link that cannot be
@@ -74,6 +77,9 @@ export function App() {
         reading: t.goalReading,
         record: t.goalRecord,
         journal: t.goalJournal,
+        cards:
+          getDeck(deckId)?.cards.find((c) => c.id === cardId)?.name ??
+          t.goalCards,
       }[page];
   useEffect(() => {
     document.documentElement.lang = locale.code;
@@ -84,7 +90,7 @@ export function App() {
 
   // After a move to another screen, focus goes to its heading, so keyboard
   // and screen reader users start where the new content starts.
-  const screen = shared ? 'shared' : page;
+  const screen = shared ? 'shared' : `${page}/${cardId ?? ''}`;
   const shown = useRef(screen);
   useEffect(() => {
     if (screen === shown.current) return;
@@ -174,6 +180,8 @@ export function App() {
           <Home />
         ) : page === 'journal' ? (
           <Journal />
+        ) : page === 'cards' ? (
+          <Cards cardId={cardId} />
         ) : mode !== wanted ? null : page === 'record' ? (
           <SetupView />
         ) : (
