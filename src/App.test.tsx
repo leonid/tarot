@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import { encodeShared } from './domain/share';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from './App';
 import { useReadingStore } from './features/store';
 
@@ -542,5 +542,63 @@ describe('the board leads to the reading (R12)', () => {
       screen.queryByRole('link', { name: 'Go to the interpretation' }),
     ).toBeNull();
     expect(container.querySelector('.slot-card')).toBeNull();
+  });
+});
+
+describe('saving a reading (R13)', () => {
+  beforeEach(() => localStorage.removeItem('tarot.history.v1'));
+  const dealt = () => {
+    useReadingStore.getState().dealRandom(11);
+    history.replaceState(null, '', '#/reading');
+    return render(<App />);
+  };
+
+  it('shows the reading is saved, and does not save it twice', async () => {
+    dealt();
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Save reading' }),
+    );
+    expect(screen.getByText('Saved in your journal.')).toBeInTheDocument();
+    const saved = screen.getByRole('button', { name: 'Saved ✓' });
+    expect(saved).toBeDisabled();
+    expect(
+      screen.getByRole('link', { name: 'Open the journal' }),
+    ).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('tarot.history.v1')!)).toHaveLength(
+      1,
+    );
+  });
+
+  it('can save again once the reading has changed', async () => {
+    dealt();
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Save reading' }),
+    );
+    act(() => useReadingStore.getState().dealRandom(12));
+    expect(
+      await screen.findByRole('button', { name: 'Save reading' }),
+    ).toBeEnabled();
+  });
+
+  it('says so when storage is full', async () => {
+    dealt();
+    const spy = vi
+      .spyOn(Storage.prototype, 'setItem')
+      .mockImplementation(() => {
+        throw new DOMException('no', 'QuotaExceededError');
+      });
+    try {
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save reading' }),
+      );
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        /no room left for the app/,
+      );
+      expect(
+        screen.getByRole('button', { name: 'Save reading' }),
+      ).toBeEnabled();
+    } finally {
+      spy.mockRestore();
+    }
   });
 });

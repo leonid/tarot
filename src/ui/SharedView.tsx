@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { SharedReading } from '../domain/share';
-import { saveReading } from '../features/history';
+import { isSaved, saveReading, type StorageProblem } from '../features/history';
+import { StorageAlert } from './StorageAlert';
 import { useReadingStore } from '../features/store';
 import { useI18n } from './i18n';
 import { Button, PageHead, StatusNote } from './kit';
@@ -14,7 +15,8 @@ import { navigate } from './route';
  */
 export function SharedView({ reading }: { reading: SharedReading }) {
   const loadShared = useReadingStore((s) => s.loadShared);
-  const [kept, setKept] = useState(false);
+  const [kept, setKept] = useState(() => isSaved(reading));
+  const [problem, setProblem] = useState<StorageProblem>();
   const { t } = useI18n();
   return (
     <>
@@ -29,8 +31,9 @@ export function SharedView({ reading }: { reading: SharedReading }) {
           variant="primary"
           disabled={kept}
           onClick={() => {
-            saveReading(reading);
-            setKept(true);
+            const result = saveReading(reading);
+            setProblem(result.problem);
+            setKept(!result.problem);
           }}
         >
           {t.sharedKeep}
@@ -48,6 +51,7 @@ export function SharedView({ reading }: { reading: SharedReading }) {
         </PageLink>
       </div>
       <StatusNote>{kept ? t.sharedKept : ''}</StatusNote>
+      <StorageAlert problem={problem} />
       <ReadingView reading={reading} />
     </>
   );

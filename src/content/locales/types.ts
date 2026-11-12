@@ -162,6 +162,12 @@ export interface UiMessages {
   copyShareLink: string;
   linkCopied: string;
   saved: string;
+  /** The Save button once the reading on the table is in the journal. */
+  savedButton: string;
+  alreadySaved: string;
+  /** The journal could not be written: storage full, or not allowed. */
+  storageFull: string;
+  storageBlocked: string;
   noQuestion: string;
   open: string;
   delete: string;

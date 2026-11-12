@@ -213,7 +213,13 @@ const ui: UiMessages = {
     'This share link was made by a newer version of the app and cannot be opened here. Your current reading is unchanged.',
   shareLinkUnknown:
     'This share link uses a deck or spread this version does not have. Your current reading is unchanged.',
-  saved: 'Saved.',
+  saved: 'Saved in your journal.',
+  savedButton: 'Saved ✓',
+  alreadySaved: 'This reading is already in your journal.',
+  storageFull:
+    'Not saved: this browser has no room left for the app. Delete some readings in the journal and try again.',
+  storageBlocked:
+    'Not saved: this browser does not let the app keep anything, for example in a private window or with site data blocked.',
   noQuestion: 'no question',
   open: 'Open',
   delete: 'Delete',

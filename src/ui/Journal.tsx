@@ -3,8 +3,11 @@ import {
   deleteReading,
   loadHistory,
   restoreReading,
+  type HistoryChange,
   type HistoryEntry,
+  type StorageProblem,
 } from '../features/history';
+import { StorageAlert } from './StorageAlert';
 import { useReadingStore } from '../features/store';
 import { useI18n } from './i18n';
 import { ActionNote, Button, PageHead } from './kit';
@@ -16,16 +19,23 @@ export function Journal() {
   const loadShared = useReadingStore((s) => s.loadShared);
   const [history, setHistory] = useState(loadHistory);
   const [deleted, setDeleted] = useState<HistoryEntry | null>(null);
+  const [problem, setProblem] = useState<StorageProblem>();
+  /** Shows the list as stored; returns whether the change was stored. */
+  const apply = (change: HistoryChange) => {
+    setHistory(change.entries);
+    setProblem(change.problem);
+    return !change.problem;
+  };
   const { t, locale, getDeck, getSpread } = useI18n();
   return (
     <>
       <PageHead title={t.goalJournal} purpose={t.journalPurpose} />
+      <StorageAlert problem={problem} />
       {deleted && (
         <ActionNote
           actionLabel={t.undo}
           onAction={() => {
-            setHistory(restoreReading(deleted));
-            setDeleted(null);
+            if (apply(restoreReading(deleted))) setDeleted(null);
           }}
           dismissLabel={t.dismiss}
           onDismiss={() => setDeleted(null)}
@@ -72,8 +82,7 @@ export function Journal() {
                   <Button
                     variant="danger"
                     onClick={() => {
-                      setHistory(deleteReading(e.id));
-                      setDeleted(e);
+                      if (apply(deleteReading(e.id))) setDeleted(e);
                     }}
                   >
                     {t.delete}

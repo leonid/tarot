@@ -26,7 +26,10 @@ test('a saved reading survives a reload and opens as it was', async ({
   const original = await readingState(page);
 
   await page.getByRole('button', { name: 'Save reading' }).click();
-  await expect(page.getByText('Saved.')).toBeVisible();
+  await expect(page.getByText('Saved in your journal.')).toBeVisible();
+  // The button says the reading is in the journal; pressing again cannot
+  // make a second entry.
+  await expect(page.getByRole('button', { name: 'Saved ✓' })).toBeDisabled();
 
   await page.reload();
   // A reload starts a fresh reading; only the saved list is kept.

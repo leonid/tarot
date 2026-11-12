@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import v1 from '../domain/fixtures/share-v1.json';
 import { toShared } from '../domain/share';
 import {
   deleteReading,
+  isSaved,
   loadHistory,
   restoreReading,
   saveReading,
@@ -25,9 +26,9 @@ describe('history', () => {
 
   it('saves newest first and deletes by id', () => {
     saveReading(shared);
-    const two = saveReading({ ...shared, question: 'second' });
+    const two = saveReading({ ...shared, question: 'second' }).entries;
     expect(two[0]?.reading.question).toBe('second');
-    expect(deleteReading(two[0]!.id)).toHaveLength(1);
+    expect(deleteReading(two[0]!.id).entries).toHaveLength(1);
     expect(loadHistory()).toHaveLength(1);
   });
 
@@ -70,8 +71,59 @@ describe('history', () => {
       JSON.stringify([entry('c', 3), entry('b', 2), entry('a', 1)]),
     );
     const b = loadHistory()[1]!;
-    expect(deleteReading('b').map((e) => e.id)).toEqual(['c', 'a']);
-    expect(restoreReading(b).map((e) => e.id)).toEqual(['c', 'b', 'a']);
+    expect(deleteReading('b').entries.map((e) => e.id)).toEqual(['c', 'a']);
+    expect(restoreReading(b).entries.map((e) => e.id)).toEqual(['c', 'b', 'a']);
     expect(loadHistory().map((e) => e.id)).toEqual(['c', 'b', 'a']);
+  });
+
+  it('does not save an unchanged reading twice (R13)', () => {
+    expect(isSaved(shared)).toBe(false);
+    expect(saveReading(shared).status).toBe('saved');
+    expect(isSaved(shared)).toBe(true);
+    const again = saveReading({
+      ...shared,
+      placements: [...shared.placements],
+    });
+    expect(again.status).toBe('already');
+    expect(again.problem).toBeUndefined();
+    expect(loadHistory()).toHaveLength(1);
+    // Turned over, it is a different reading.
+    const turned = {
+      ...shared,
+      placements: [
+        { ...shared.placements[0]!, orientation: 'reversed' as const },
+      ],
+    };
+    expect(saveReading(turned).status).toBe('saved');
+    expect(loadHistory()).toHaveLength(2);
+  });
+
+  describe('when storage cannot be written (R13)', () => {
+    afterEach(() => vi.restoreAllMocks());
+    const failWith = (name: string) =>
+      vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new DOMException('no', name);
+      });
+
+    it('says storage is full', () => {
+      failWith('QuotaExceededError');
+      const r = saveReading(shared);
+      expect(r.problem).toBe('full');
+      expect(r.entries).toEqual([]);
+    });
+
+    it('says storage is blocked', () => {
+      failWith('SecurityError');
+      expect(saveReading(shared).problem).toBe('blocked');
+    });
+
+    it('keeps the list as it was when a delete cannot be stored', () => {
+      saveReading(shared);
+      const id = loadHistory()[0]!.id;
+      failWith('QuotaExceededError');
+      const r = deleteReading(id);
+      expect(r.problem).toBe('full');
+      expect(r.entries.map((e) => e.id)).toEqual([id]);
+    });
   });
 });

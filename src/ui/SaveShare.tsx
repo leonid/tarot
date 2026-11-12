@@ -4,14 +4,15 @@ import { isComplete, validateReading } from '../domain/validate';
 import { useI18n } from './i18n';
 import { Button, StatusNote } from './kit';
 import { PageLink } from './Nav';
-import { saveReading } from '../features/history';
+import { isSaved, saveReading, type StorageProblem } from '../features/history';
+import { StorageAlert } from './StorageAlert';
 import { useReadingStore } from '../features/store';
 
 /** Keep the finished reading in the journal, or copy a link to it. */
 export function SaveShare() {
   const s = useReadingStore();
   const [notice, setNotice] = useState('');
-  const [saved, setSaved] = useState(false);
+  const [problem, setProblem] = useState<StorageProblem>();
   const { t, getDeck, getSpread } = useI18n();
   const deck = getDeck(s.deckId);
   const spread = getSpread(s.spreadId);
@@ -28,10 +29,12 @@ export function SaveShare() {
     isComplete(reading, spread) &&
     validateReading(reading, deck, spread).length === 0;
   const shared = () => toShared(reading, s.mode);
+  // Read from the journal, so it stays true across pages and reloads, and
+  // turns back into "Save" as soon as the reading changes.
+  const inJournal = ready && isSaved(shared());
 
   async function copyLink() {
     const url = `${location.origin}${location.pathname}#r=${encodeShared(shared())}`;
-    setSaved(false);
     try {
       await navigator.clipboard.writeText(url);
       setNotice(t.linkCopied);
@@ -44,21 +47,28 @@ export function SaveShare() {
     <section className="save-share">
       <div className="actions">
         <Button
-          disabled={!ready}
+          disabled={!ready || inJournal}
           onClick={() => {
-            saveReading(shared());
-            setNotice(t.saved);
-            setSaved(true);
+            const result = saveReading(shared());
+            setProblem(result.problem);
+            setNotice(
+              result.problem
+                ? ''
+                : result.status === 'already'
+                  ? t.alreadySaved
+                  : t.saved,
+            );
           }}
         >
-          {t.saveReading}
+          {inJournal ? t.savedButton : t.saveReading}
         </Button>
         <Button disabled={!ready} onClick={copyLink}>
           {t.copyShareLink}
         </Button>
       </div>
       <StatusNote>{notice}</StatusNote>
-      {saved && <PageLink page="journal">{t.openJournal}</PageLink>}
+      <StorageAlert problem={problem} />
+      {inJournal && <PageLink page="journal">{t.openJournal}</PageLink>}
     </section>
   );
 }
