@@ -186,6 +186,34 @@ export function Alert({
   );
 }
 
+/**
+ * A notice with one action, usually Undo. role="status": it is announced
+ * without interrupting, and it does not take focus.
+ */
+export function ActionNote({
+  actionLabel,
+  onAction,
+  dismissLabel,
+  onDismiss,
+  children,
+}: {
+  actionLabel: string;
+  onAction: () => void;
+  dismissLabel: string;
+  onDismiss: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div role="status" className="alert action-note">
+      <span>{children}</span>
+      <Button variant="primary" onClick={onAction}>
+        {actionLabel}
+      </Button>
+      <Button onClick={onDismiss}>{dismissLabel}</Button>
+    </div>
+  );
+}
+
 /** A small label pill. Always carries a word; the colour only reinforces it. */
 export function Chip({
   tone = 'neutral',

@@ -82,6 +82,13 @@ export interface UiMessages {
   open: string;
   delete: string;
   dismiss: string;
+  undo: string;
+  /** The board was cleared by a deck or spread change. */
+  readingCleared: string;
+  /** The board was replaced by an opened or shared reading. */
+  readingReplaced: string;
+  /** A saved reading was deleted from the list. */
+  savedDeleted: string;
   errorTitle: string;
   errorBody: string;
   errorStartOver: string;

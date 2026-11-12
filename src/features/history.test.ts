@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import v1 from '../domain/fixtures/share-v1.json';
 import { toShared } from '../domain/share';
-import { deleteReading, loadHistory, saveReading } from './history';
+import {
+  deleteReading,
+  loadHistory,
+  restoreReading,
+  saveReading,
+} from './history';
 
 const shared = toShared(
   {
@@ -52,5 +57,21 @@ describe('history', () => {
       JSON.stringify([{ id: 'f', savedAt: 5, reading: v1 }]),
     );
     expect(loadHistory()[0]?.reading.seed).toBe(42);
+  });
+
+  it('puts a deleted entry back in its place by date (R3)', () => {
+    const entry = (id: string, savedAt: number) => ({
+      id,
+      savedAt,
+      reading: shared,
+    });
+    localStorage.setItem(
+      'tarot.history.v1',
+      JSON.stringify([entry('c', 3), entry('b', 2), entry('a', 1)]),
+    );
+    const b = loadHistory()[1]!;
+    expect(deleteReading('b').map((e) => e.id)).toEqual(['c', 'a']);
+    expect(restoreReading(b).map((e) => e.id)).toEqual(['c', 'b', 'a']);
+    expect(loadHistory().map((e) => e.id)).toEqual(['c', 'b', 'a']);
   });
 });

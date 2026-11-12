@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { decodeSharedResult, type SharedReading } from './domain/share';
 import { locales } from './content/locales';
 import { useI18n } from './ui/i18n';
-import { Alert, Field, Tabs } from './ui/kit';
+import { ActionNote, Alert, Field, Tabs } from './ui/kit';
 import { applyTheme, THEMES, type Theme } from './ui/theme';
 
 type Link =
@@ -26,6 +26,9 @@ export function App() {
   const setLocale = useReadingStore((s) => s.setLocale);
   const theme = useReadingStore((s) => s.theme);
   const setTheme = useReadingStore((s) => s.setTheme);
+  const undo = useReadingStore((s) => s.undo);
+  const undoLast = useReadingStore((s) => s.undoLast);
+  const dismissUndo = useReadingStore((s) => s.dismissUndo);
   const { locale, t, getDeck, getSpread } = useI18n();
 
   // A share link (#r=...) is read at load and whenever the hash changes. Only
@@ -129,6 +132,16 @@ export function App() {
             }[link.error]
           }
         </Alert>
+      )}
+      {undo && (
+        <ActionNote
+          actionLabel={t.undo}
+          onAction={undoLast}
+          dismissLabel={t.dismiss}
+          onDismiss={dismissUndo}
+        >
+          {undo.kind === 'cleared' ? t.readingCleared : t.readingReplaced}
+        </ActionNote>
       )}
       <Tabs
         tabs={[

@@ -100,6 +100,10 @@ const ui: UiMessages = {
   copyShareLink: 'Copy share link',
   linkCopied: 'Link copied.',
   dismiss: 'Dismiss',
+  undo: 'Undo',
+  readingCleared: 'The cards were cleared for the new deck or spread.',
+  readingReplaced: 'Your previous reading was replaced by the one you opened.',
+  savedDeleted: 'Saved reading deleted.',
   errorTitle: 'Something went wrong',
   errorBody:
     'The reading could not be shown. Starting over clears the current reading. Your saved readings, language and theme are kept.',

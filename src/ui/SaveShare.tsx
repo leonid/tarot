@@ -2,14 +2,21 @@ import { useState } from 'react';
 import { encodeShared, toShared } from '../domain/share';
 import { isComplete, validateReading } from '../domain/validate';
 import { useI18n } from './i18n';
-import { Button, StatusNote } from './kit';
-import { deleteReading, loadHistory, saveReading } from '../features/history';
+import { ActionNote, Button, StatusNote } from './kit';
+import {
+  deleteReading,
+  loadHistory,
+  restoreReading,
+  saveReading,
+  type HistoryEntry,
+} from '../features/history';
 import { useReadingStore } from '../features/store';
 
 export function SaveShare() {
   const s = useReadingStore();
   const [history, setHistory] = useState(loadHistory);
   const [notice, setNotice] = useState('');
+  const [deleted, setDeleted] = useState<HistoryEntry | null>(null);
   const { t, locale, getDeck, getSpread } = useI18n();
   const deck = getDeck(s.deckId);
   const spread = getSpread(s.spreadId);
@@ -52,6 +59,19 @@ export function SaveShare() {
         {t.copyShareLink}
       </Button>{' '}
       <StatusNote>{notice}</StatusNote>
+      {deleted && (
+        <ActionNote
+          actionLabel={t.undo}
+          onAction={() => {
+            setHistory(restoreReading(deleted));
+            setDeleted(null);
+          }}
+          dismissLabel={t.dismiss}
+          onDismiss={() => setDeleted(null)}
+        >
+          {t.savedDeleted}
+        </ActionNote>
+      )}
       {history.length > 0 && (
         <details>
           <summary>{t.savedReadings(history.length)}</summary>
@@ -66,7 +86,10 @@ export function SaveShare() {
                 </Button>{' '}
                 <Button
                   variant="danger"
-                  onClick={() => setHistory(deleteReading(e.id))}
+                  onClick={() => {
+                    setHistory(deleteReading(e.id));
+                    setDeleted(e);
+                  }}
                 >
                   {t.delete}
                 </Button>

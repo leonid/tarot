@@ -57,6 +57,39 @@ function inSpreadOrder(
   );
 }
 
+/** What is on the table: deck, spread and the cards placed so far. */
+export interface Board {
+  deckId: string;
+  spreadId: string;
+  placements: PlacedCard[];
+  seed?: number;
+}
+
+/** A reading that was just cleared or replaced, kept so it can be put back. */
+export interface Undo {
+  kind: 'cleared' | 'replaced';
+  mode: Mode;
+  question: string;
+  board: Board;
+}
+
+const boardOf = (s: Board): Board => ({
+  deckId: s.deckId,
+  spreadId: s.spreadId,
+  placements: s.placements,
+  ...(s.seed === undefined ? {} : { seed: s.seed }),
+});
+
+/** The undo record for a board about to be lost; none if it was empty. */
+function lost(
+  s: Board & { mode: Mode; question: string },
+  kind: Undo['kind'],
+): Undo | undefined {
+  return s.placements.length > 0
+    ? { kind, mode: s.mode, question: s.question, board: boardOf(s) }
+    : undefined;
+}
+
 interface State {
   mode: Mode;
   locale: string;
@@ -68,6 +101,11 @@ interface State {
   allowReversals: boolean;
   placements: PlacedCard[];
   seed?: number;
+  /** The other mode's board, kept while this mode is on screen. */
+  boards: Partial<Record<Mode, Board>>;
+  undo?: Undo;
+  undoLast: () => void;
+  dismissUndo: () => void;
   setMode: (m: Mode) => void;
   setLocale: (code: string) => void;
   setTheme: (theme: Theme) => void;
@@ -93,6 +131,7 @@ export const useReadingStore = create<State>((set, get) => ({
   question: '',
   allowReversals: true,
   placements: [],
+  boards: {},
   setLocale: (locale) => {
     if (!locales.some((l) => l.code === locale)) return;
     try {
@@ -115,9 +154,51 @@ export const useReadingStore = create<State>((set, get) => ({
     }
     set({ useAi });
   },
-  setMode: (mode) => set({ mode, placements: [], seed: undefined }),
-  setDeck: (deckId) => set({ deckId, placements: [], seed: undefined }),
-  setSpread: (spreadId) => set({ spreadId, placements: [], seed: undefined }),
+  // Each mode keeps its own board: going to Setup and back does not cost the
+  // dealt reading, and the other way round.
+  setMode: (mode) =>
+    set((s) => {
+      if (mode === s.mode) return {};
+      const kept = s.boards[mode];
+      return {
+        mode,
+        boards: { ...s.boards, [s.mode]: boardOf(s) },
+        undo: undefined,
+        deckId: kept?.deckId ?? s.deckId,
+        spreadId: kept?.spreadId ?? s.spreadId,
+        placements: kept?.placements ?? [],
+        seed: kept?.seed,
+      };
+    }),
+  // A new deck or spread cannot keep the cards, so the board is cleared; if
+  // there was anything on it, it can be put back.
+  setDeck: (deckId) =>
+    set((s) => ({
+      deckId,
+      placements: [],
+      seed: undefined,
+      undo: lost(s, 'cleared'),
+    })),
+  setSpread: (spreadId) =>
+    set((s) => ({
+      spreadId,
+      placements: [],
+      seed: undefined,
+      undo: lost(s, 'cleared'),
+    })),
+  undoLast: () =>
+    set((s) =>
+      s.undo
+        ? {
+            mode: s.undo.mode,
+            question: s.undo.question,
+            ...s.undo.board,
+            seed: s.undo.board.seed,
+            undo: undefined,
+          }
+        : {},
+    ),
+  dismissUndo: () => set({ undo: undefined }),
   setQuestion: (question) => set({ question }),
   setAllowReversals: (allowReversals) => set({ allowReversals }),
   dealRandom: (seed = randomSeed()) => {
@@ -126,10 +207,11 @@ export const useReadingStore = create<State>((set, get) => ({
     const spread = getSpread(spreadId);
     if (!deck || !spread) return;
     const reading = deal({ question, deck, spread, seed, allowReversals });
-    set({ placements: [...reading.placements], seed });
+    set({ placements: [...reading.placements], seed, undo: undefined });
   },
   place: (positionId, cardId, orientation = 'upright') =>
     set((s) => ({
+      undo: undefined,
       placements: inSpreadOrder(
         [
           // A card can only be in one place; a position holds one card.
@@ -149,13 +231,14 @@ export const useReadingStore = create<State>((set, get) => ({
   loadShared: (r) => {
     // Ignore readings that point at decks or spreads we no longer ship.
     if (!getDeck(r.deckId) || !getSpread(r.spreadId)) return;
-    set({
+    set((s) => ({
+      undo: lost(s, 'replaced'),
       mode: r.mode,
       deckId: r.deckId,
       spreadId: r.spreadId,
       question: r.question,
       placements: inSpreadOrder(r.placements, r.spreadId),
       seed: r.seed,
-    });
+    }));
   },
 }));

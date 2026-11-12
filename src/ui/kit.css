@@ -185,3 +185,8 @@
 .alert > span {
   flex: 1 1 50%;
 }
+
+/* A notice with an action (Undo). Not an error, so it takes the accent. */
+.action-note {
+  border-color: var(--accent);
+}

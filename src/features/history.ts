@@ -62,3 +62,11 @@ export function deleteReading(id: string): HistoryEntry[] {
   write(next);
   return next;
 }
+
+/** Puts back an entry that was just deleted, in its place by date. */
+export function restoreReading(entry: HistoryEntry): HistoryEntry[] {
+  const rest = loadHistory().filter((e) => e.id !== entry.id);
+  const next = [...rest, entry].sort((a, b) => b.savedAt - a.savedAt);
+  write(next);
+  return next.slice(0, MAX);
+}
