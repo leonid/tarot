@@ -2,6 +2,7 @@ import type { CardMeaning } from '../../domain/types';
 import { decks } from '../decks';
 import { altEnglish } from '../images/alt';
 import { meanings } from '../meanings';
+import { waiteMeanings } from '../meanings/waite';
 import { spreads } from '../spreads';
 import { en } from './en';
 import type { LocaleBundle, SpreadText } from './types';
@@ -30,49 +31,52 @@ function wrapAll<T>(value: T): T {
   return value;
 }
 
-const cardNames = Object.fromEntries(
-  decks.flatMap((d) => d.cards.map((c) => [c.id, wrap(c.name)] as const)),
-);
-const altText = Object.fromEntries(
-  Object.entries(altEnglish).map(([id, t]) => [id, wrap(t)]),
-);
-const deckNames = Object.fromEntries(decks.map((d) => [d.id, wrap(d.name)]));
-
-const spreadText = Object.fromEntries(
-  spreads.map((s): [string, SpreadText] => [
-    s.id,
-    {
-      name: wrap(s.name),
-      description: wrap(s.description),
-      positions: Object.fromEntries(
-        s.positions.map((p) => [
-          p.id,
-          { label: wrap(p.label), meaning: wrap(p.meaning) },
-        ]),
-      ),
-    },
-  ]),
-);
-
-const meaningText = Object.fromEntries(
-  Object.entries(meanings).map(([id, m]): [string, CardMeaning] => [
-    id,
-    wrapAll(m),
-  ]),
-);
-
 /**
  * A development locale generated from English: every string wrapped in
  * brackets. Switching to it shows which text still bypasses the locale layer.
+ * Built on call, so a production build, which never calls it, drops it.
  */
-export const pseudo: LocaleBundle = {
-  code: 'en-XA',
-  label: 'Pseudo-locale',
-  ui: wrapAll(en.ui),
-  provider: wrapAll(en.provider),
-  decks: deckNames,
-  cards: cardNames,
-  alts: altText,
-  spreads: spreadText,
-  meanings: meaningText,
-};
+export function makePseudo(): LocaleBundle {
+  const cardNames = Object.fromEntries(
+    decks.flatMap((d) => d.cards.map((c) => [c.id, wrap(c.name)] as const)),
+  );
+  const altText = Object.fromEntries(
+    Object.entries(altEnglish).map(([id, t]) => [id, wrap(t)]),
+  );
+  const deckNames = Object.fromEntries(decks.map((d) => [d.id, wrap(d.name)]));
+
+  const spreadText = Object.fromEntries(
+    spreads.map((s): [string, SpreadText] => [
+      s.id,
+      {
+        name: wrap(s.name),
+        description: wrap(s.description),
+        positions: Object.fromEntries(
+          s.positions.map((p) => [
+            p.id,
+            { label: wrap(p.label), meaning: wrap(p.meaning) },
+          ]),
+        ),
+      },
+    ]),
+  );
+
+  const meaningText = Object.fromEntries(
+    Object.entries(meanings).map(([id, m]): [string, CardMeaning] => [
+      id,
+      wrapAll(m),
+    ]),
+  );
+  return {
+    code: 'en-XA',
+    label: 'Pseudo-locale',
+    ui: wrapAll(en.ui),
+    provider: wrapAll(en.provider),
+    decks: deckNames,
+    cards: cardNames,
+    alts: altText,
+    spreads: spreadText,
+    meanings: meaningText,
+    waite: wrapAll(waiteMeanings),
+  };
+}

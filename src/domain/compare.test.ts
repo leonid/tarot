@@ -65,14 +65,25 @@ describe('compare (DCAS step 2)', () => {
   });
 
   it('reports conflicts and picks the card with the most ties as hinge', () => {
-    // Fool (traditional air) conflicts with Death (water) and the Ace of Cups.
-    const r = compare(ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']));
+    // The Ace of Wands (fire) opposes Death (water) and the Ace of Cups.
+    const r = compare(ctx(['wands-01-ace', 'major-13-death', 'cups-01-ace']));
     expect(r.facts).toContainEqual({
       kind: 'element-conflict',
-      elements: ['water', 'air'],
-      cardIds: [['major-13-death', 'cups-01-ace'], ['major-00-fool']],
+      elements: ['fire', 'water'],
+      cardIds: [['wands-01-ace'], ['major-13-death', 'cups-01-ace']],
     });
-    expect(r.hingeCardId).toBe('major-00-fool');
+    expect(r.hingeCardId).toBe('wands-01-ace');
+  });
+
+  it('says nothing about neutral pairs: air with water, fire with earth', () => {
+    // The Fool (air) beside Death and the Ace of Cups (water).
+    const r = compare(ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']));
+    expect(
+      r.facts.filter(
+        (f) => f.kind === 'element-conflict' || f.kind === 'element-friendship',
+      ),
+    ).toEqual([]);
+    expect(r.hingeCardId).toBeUndefined();
   });
 
   it('names no hinge when ties are even or absent', () => {
@@ -83,7 +94,7 @@ describe('compare (DCAS step 2)', () => {
 
   it('without a correspondence table, majors yield only the count facts', () => {
     expect(
-      kinds(['major-13-death', 'major-00-fool', 'major-16-tower'], false),
+      kinds(['major-13-death', 'major-00-fool', 'wands-01-ace'], false),
     ).toEqual(['mostly-majors']);
   });
 
@@ -173,7 +184,7 @@ describe('compare (DCAS step 2)', () => {
       'wands-03-three',
       'swords-05-five',
       'pentacles-14-king',
-      'major-16-tower',
+      'wands-01-ace',
       'cups-05-five',
     ];
     const c: ReadingContext = {
@@ -206,10 +217,10 @@ describe('compare (DCAS step 2)', () => {
           const y = element(TEN[b]!);
           if (!x || !y) continue;
           const d = dignity(x, y);
-          if (d !== 'strengthened')
+          if (d === 'conflicted' || d === 'friendly')
             want[d].push([TEN[a]!, TEN[b]!].sort().join(' + '));
         }
-      expect(want.conflicted.length).toBe(20);
+      expect(want.conflicted.length).toBe(14);
       expect(pairsOf('element-conflict')).toEqual(want.conflicted.sort());
       expect(pairsOf('element-friendship')).toEqual(want.friendly.sort());
     });
@@ -225,20 +236,20 @@ describe('compare (DCAS step 2)', () => {
         }
         expect(line.length).toBeLessThan(160);
       }
-      // At most four enemy pairs of elements and two friendly ones exist.
+      // Two opposed pairs of elements and two friendly ones exist.
       expect(
         facts.filter((f) => f.kind === 'element-conflict').length,
-      ).toBeLessThanOrEqual(4);
+      ).toBeLessThanOrEqual(2);
     });
   });
 
   it('flows through the fallback provider as rendered sentences', async () => {
     const out = await fallbackProvider.interpret(
-      ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']),
+      ctx(['wands-01-ace', 'major-13-death', 'cups-01-ace']),
     );
-    expect(out.hingeCardId).toBe('major-00-fool');
+    expect(out.hingeCardId).toBe('wands-01-ace');
     expect(out.relations).toContain(
-      'Water against air: Death and Ace of Cups conflict with The Fool.',
+      'Fire against water: Ace of Wands conflicts with Death and Ace of Cups.',
     );
   });
 });
@@ -290,5 +301,155 @@ describe('renderFact', () => {
     expect(renderFact(all[7]!, en.provider, name)).toBe(
       '<a> and <b> fall within the span of <q>.',
     );
+  });
+});
+
+describe('compare: number facts (M6.5)', () => {
+  it('two 5s yield a repeated-number fact', () => {
+    const r = compare(ctx(['cups-05-five', 'swords-05-five', 'wands-01-ace']));
+    expect(r.facts).toContainEqual({
+      kind: 'number-repeats',
+      number: 5,
+      cardIds: ['cups-05-five', 'swords-05-five'],
+    });
+  });
+
+  it('two courts of one rank repeat too', () => {
+    const r = compare(ctx(['cups-13-queen', 'wands-13-queen', 'wands-01-ace']));
+    expect(r.facts).toContainEqual({
+      kind: 'number-repeats',
+      number: 13,
+      cardIds: ['cups-13-queen', 'wands-13-queen'],
+    });
+  });
+
+  it('ties a Major to the pips of the number it reduces to', () => {
+    // The Devil is 15, and 1 + 5 = 6: the Lovers and the Sixes are its family.
+    const r = compare(ctx(['major-15-devil', 'cups-06-six', 'wands-01-ace']));
+    expect(r.facts).toContainEqual({
+      kind: 'number-family',
+      root: 6,
+      cardIds: ['major-15-devil', 'cups-06-six'],
+    });
+  });
+
+  it('reduces twice where needed and counts Tens with the Aces', () => {
+    // The Sun is 19: 1 + 9 = 10, 1 + 0 = 1.
+    const r = compare(
+      ctx(['major-19-sun', 'major-01-magician', 'pentacles-10-ten']),
+    );
+    expect(r.facts).toContainEqual({
+      kind: 'number-family',
+      root: 1,
+      cardIds: ['major-19-sun', 'major-01-magician', 'pentacles-10-ten'],
+    });
+  });
+
+  it('leaves the Fool, courts and pip-only groups out of families', () => {
+    expect(
+      kinds(['major-00-fool', 'wands-01-ace', 'cups-10-ten'], false),
+    ).not.toContain('number-family');
+    expect(
+      kinds(['major-04-emperor', 'cups-13-queen', 'wands-02-two'], false),
+    ).not.toContain('number-family');
+  });
+
+  it('a lone number is not a repeat', () => {
+    expect(
+      kinds(['cups-05-five', 'swords-06-six', 'wands-01-ace']),
+    ).not.toContain('number-repeats');
+  });
+
+  it('renders both in English and Russian', () => {
+    const name = (id: string) => findCard(rwsDeck, id)?.name ?? id;
+    const repeat: Fact = {
+      kind: 'number-repeats',
+      number: 5,
+      cardIds: ['cups-05-five', 'swords-05-five'],
+    };
+    const family: Fact = {
+      kind: 'number-family',
+      root: 6,
+      cardIds: ['major-15-devil', 'cups-06-six'],
+    };
+    expect(renderFact(repeat, en.provider, name)).toBe(
+      'The number five repeats: Five of Cups and Five of Swords.',
+    );
+    expect(renderFact(family, en.provider, name)).toBe(
+      'The Devil and Six of Cups share the number six.',
+    );
+    for (const f of [repeat, family])
+      expect(renderFact(f, ru.provider, name)).toMatch(/[а-я]/);
+  });
+});
+
+describe('compare: modality, oppositions and runs (M6.11)', () => {
+  it('names a dominant modality among cards that sit in a sign', () => {
+    // 2 of Wands is Aries, 2 of Cups is Cancer (cardinal); 5 of Swords is
+    // Aquarius (fixed).
+    const r = compare(ctx(['wands-02-two', 'cups-02-two', 'swords-05-five']));
+    expect(r.facts).toContainEqual({
+      kind: 'modality-dominates',
+      modality: 'cardinal',
+      count: 2,
+      total: 3,
+    });
+  });
+
+  it('finds cards in opposite signs', () => {
+    // The Emperor is Aries, Justice is Libra, the 2 of Swords is Libra I.
+    const r = compare(
+      ctx(['major-04-emperor', 'major-11-justice', 'swords-02-two']),
+    );
+    expect(r.facts).toContainEqual({
+      kind: 'sign-opposition',
+      signs: ['aries', 'libra'],
+      cardIds: [['major-04-emperor'], ['major-11-justice', 'swords-02-two']],
+    });
+  });
+
+  it('4-5-6 of Cups yields a suit run, in number order', () => {
+    const r = compare(ctx(['cups-06-six', 'cups-04-four', 'cups-05-five']));
+    expect(r.facts).toContainEqual({
+      kind: 'suit-run',
+      suit: 'cups',
+      cardIds: ['cups-04-four', 'cups-05-five', 'cups-06-six'],
+    });
+  });
+
+  it('needs three in a row, in one suit, among the pips', () => {
+    expect(
+      kinds(['cups-04-four', 'cups-05-five', 'cups-07-seven']),
+    ).not.toContain('suit-run');
+    expect(
+      kinds(['cups-04-four', 'wands-05-five', 'cups-06-six']),
+    ).not.toContain('suit-run');
+    expect(
+      kinds(['cups-09-nine', 'cups-10-ten', 'cups-11-page']),
+    ).not.toContain('suit-run');
+  });
+
+  it('renders all three in English and Russian', () => {
+    const name = (id: string) => findCard(rwsDeck, id)?.name ?? id;
+    const facts: Fact[] = [
+      { kind: 'modality-dominates', modality: 'cardinal', count: 2, total: 3 },
+      {
+        kind: 'sign-opposition',
+        signs: ['aries', 'libra'],
+        cardIds: [['major-04-emperor'], ['major-11-justice']],
+      },
+      {
+        kind: 'suit-run',
+        suit: 'cups',
+        cardIds: ['cups-04-four', 'cups-05-five', 'cups-06-six'],
+      },
+    ];
+    expect(facts.map((f) => renderFact(f, en.provider, name))).toEqual([
+      'Cardinal signs dominate (2 of 3 cards in a sign): things are starting.',
+      'Aries opposes Libra: The Emperor faces Justice.',
+      'A run in cups: Four of Cups, Five of Cups and Six of Cups.',
+    ]);
+    for (const f of facts)
+      expect(renderFact(f, ru.provider, name)).toMatch(/[а-я]/);
   });
 });

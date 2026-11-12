@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 
 async function openSetup(page: Page, spread = 'three-card') {
-  await page.goto('/');
-  await page.getByRole('tab', { name: 'Setup' }).click();
+  await page.goto('/#/reading');
+  await page.getByRole('link', { name: 'Record a spread' }).click();
   await page.getByLabel('Spread').selectOption(spread);
 }
 
@@ -13,7 +13,6 @@ test('setup: place cards with the menus, flip one, clear one', async ({
   page,
 }) => {
   await openSetup(page);
-  await page.getByText('Place with menus').click();
 
   await page.getByLabel('Past').selectOption({ label: 'The Fool' });
   await page.getByLabel('Present').selectOption({ label: 'The Tower' });
@@ -38,6 +37,9 @@ test('setup: drag a card onto a slot with the mouse', async ({ page }) => {
   await openSetup(page);
   const card = page.locator('.palette-card').first();
   const name = (await card.locator('.card-face-name').innerText()).trim();
+  // Board and cards on screen together, as a person would have them.
+  await page.locator('.board').evaluate((el) => el.scrollIntoView());
+  await expect(card).toBeInViewport({ ratio: 1 });
   // Explicit pointer steps: a single jump (dragTo) is sometimes missed by the
   // pointer sensor on WebKit, which then never sees the card over the slot.
   const from = (await card.boundingBox())!;
@@ -49,7 +51,7 @@ test('setup: drag a card onto a slot with the mouse', async ({ page }) => {
   });
   await page.mouse.up();
   await expect(slot(page, 'present')).toContainText(name);
-  await expect(page.locator('.palette-card')).toHaveCount(77);
+  await expect(page.locator('.palette-card')).toHaveCount(21);
 });
 
 const live = (page: Page) => page.locator('[id^="DndLiveRegion"]');
@@ -77,7 +79,7 @@ async function keyboardPlace(page: Page, keys: string[], slotId: string) {
 test('setup: place a card by keyboard drag', async ({ page }) => {
   await openSetup(page);
   const name = await keyboardPlace(page, ['ArrowUp', 'ArrowRight'], 'present');
-  await expect(page.locator('.palette-card')).toHaveCount(77);
+  await expect(page.locator('.palette-card')).toHaveCount(21);
   expect(name).not.toBe('');
 });
 
@@ -85,14 +87,16 @@ test('setup: fill a whole three-card spread with the keyboard only', async ({
   page,
 }) => {
   await openSetup(page);
-  // Arrow keys jump from position to position; the first Up from the palette
-  // lands on the nearest one (Past, the leftmost).
+  // The first arrow takes the card to the spread's first position (Past);
+  // after that the arrows jump from position to position.
   await keyboardPlace(page, ['ArrowUp'], 'past');
   await keyboardPlace(page, ['ArrowUp', 'ArrowRight'], 'present');
   await keyboardPlace(page, ['ArrowUp', 'ArrowRight', 'ArrowRight'], 'future');
   await expect(page.locator('.board .slot.filled')).toHaveCount(3);
-  await expect(page.locator('.palette-card')).toHaveCount(75);
-  await expect(page.getByText('Interpretation')).toBeVisible();
+  await expect(page.locator('.palette-card')).toHaveCount(19);
+  await expect(
+    page.getByRole('heading', { name: 'Interpretation' }),
+  ).toBeVisible();
 });
 
 test('setup: place a card with clicks only', async ({ page }) => {
@@ -108,7 +112,7 @@ test('setup: place a card with clicks only', async ({ page }) => {
 
   await slot(page, 'present').click();
   await expect(slot(page, 'present')).toContainText(name);
-  await expect(page.locator('.palette-card')).toHaveCount(77);
+  await expect(page.locator('.palette-card')).toHaveCount(21);
   // The selection is spent: slots are plain again.
   await expect(page.locator('.slot.armed')).toHaveCount(0);
 
@@ -118,4 +122,54 @@ test('setup: place a card with clicks only', async ({ page }) => {
   await expect(page.locator('.slot.armed')).toHaveCount(3);
   await next.click();
   await expect(page.locator('.slot.armed')).toHaveCount(0);
+});
+
+test('setup: a placed card is turned over and taken off on the card itself', async ({
+  page,
+}) => {
+  await openSetup(page);
+  await page.locator('.palette-card').first().click();
+  await slot(page, 'past').click();
+  const past = slot(page, 'past');
+  // One card is read as soon as it is placed; connections wait for the rest.
+  await expect(page.getByText(/1 of 3 cards placed/)).toBeVisible();
+  await expect(page.locator('.note-card')).toHaveCount(1);
+  await expect(page.locator('.connections')).toHaveCount(0);
+
+  await past.getByRole('button', { name: /^Turn .* over$/ }).click();
+  await expect(past).toContainText('reversed');
+  await expect(page.locator('.note-card')).toContainText('reversed');
+  await past.getByRole('button', { name: /^Turn .* over$/ }).click();
+  await expect(past).not.toContainText('reversed');
+
+  await past.getByRole('button', { name: /^Take .* off the board$/ }).click();
+  await expect(past).not.toHaveClass(/filled/);
+  await expect(page.locator('.palette-card')).toHaveCount(22);
+});
+
+test('setup: the deck is shown in parts and searched by name', async ({
+  page,
+}) => {
+  await openSetup(page);
+  await expect(page.locator('.palette-card')).toHaveCount(22);
+  await page.getByRole('button', { name: /^Cups/ }).click();
+  await expect(page.locator('.palette-card')).toHaveCount(14);
+  await page.getByRole('button', { name: /^All/ }).click();
+  await expect(page.locator('.palette-card')).toHaveCount(78);
+  // A search looks through the whole deck, whatever part is open.
+  await page.getByRole('button', { name: /^Major Arcana/ }).click();
+  await page.getByLabel('Find a card').fill('queen');
+  await expect(page.locator('.palette-card')).toHaveCount(4);
+  // Nothing on the screen scrolls inside a box of its own.
+  const boxed = await page.evaluate(
+    () =>
+      [...document.querySelectorAll('.page *')].filter((e) => {
+        const s = getComputedStyle(e);
+        return (
+          /(auto|scroll)/.test(s.overflowY) &&
+          e.scrollHeight > e.clientHeight + 2
+        );
+      }).length,
+  );
+  expect(boxed).toBe(0);
 });

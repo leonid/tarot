@@ -1,3 +1,4 @@
+import { waiteMeanings } from '../content/meanings/waite';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -83,5 +84,39 @@ describe('interpretation trigger (M1.11)', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Try again' }));
     expect(await screen.findByText(/3 cards were read/)).toBeInTheDocument();
     expect(screen.queryByRole('alert')).toBeNull();
+  });
+});
+
+describe('other schools on a card (M6.12)', () => {
+  it('shows each card read by its structure beside its note', async () => {
+    render(<ReadingView provider={fallbackProvider} />);
+    act(() => store().dealRandom(1));
+    await screen.findByText(/3 cards were read/);
+    const labels = screen.getAllByText('By structure');
+    expect(labels).toHaveLength(3);
+    for (const dt of labels) {
+      const item = dt.closest('li')!;
+      expect(item.querySelector('details summary')).toHaveTextContent(
+        'Other readings of this card',
+      );
+      expect(dt.nextElementSibling?.textContent).toMatch(/Number|×|:/);
+    }
+  });
+});
+
+describe('Waite 1911 beside the modern meaning (M6.13)', () => {
+  it("gives each card Waite's meaning for the way it fell", async () => {
+    render(<ReadingView provider={fallbackProvider} />);
+    act(() => store().dealRandom(1));
+    await screen.findByText(/3 cards were read/);
+    const labels = screen.getAllByText('Waite, 1911');
+    expect(labels).toHaveLength(3);
+    const { placements } = store();
+    labels.forEach((dt, i) => {
+      const p = placements[i]!;
+      expect(dt.nextElementSibling).toHaveTextContent(
+        waiteMeanings[p.cardId]![p.orientation],
+      );
+    });
   });
 });

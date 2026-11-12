@@ -2,6 +2,60 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
 const views: [string, (page: Page) => Promise<void>][] = [
+  [
+    'home',
+    async (page) => {
+      await page.getByRole('link', { name: 'Home' }).click();
+    },
+  ],
+  [
+    'card library',
+    async (page) => {
+      await page.getByRole('link', { name: 'Learn the cards' }).click();
+      await page.locator('.card-link').first().waitFor();
+    },
+  ],
+  [
+    'about',
+    async (page) => {
+      await page.goto('/#/about');
+      await page.getByRole('heading', { name: 'Sources' }).waitFor();
+    },
+  ],
+  [
+    'one card',
+    async (page) => {
+      await page.goto('/#/cards/swords-03-three');
+      await page.getByRole('heading', { name: 'Three of Swords' }).waitFor();
+    },
+  ],
+  [
+    'journal, one saved reading',
+    async (page) => {
+      await page.getByRole('button', { name: 'Shuffle and deal' }).click();
+      await page.getByRole('button', { name: 'Save reading' }).click();
+      await page.getByRole('link', { name: 'Open the journal' }).click();
+      await page.getByRole('button', { name: 'Delete' }).waitFor();
+    },
+  ],
+  [
+    'a shared reading',
+    async (page) => {
+      await page.getByRole('button', { name: 'Shuffle and deal' }).click();
+      await page.getByRole('button', { name: 'Save reading' }).click();
+      const hash = await page.evaluate(() => {
+        const [e] = JSON.parse(localStorage.getItem('tarot.history.v1')!);
+        return btoa(JSON.stringify(e.reading))
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+      });
+      await page.goto(`/#r=${hash}`);
+      await page
+        .getByRole('button', { name: 'Keep it in my journal' })
+        .waitFor();
+    },
+  ],
   ['simulate, before dealing', async () => {}],
   [
     'simulate, dealt (Celtic Cross)',
@@ -14,13 +68,13 @@ const views: [string, (page: Page) => Promise<void>][] = [
   [
     'setup, empty',
     async (page) => {
-      await page.getByRole('tab', { name: 'Setup' }).click();
+      await page.getByRole('link', { name: 'Record a spread' }).click();
     },
   ],
   [
     'setup, card picked',
     async (page) => {
-      await page.getByRole('tab', { name: 'Setup' }).click();
+      await page.getByRole('link', { name: 'Record a spread' }).click();
       await page.locator('.palette-card').first().click();
     },
   ],
@@ -30,7 +84,7 @@ for (const scheme of ['light', 'dark'] as const) {
   for (const [name, setup] of views) {
     test(`a11y: ${name}, ${scheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme });
-      await page.goto('/');
+      await page.goto('/#/reading');
       await setup(page);
       const { violations } = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
@@ -47,7 +101,7 @@ for (const scheme of ['light', 'dark'] as const) {
 test('a11y: every control shows a focus ring when tabbed to', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/#/reading');
   const bad: string[] = [];
   for (let i = 0; i < 25; i++) {
     await page.keyboard.press('Tab');
@@ -67,7 +121,7 @@ test('a11y: every control shows a focus ring when tabbed to', async ({
 
 test('a11y: reduced motion turns transitions off', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/');
+  await page.goto('/#/reading');
   const long = await page.evaluate(
     () =>
       [...document.querySelectorAll('*')].filter((el) => {

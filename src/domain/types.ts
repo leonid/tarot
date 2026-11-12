@@ -28,6 +28,14 @@ export interface CardMeaning {
 
 export type MeaningTable = Readonly<Record<string, CardMeaning>>;
 
+/**
+ * Another school's reading of each card, shown beside the base meaning:
+ * one sentence per orientation, by card id.
+ */
+export type SchoolTable = Readonly<
+  Record<string, { upright: string; reversed: string }>
+>;
+
 export interface SpreadPosition {
   id: string;
   label: string;

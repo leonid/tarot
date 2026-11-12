@@ -1,7 +1,7 @@
 import type { Element } from './elements';
 import type { ProviderStrings } from './strings';
 import type { Suit } from './types';
-import type { Planet, Sign } from './zodiac';
+import type { Modality, Planet, Sign } from './zodiac';
 
 /**
  * One structural observation about a reading, as data: ids and enum values,
@@ -15,6 +15,29 @@ export type Fact =
   | { kind: 'mostly-reversed' }
   /** One suit holds more than half the cards. */
   | { kind: 'suit-dominates'; suit: Suit; count: number; total: number }
+  /** Two or more Minor cards of one number or court rank (1-14). */
+  | { kind: 'number-repeats'; number: number; cardIds: readonly string[] }
+  /**
+   * Cards whose numbers reduce to one root (1-9) by adding digits, at least
+   * one of them a Major: the Devil (15) with the Lovers (6) and the Sixes.
+   * Tens count with the Aces. The Fool and court cards belong to no family.
+   */
+  | { kind: 'number-family'; root: number; cardIds: readonly string[] }
+  /** Three or more consecutive pips (1-10) of one suit, in number order. */
+  | { kind: 'suit-run'; suit: Suit; cardIds: readonly string[] }
+  /** One modality holds more than half the cards that sit in a sign. */
+  | {
+      kind: 'modality-dominates';
+      modality: Modality;
+      count: number;
+      total: number;
+    }
+  /** Cards in two opposite signs, with the cards of each. */
+  | {
+      kind: 'sign-opposition';
+      signs: readonly [Sign, Sign];
+      cardIds: readonly [readonly string[], readonly string[]];
+    }
   /** One element holds more than half the cards that have an element. */
   | {
       kind: 'element-dominates';
@@ -68,6 +91,21 @@ export function renderFact(
       return strings.mostlyReversed;
     case 'suit-dominates':
       return strings.suitDominates(fact.suit, fact.count, fact.total);
+    case 'number-repeats':
+      return strings.numberRepeats(fact.number, names(fact.cardIds));
+    case 'number-family':
+      return strings.numberFamily(fact.root, names(fact.cardIds));
+    case 'suit-run':
+      return strings.suitRun(fact.suit, names(fact.cardIds));
+    case 'modality-dominates':
+      return strings.modalityDominates(fact.modality, fact.count, fact.total);
+    case 'sign-opposition':
+      return strings.signOpposition(
+        fact.signs[0],
+        names(fact.cardIds[0]),
+        fact.signs[1],
+        names(fact.cardIds[1]),
+      );
     case 'element-dominates':
       return strings.elementDominates(fact.element, fact.count, fact.total);
     case 'planet-link':

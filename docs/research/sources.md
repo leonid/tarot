@@ -10,6 +10,13 @@ Written 2026-11-10. Decisions on where card content and imagery come from.
   - A. E. Waite, *The Pictorial Key to the Tarot* (1911). Public domain.
   - Traditional keywords and the Golden Dawn attributions (*Book T*), which are
     a system of facts rather than expression.
+- **Waite's own meanings as a second school:** `src/content/meanings/waite.ts`
+  restates the divinatory meanings of the *Pictorial Key*, Part III (sections
+  2 and 3), card by card, in our own words. Text checked on 2026-11-11 against
+  Project Gutenberg eBook #43548 (*The Illustrated Key to the Tarot*, the 1918
+  US reprint of Waite's text, public domain). Waite gives no reversed meaning
+  for the Two of Cups, and the entry says so. Waite calls trump 8 Fortitude and
+  trump 20 The Last Judgment; the table uses our card ids.
 - **Project methodology:** `The Structural Tarot Method` in this folder (the
   owner's own guide). It defines the interpretation pipeline (see
   `interpretation-design.md`) and the astrological correspondence tables

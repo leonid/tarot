@@ -3,14 +3,17 @@ import { encodeShared, toShared } from '../domain/share';
 import { isComplete, validateReading } from '../domain/validate';
 import { useI18n } from './i18n';
 import { Button, StatusNote } from './kit';
-import { deleteReading, loadHistory, saveReading } from '../features/history';
+import { PageLink } from './Nav';
+import { isSaved, saveReading, type StorageProblem } from '../features/history';
+import { StorageAlert } from './StorageAlert';
 import { useReadingStore } from '../features/store';
 
+/** Keep the finished reading in the journal, or copy a link to it. */
 export function SaveShare() {
   const s = useReadingStore();
-  const [history, setHistory] = useState(loadHistory);
   const [notice, setNotice] = useState('');
-  const { t, locale, getDeck, getSpread } = useI18n();
+  const [problem, setProblem] = useState<StorageProblem>();
+  const { t, getDeck, getSpread } = useI18n();
   const deck = getDeck(s.deckId);
   const spread = getSpread(s.spreadId);
   if (!deck || !spread) return null;
@@ -26,6 +29,9 @@ export function SaveShare() {
     isComplete(reading, spread) &&
     validateReading(reading, deck, spread).length === 0;
   const shared = () => toShared(reading, s.mode);
+  // Read from the journal, so it stays true across pages and reloads, and
+  // turns back into "Save" as soon as the reading changes.
+  const inJournal = ready && isSaved(shared());
 
   async function copyLink() {
     const url = `${location.origin}${location.pathname}#r=${encodeShared(shared())}`;
@@ -39,42 +45,30 @@ export function SaveShare() {
 
   return (
     <section className="save-share">
-      <Button
-        disabled={!ready}
-        onClick={() => {
-          setHistory(saveReading(shared()));
-          setNotice(t.saved);
-        }}
-      >
-        {t.saveReading}
-      </Button>{' '}
-      <Button disabled={!ready} onClick={copyLink}>
-        {t.copyShareLink}
-      </Button>{' '}
+      <div className="actions">
+        <Button
+          disabled={!ready || inJournal}
+          onClick={() => {
+            const result = saveReading(shared());
+            setProblem(result.problem);
+            setNotice(
+              result.problem
+                ? ''
+                : result.status === 'already'
+                  ? t.alreadySaved
+                  : t.saved,
+            );
+          }}
+        >
+          {inJournal ? t.savedButton : t.saveReading}
+        </Button>
+        <Button disabled={!ready} onClick={copyLink}>
+          {t.copyShareLink}
+        </Button>
+      </div>
       <StatusNote>{notice}</StatusNote>
-      {history.length > 0 && (
-        <details>
-          <summary>{t.savedReadings(history.length)}</summary>
-          <ul>
-            {history.map((e) => (
-              <li key={e.id}>
-                {new Date(e.savedAt).toLocaleString(locale.code)} —{' '}
-                {e.reading.question || t.noQuestion} (
-                {getSpread(e.reading.spreadId)?.name ?? e.reading.spreadId}){' '}
-                <Button onClick={() => s.loadShared(e.reading)}>
-                  {t.open}
-                </Button>{' '}
-                <Button
-                  variant="danger"
-                  onClick={() => setHistory(deleteReading(e.id))}
-                >
-                  {t.delete}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </details>
-      )}
+      <StorageAlert problem={problem} />
+      {inJournal && <PageLink page="journal">{t.openJournal}</PageLink>}
     </section>
   );
 }

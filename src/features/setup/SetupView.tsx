@@ -9,15 +9,17 @@ import {
 } from '@dnd-kit/core';
 import { useState } from 'react';
 import { useI18n } from '../../ui/i18n';
-import { Field, Toggle } from '../../ui/kit';
+import { QuestionField, SpreadControls } from '../../ui/Controls';
+import { Field, PageHead, Step, Toggle } from '../../ui/kit';
+import { SaveShare } from '../../ui/SaveShare';
 import { ReadingView } from '../../ui/Layout';
 import { useReadingStore } from '../store';
 import { CardPalette } from './CardPalette';
 import { slotKeyboardCoordinates } from './keyboardCoordinates';
 
 /**
- * Setup mode. Drag a card from the palette onto a slot; the select list under
- * "Place with menus" does the same without a pointer (keyboard, screen reader).
+ * "Record a spread". Click or drag a card from the palette onto a position;
+ * the lists under the palette do the same without a pointer.
  */
 export function SetupView() {
   const { deckId, spreadId, placements, allowReversals, place, clearPosition } =
@@ -83,79 +85,117 @@ export function SetupView() {
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragEnd={onDragEnd}
-      accessibility={accessibility}
-    >
-      <ReadingView
-        droppable
-        armedCard={armed}
-        onSlotClick={(positionId) => {
-          if (!armed) return;
-          place(positionId, armed.id);
-          setPicked(undefined);
-        }}
-      />
-      <p className="meta">{t.placeHint}</p>
-      <p role="status" className="meta">
-        {armed ? t.cardSelected(armed.name) : ''}
-      </p>
-      <CardPalette
-        deckId={deck.id}
-        cards={unplaced}
-        pickedId={armed?.id}
-        onPick={(id) => setPicked((cur) => (cur === id ? undefined : id))}
-      />
-      <details className="slot-menus">
-        <summary>{t.placeWithMenus}</summary>
-        {spread.positions.map((pos) => {
-          const placed = placements.find((p) => p.positionId === pos.id);
-          return (
-            <div key={pos.id} className="slot-editor">
-              <Field label={pos.label}>
-                {(p) => (
-                  <select
-                    {...p}
-                    value={placed?.cardId ?? ''}
-                    onChange={(e) =>
-                      e.target.value
-                        ? place(pos.id, e.target.value, placed?.orientation)
-                        : clearPosition(pos.id)
-                    }
-                  >
-                    <option value="">{t.chooseCard}</option>
-                    {deck.cards.map((c) => (
-                      <option
-                        key={c.id}
-                        value={c.id}
-                        disabled={
-                          placedIds.has(c.id) && placed?.cardId !== c.id
+    <>
+      <PageHead title={t.goalRecord} purpose={t.recordPurpose} />
+      <ol className="steps">
+        <Step n={1} title={t.stepQuestion}>
+          <QuestionField />
+        </Step>
+        <Step n={2} title={t.stepSpread}>
+          <SpreadControls />
+        </Step>
+        <Step n={3} title={t.stepPlace}>
+          <p className="hint">{t.placeHint}</p>
+          <p role="status" className="meta">
+            {armed ? t.cardSelected(armed.name) : ''}
+          </p>
+        </Step>
+      </ol>
+      <DndContext
+        sensors={sensors}
+        onDragEnd={onDragEnd}
+        accessibility={accessibility}
+      >
+        <div
+          className={`record-table${placements.length < spread.positions.length ? ' placing' : ''}`}
+        >
+          <ReadingView
+            droppable
+            armedCard={armed}
+            onSlotClick={(positionId) => {
+              if (!armed) return;
+              place(positionId, armed.id);
+              setPicked(undefined);
+            }}
+            onRemove={clearPosition}
+            onFlip={
+              allowReversals
+                ? (positionId) => {
+                    const placed = placements.find(
+                      (p) => p.positionId === positionId,
+                    );
+                    if (placed)
+                      place(
+                        positionId,
+                        placed.cardId,
+                        placed.orientation === 'reversed'
+                          ? 'upright'
+                          : 'reversed',
+                      );
+                  }
+                : undefined
+            }
+          />
+          <CardPalette
+            deckId={deck.id}
+            cards={unplaced}
+            pickedId={armed?.id}
+            onPick={(id) => setPicked((cur) => (cur === id ? undefined : id))}
+          />
+        </div>
+        <section className="slot-menus">
+          <h3>{t.placeWithMenus}</h3>
+          <div className="slot-menus-grid">
+            {spread.positions.map((pos) => {
+              const placed = placements.find((p) => p.positionId === pos.id);
+              return (
+                <div key={pos.id} className="slot-editor">
+                  <Field label={pos.label}>
+                    {(p) => (
+                      <select
+                        {...p}
+                        value={placed?.cardId ?? ''}
+                        onChange={(e) =>
+                          e.target.value
+                            ? place(pos.id, e.target.value, placed?.orientation)
+                            : clearPosition(pos.id)
                         }
                       >
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </Field>
-              {allowReversals && placed && (
-                <Toggle
-                  label={t.reversed}
-                  checked={placed.orientation === 'reversed'}
-                  onChange={(e) =>
-                    place(
-                      pos.id,
-                      placed.cardId,
-                      e.target.checked ? 'reversed' : 'upright',
-                    )
-                  }
-                />
-              )}
-            </div>
-          );
-        })}
-      </details>
-    </DndContext>
+                        <option value="">{t.chooseCard}</option>
+                        {deck.cards.map((c) => (
+                          <option
+                            key={c.id}
+                            value={c.id}
+                            disabled={
+                              placedIds.has(c.id) && placed?.cardId !== c.id
+                            }
+                          >
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </Field>
+                  {allowReversals && placed && (
+                    <Toggle
+                      label={t.reversed}
+                      checked={placed.orientation === 'reversed'}
+                      onChange={(e) =>
+                        place(
+                          pos.id,
+                          placed.cardId,
+                          e.target.checked ? 'reversed' : 'upright',
+                        )
+                      }
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </DndContext>
+      <SaveShare />
+    </>
   );
 }

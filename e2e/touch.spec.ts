@@ -1,8 +1,9 @@
+import { SCREENS, smallTargets, tinyText } from './screens';
 import { expect, test, type Page } from '@playwright/test';
 
 async function openSetup(page: Page) {
-  await page.goto('/');
-  await page.getByRole('tab', { name: 'Setup' }).click();
+  await page.goto('/#/reading');
+  await page.getByRole('link', { name: 'Record a spread' }).click();
   await page.getByLabel('Spread').selectOption('three-card');
 }
 
@@ -58,7 +59,7 @@ test('touch: a quick swipe over a card scrolls and does not drag', async ({
   const end = await touchDrag(page, from, { x: from.x, y: from.y - 120 }, 0);
   await end();
   await expect(page.locator('.board .slot.filled')).toHaveCount(0);
-  await expect(page.locator('.palette-card')).toHaveCount(78);
+  await expect(page.locator('.palette-card')).toHaveCount(22);
 });
 
 test('touch: press and hold a card, drag it onto a position', async ({
@@ -69,7 +70,13 @@ test('touch: press and hold a card, drag it onto a position', async ({
   await openSetup(page);
   const card = page.locator('.palette-card').first();
   const name = (await card.locator('.card-face-name').innerText()).trim();
-  await page.locator('[data-position="present"]').scrollIntoViewIfNeeded();
+  // The cards sit under the board on a phone, so both fit on one screen.
+  // Keep them clear of the screen edges, where a drag scrolls the page.
+  await page.locator('.board').evaluate((el) => {
+    el.scrollIntoView();
+    window.scrollBy(0, -160);
+  });
+  await expect(card).toBeInViewport({ ratio: 1 });
   const from = await centre(page, '.palette-card');
   const to = await centre(page, '[data-position="present"]');
   const end = await touchDrag(page, from, to, 400); // hold > 250 ms
@@ -78,5 +85,20 @@ test('touch: press and hold a card, drag it onto a position', async ({
   );
   await end();
   await expect(page.locator('[data-position="present"]')).toHaveClass(/filled/);
-  await expect(page.locator('.palette-card')).toHaveCount(77);
+  await expect(page.locator('.palette-card')).toHaveCount(21);
 });
+
+// What a finger and an eye need, measured on every screen (R12). The text
+// size half also runs on the desktop browsers, in text-size.spec.ts.
+for (const [name, open] of SCREENS) {
+  test(`touch: ${name} has 44 px targets and no text under 12 px`, async ({
+    page,
+  }) => {
+    await open(page);
+    await page.locator('.app-footer').waitFor();
+    expect({
+      small: await smallTargets(page),
+      tiny: await tinyText(page),
+    }).toEqual({ small: [], tiny: [] });
+  });
+}

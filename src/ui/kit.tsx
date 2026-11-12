@@ -186,6 +186,73 @@ export function Alert({
   );
 }
 
+/**
+ * A notice with one action, usually Undo. role="status": it is announced
+ * without interrupting, and it does not take focus.
+ */
+export function ActionNote({
+  actionLabel,
+  onAction,
+  dismissLabel,
+  onDismiss,
+  children,
+}: {
+  actionLabel: string;
+  onAction: () => void;
+  dismissLabel: string;
+  onDismiss: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div role="status" className="alert action-note">
+      <span>{children}</span>
+      <Button variant="primary" onClick={onAction}>
+        {actionLabel}
+      </Button>
+      <Button onClick={onDismiss}>{dismissLabel}</Button>
+    </div>
+  );
+}
+
+/** A screen's title and the one sentence that says what it is for. */
+export function PageHead({
+  title,
+  purpose,
+}: {
+  title: string;
+  purpose: string;
+}) {
+  return (
+    <header className="page-head">
+      <h2 tabIndex={-1}>{title}</h2>
+      <p className="lead">{purpose}</p>
+    </header>
+  );
+}
+
+/** One numbered step of a screen. Use inside `<ol className="steps">`. */
+export function Step({
+  n,
+  title,
+  children,
+}: {
+  n: number;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <li className="step">
+      <h3>
+        <span className="step-n" aria-hidden="true">
+          {n}
+        </span>
+        {title}
+      </h3>
+      <div className="step-body">{children}</div>
+    </li>
+  );
+}
+
 /** A small label pill. Always carries a word; the colour only reinforces it. */
 export function Chip({
   tone = 'neutral',

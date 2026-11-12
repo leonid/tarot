@@ -47,7 +47,8 @@ export function nextSlotCentre(
  * Keyboard sensor coordinates for the setup board: an arrow key moves the
  * dragged card to the next position in that direction instead of a fixed
  * number of pixels, so every move lands on a slot and is announced with its
- * name ("The Fool is over Present").
+ * name ("The Fool is over Present"). The first arrow press takes the card
+ * from the list to the spread's first position.
  */
 export const slotKeyboardCoordinates: KeyboardCoordinateGetter = (
   event,
@@ -55,16 +56,28 @@ export const slotKeyboardCoordinates: KeyboardCoordinateGetter = (
 ) => {
   if (!ARROWS.includes(event.code) || !collisionRect) return undefined;
   event.preventDefault();
-  const centres: Point[] = [];
-  for (const c of droppableContainers.getEnabled()) {
-    const r = droppableRects.get(c.id);
-    if (r) centres.push({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-  }
   const from = {
     x: collisionRect.left + collisionRect.width / 2,
     y: collisionRect.top + collisionRect.height / 2,
   };
-  const to = nextSlotCentre(event.code as Arrow, from, centres);
+  const centres: Point[] = [];
+  let onBoard = false;
+  for (const c of droppableContainers.getEnabled()) {
+    const r = droppableRects.get(c.id);
+    if (!r) continue;
+    centres.push({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+    onBoard ||=
+      from.x >= r.left &&
+      from.x <= r.left + r.width &&
+      from.y >= r.top &&
+      from.y <= r.top + r.height;
+  }
+  // The list of cards is under the board on a phone and beside it on a wide
+  // screen, so from there no one arrow means "to the board": any arrow goes
+  // to the first position, and the arrows move between positions after that.
+  const to = onBoard
+    ? nextSlotCentre(event.code as Arrow, from, centres)
+    : centres[0];
   // Top-left of the dragged card when its centre sits on the slot centre.
   return to
     ? {

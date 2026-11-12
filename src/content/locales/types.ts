@@ -1,4 +1,9 @@
-import type { CardMeaning, Spread } from '../../domain/types';
+import type {
+  CardMeaning,
+  SchoolTable,
+  Spread,
+  Suit,
+} from '../../domain/types';
 import type { Element } from '../../domain/elements';
 import type { ProviderStrings } from '../../domain/strings';
 
@@ -10,8 +15,88 @@ export interface UiMessages {
   themeSystem: string;
   themeLight: string;
   themeDark: string;
-  modeSimulate: string;
-  modeSetup: string;
+  /** Accessible name of the main navigation. */
+  navLabel: string;
+  navHome: string;
+  /** The four goals: names for the navigation, the home screen and page titles. */
+  goalReading: string;
+  goalRecord: string;
+  goalJournal: string;
+  goalCards: string;
+  goalCardsText: string;
+  /** The card library and a card's own page. */
+  cardsPurpose: string;
+  cardsSearch: string;
+  cardsSearchHint: string;
+  cardsNone: string;
+  cardsShown(shown: number, total: number): string;
+  groupMajor: string;
+  suits: Record<Suit, string>;
+  upright: string;
+  /** Heading over the card read from its number, element, planet and sign. */
+  cardParts: string;
+  cardAllCards: string;
+  cardPrevious: string;
+  cardNext: string;
+  /** Link from a card's note in a reading to the card's own page. */
+  cardAbout(card: string): string;
+  cardUnknown: string;
+  /** Record a spread: the parts of the deck the list of cards can show. */
+  paletteGroups: string;
+  groupAll: string;
+  paletteGroupEmpty: string;
+  /** A card on the board is a button that shows its note; the board links to the reading. */
+  openNote(card: string): string;
+  openNoteHint: string;
+  toReading: string;
+  /** Buttons on a placed card. */
+  flipCard(card: string): string;
+  removeCard(card: string): string;
+  /** Over the notes while the spread is still being filled. */
+  partialReading(placed: number, total: number): string;
+  /** Home: what the app is, then one sentence per goal. */
+  homeIntro: string;
+  /** Home: one tap to a dealt reading. */
+  homeDraw: string;
+  homeDrawHint(spread: string, cards: number): string;
+  homeContinue: string;
+  /** Footer and the about page. */
+  footerNote: string;
+  footerLabel: string;
+  aboutTitle: string;
+  aboutWhatTitle: string;
+  aboutWhat: readonly string[];
+  aboutSourcesTitle: string;
+  aboutSources: readonly string[];
+  aboutPrivacyTitle: string;
+  aboutPrivacy: readonly string[];
+  aboutLicenceTitle: string;
+  aboutLicence: readonly string[];
+  homeChoose: string;
+  goalReadingText: string;
+  goalRecordText: string;
+  goalJournalText(count: number): string;
+  /** One sentence of purpose under each page title. */
+  readingPurpose: string;
+  recordPurpose: string;
+  journalPurpose: string;
+  /** Numbered steps on the reading screens. */
+  stepQuestion: string;
+  stepQuestionHint: string;
+  stepSpread: string;
+  stepDeal: string;
+  stepPlace: string;
+  /** How many cards a spread takes. */
+  cardCount(count: number): string;
+  journalEmpty: string;
+  openJournal: string;
+  /** A reading opened from a share link: read-only until kept or opened. */
+  sharedTitle: string;
+  sharedPurpose: string;
+  sharedKeep: string;
+  sharedKept: string;
+  sharedOpen: string;
+  sharedOwn: string;
 
   question: string;
   questionPlaceholder: string;
@@ -58,6 +143,12 @@ export interface UiMessages {
   sourceBuiltIn: string;
   /** Label when the AI was on but could not answer. */
   sourceFellBack: string;
+  /** Opens the other schools' readings under a card's note. */
+  otherSchools: string;
+  /** Label of the reading built from the card's parts (the card formula). */
+  schoolStructure: string;
+  /** Label of Waite's own 1911 divinatory meaning. */
+  schoolWaite: string;
   hinge: string;
   hingeTitle: string;
   hingeLabel: string;
@@ -71,11 +162,23 @@ export interface UiMessages {
   copyShareLink: string;
   linkCopied: string;
   saved: string;
-  savedReadings(count: number): string;
+  /** The Save button once the reading on the table is in the journal. */
+  savedButton: string;
+  alreadySaved: string;
+  /** The journal could not be written: storage full, or not allowed. */
+  storageFull: string;
+  storageBlocked: string;
   noQuestion: string;
   open: string;
   delete: string;
   dismiss: string;
+  undo: string;
+  /** The board was cleared by a deck or spread change. */
+  readingCleared: string;
+  /** The board was replaced by an opened or shared reading. */
+  readingReplaced: string;
+  /** A saved reading was deleted from the list. */
+  savedDeleted: string;
   errorTitle: string;
   errorBody: string;
   errorStartOver: string;
@@ -109,6 +212,8 @@ export interface LocaleBundle {
   alts?: Record<string, string>;
   spreads?: Record<string, SpreadText>;
   meanings?: Record<string, CardMeaning>;
+  /** Waite's 1911 meanings in this language (base: content/meanings/waite.ts). */
+  waite?: SchoolTable;
 }
 
 export type SpreadLike = Pick<Spread, 'id'>;

@@ -5,7 +5,7 @@ for (const scheme of ['light', 'dark'] as const) {
     page,
   }, testInfo) => {
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/');
+    await page.goto('/#/reading');
     await page.getByLabel('Spread').selectOption('three-card');
     await page.getByRole('button', { name: 'Shuffle and deal' }).click();
     await expect(page.locator('.board .slot.filled')).toHaveCount(3);
@@ -26,7 +26,7 @@ for (const scheme of ['light', 'dark'] as const) {
 
 test('data-theme overrides the OS setting', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
-  await page.goto('/');
+  await page.goto('/#/reading');
   await page.evaluate(() =>
     document.documentElement.setAttribute('data-theme', 'light'),
   );
@@ -45,7 +45,7 @@ test('the theme picker overrides the OS and survives a reload', async ({
   page,
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
-  await page.goto('/');
+  await page.goto('/#/reading');
   expect(await bgOf(page)).toBe(DARK_BG);
 
   await page.getByLabel('Theme').selectOption('light');
@@ -67,7 +67,7 @@ test('a saved theme is applied before any script bundle runs (no flash)', async 
   );
   // Without the app bundle, only the inline script in index.html can set it.
   await page.route('**/assets/*.js', (route) => route.abort());
-  await page.goto('/');
+  await page.goto('/#/reading');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   expect(await bgOf(page)).toBe(LIGHT_BG);
 });

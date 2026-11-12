@@ -45,6 +45,7 @@
   /* Type */
   --font-body: 'JetBrains Sans', system-ui, sans-serif;
   --font-display: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  --text-2xs: 0.75rem; /* the smallest text anywhere: 12px */
   --text-xs: 0.8125rem;
   --text-sm: 0.875rem;
   --text-md: 1rem;
@@ -58,14 +59,25 @@
   --content-max: 52rem;
   --content-wide: 76rem;
   --aside-w: 26rem;
-  --slot-min-h: 5rem;
+  /* A position is as tall empty as filled: label, picture, a label and a name of two
+     lines each and the word "reversed". The crossing card lies on its side. */
+  --slot-text-h: 7.75rem;
+  --slot-min-h: calc(
+    (var(--card-w) - var(--space-4)) * 1.75 + var(--slot-text-h)
+  );
+  --cross-min-h: calc((var(--card-w) - var(--space-4)) * 0.6 + 6rem);
   --card-w: 7rem;
+  /* Room under a placed card for its turn and remove buttons. */
+  --slot-actions-h: calc(var(--target) + var(--space-1));
   --thumb-w: 2.5rem;
   --palette-max-h: 14rem;
 
   /* Motion */
   --dur-fast: 120ms;
   --dur-slow: 240ms;
+  /* A dealt card turning face up, and the pause before the next one. */
+  --dur-reveal: 420ms;
+  --reveal-step: 110ms;
   --ease: ease-out;
 }
 
@@ -114,6 +126,8 @@
   :root {
     --dur-fast: 0ms;
     --dur-slow: 0ms;
+    --dur-reveal: 0ms;
+    --reveal-step: 0ms;
   }
 }
 /* Phones: smaller cards so the 4-column Celtic Cross fits 360px. */

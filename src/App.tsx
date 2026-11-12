@@ -1,38 +1,54 @@
 import { useReadingStore } from './features/store';
 import { SimulateView } from './features/simulate/SimulateView';
 import { SetupView } from './features/setup/SetupView';
-import { Controls } from './ui/Controls';
-import { SaveShare } from './ui/SaveShare';
-import { useCallback, useEffect, useState } from 'react';
+import { Home } from './ui/Home';
+import { Journal } from './ui/Journal';
+import { SharedView } from './ui/SharedView';
+import { navigate, pageOf, subOf, useHash, type Page } from './ui/route';
+import { Cards } from './ui/Cards';
+import { About } from './ui/About';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { decodeSharedResult, type SharedReading } from './domain/share';
 import { locales } from './content/locales';
 import { useI18n } from './ui/i18n';
-import { Alert, Field, Tabs } from './ui/kit';
+import { ActionNote, Alert, Field } from './ui/kit';
+import { Nav, PageLink } from './ui/Nav';
 import { applyTheme, THEMES, type Theme } from './ui/theme';
 
 type Link =
   { reading: SharedReading } | { error: 'malformed' | 'newer' | 'unknown' };
 
-/** Drops the share payload from the address bar without a navigation. */
-function clearShareHash() {
-  if (location.hash.startsWith('#r='))
-    history.replaceState(null, '', location.pathname + location.search);
-}
+/** The screen each mode lives on. */
+const pageOfMode = (mode: 'simulate' | 'setup'): Page =>
+  mode === 'setup' ? 'record' : 'reading';
 
 export function App() {
   const mode = useReadingStore((s) => s.mode);
   const setMode = useReadingStore((s) => s.setMode);
-  const loadShared = useReadingStore((s) => s.loadShared);
   const setLocale = useReadingStore((s) => s.setLocale);
   const theme = useReadingStore((s) => s.theme);
   const setTheme = useReadingStore((s) => s.setTheme);
+  const undo = useReadingStore((s) => s.undo);
+  const undoLast = useReadingStore((s) => s.undoLast);
+  const dismissUndo = useReadingStore((s) => s.dismissUndo);
+  const deckId = useReadingStore((s) => s.deckId);
   const { locale, t, getDeck, getSpread } = useI18n();
 
-  // A share link (#r=...) is read at load and whenever the hash changes. Only
-  // a readable link we can show is opened; otherwise the current reading
-  // stays and a dismissible message says why.
-  const readLink = useCallback((): Link | null => {
-    const m = /^#r=(.+)$/.exec(location.hash);
+  // The hash names the screen. A hash that names none (a share link, or
+  // anything else) leaves the visitor on the screen they were on.
+  const hash = useHash();
+  const named = pageOf(hash);
+  const [last, setLast] = useState<Page>(named ?? 'home');
+  if (named && named !== last) setLast(named);
+  const page = named ?? last;
+  const cardId = page === 'cards' && named ? subOf(hash) : undefined;
+  const section = page === 'about' && named ? subOf(hash) : undefined;
+
+  // A share link (#r=...) is shown in its own read-only view and stays in the
+  // address bar, so it can be reloaded or passed on. A link that cannot be
+  // shown leaves the current screen in place under a dismissible message.
+  const link = useMemo((): Link | null => {
+    const m = /^#r=(.+)$/.exec(hash);
     if (!m?.[1]) return null;
     const r = decodeSharedResult(m[1]);
     if (!r.ok)
@@ -42,36 +58,58 @@ export function App() {
     if (!getDeck(r.reading.deckId) || !getSpread(r.reading.spreadId))
       return { error: 'unknown' };
     return { reading: r.reading };
-  }, [getDeck, getSpread]);
-  const [link, setLink] = useState(readLink);
+  }, [hash, getDeck, getSpread]);
+  const shared = link && 'reading' in link ? link.reading : null;
 
+  // The two reading screens share one table; each shows its own mode's board.
+  const wanted =
+    shared || (page !== 'reading' && page !== 'record')
+      ? null
+      : page === 'record'
+        ? 'setup'
+        : 'simulate';
   useEffect(() => {
-    const onHashChange = () => {
-      const next = readLink();
-      if (next) setLink(next);
-    };
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, [readLink]);
+    if (wanted && wanted !== mode) setMode(wanted);
+  }, [wanted, mode, setMode]);
 
+  const title = shared
+    ? t.sharedTitle
+    : {
+        home: '',
+        reading: t.goalReading,
+        record: t.goalRecord,
+        journal: t.goalJournal,
+        about: t.aboutTitle,
+        cards:
+          getDeck(deckId)?.cards.find((c) => c.id === cardId)?.name ??
+          t.goalCards,
+      }[page];
   useEffect(() => {
     document.documentElement.lang = locale.code;
-    document.title = t.appTitle;
-  }, [locale, t]);
+    document.title = title ? `${title} · ${t.appTitle}` : t.appTitle;
+  }, [locale, t, title]);
 
   useEffect(() => applyTheme(theme), [theme]);
 
+  // After a move to another screen, focus goes to its heading, so keyboard
+  // and screen reader users start where the new content starts.
+  const screen = shared ? 'shared' : `${page}/${cardId ?? section ?? ''}`;
+  const shown = useRef(screen);
   useEffect(() => {
-    if (!link || !('reading' in link)) return;
-    loadShared(link.reading);
-    // The link has done its job: left in place, a reload would open it again
-    // over whatever the reader did since.
-    clearShareHash();
-  }, [link, loadShared]);
+    if (screen === shown.current) return;
+    shown.current = screen;
+    (
+      document.querySelector<HTMLElement>('.page [data-focus]') ??
+      document.querySelector<HTMLElement>('.page h2')
+    )?.focus();
+  }, [screen]);
+
   return (
-    <main className="app">
+    <div className="app">
       <header className="app-header">
-        <h1>{t.appTitle}</h1>
+        <h1>
+          <PageLink page="home">{t.appTitle}</PageLink>
+        </h1>
         <div className="prefs">
           {locales.length > 1 && (
             <Field label={t.language} className="language">
@@ -113,34 +151,78 @@ export function App() {
           </Field>
         </div>
       </header>
-      {link && 'error' in link && (
-        <Alert
-          dismissLabel={t.dismiss}
-          onDismiss={() => {
-            clearShareHash();
-            setLink(null);
-          }}
-        >
-          {
+      <Nav page={shared ? null : page} />
+      <main>
+        {link && 'error' in link && (
+          <Alert
+            dismissLabel={t.dismiss}
+            onDismiss={() => navigate(last, { replace: true })}
+          >
             {
-              malformed: t.shareLinkMalformed,
-              newer: t.shareLinkNewer,
-              unknown: t.shareLinkUnknown,
-            }[link.error]
-          }
-        </Alert>
-      )}
-      <Tabs
-        tabs={[
-          { id: 'simulate', label: t.modeSimulate },
-          { id: 'setup', label: t.modeSetup },
-        ]}
-        value={mode}
-        onChange={setMode}
-      />
-      <Controls />
-      {mode === 'simulate' ? <SimulateView /> : <SetupView />}
-      <SaveShare />
-    </main>
+              {
+                malformed: t.shareLinkMalformed,
+                newer: t.shareLinkNewer,
+                unknown: t.shareLinkUnknown,
+              }[link.error]
+            }
+          </Alert>
+        )}
+        {undo && (
+          <ActionNote
+            actionLabel={t.undo}
+            onAction={() => {
+              navigate(pageOfMode(undo.mode), { replace: true });
+              undoLast();
+            }}
+            dismissLabel={t.dismiss}
+            onDismiss={dismissUndo}
+          >
+            {undo.kind === 'cleared' ? t.readingCleared : t.readingReplaced}
+          </ActionNote>
+        )}
+        <div className="page">
+          {shared ? (
+            <SharedView key={hash} reading={shared} />
+          ) : page === 'home' ? (
+            <Home />
+          ) : page === 'journal' ? (
+            <Journal />
+          ) : page === 'cards' ? (
+            <Cards cardId={cardId} />
+          ) : page === 'about' ? (
+            <About section={section} />
+          ) : mode !== wanted ? null : page === 'record' ? (
+            <SetupView />
+          ) : (
+            <SimulateView />
+          )}
+        </div>
+      </main>
+      <footer className="app-footer">
+        <p>{t.footerNote}</p>
+        <nav aria-label={t.footerLabel}>
+          <ul>
+            <li>
+              <PageLink page="about">{t.aboutTitle}</PageLink>
+            </li>
+            <li>
+              <PageLink page="about" sub="sources">
+                {t.aboutSourcesTitle}
+              </PageLink>
+            </li>
+            <li>
+              <PageLink page="about" sub="privacy">
+                {t.aboutPrivacyTitle}
+              </PageLink>
+            </li>
+            <li>
+              <PageLink page="about" sub="licence">
+                {t.aboutLicenceTitle}
+              </PageLink>
+            </li>
+          </ul>
+        </nav>
+      </footer>
+    </div>
   );
 }

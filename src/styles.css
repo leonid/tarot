@@ -54,8 +54,8 @@ body {
 .reading {
   display: block;
 }
-/* Two columns from 56em: the board, and the interpretation beside it, sticky
-   so a long reading stays next to its cards. */
+/* Two columns from 56em: the board, and the interpretation beside it. The
+   page is the only thing that scrolls. */
 @media (min-width: 56em) {
   .app {
     max-width: var(--content-wide);
@@ -66,12 +66,6 @@ body {
     gap: var(--space-6);
     align-items: start;
   }
-  .reading > .interpretation {
-    position: sticky;
-    top: var(--space-4);
-    max-height: calc(100vh - var(--space-6));
-    overflow: auto;
-  }
 }
 .board {
   display: grid;
@@ -80,8 +74,9 @@ body {
   justify-content: start;
 }
 .slot {
+  --slot-pad: var(--space-2);
   min-height: var(--slot-min-h);
-  padding: var(--space-2);
+  padding: var(--slot-pad);
   background: var(--surface);
   border: var(--border-w) dashed var(--border);
   border-radius: var(--radius);
@@ -101,15 +96,94 @@ body {
   flex-direction: column;
   gap: var(--space-1);
 }
-/* The crossing card lies across the one above it: wider than tall, with a
-   double border, and its text stays horizontal. */
+/* A position alone in its cell fills it, so a row of positions is level. */
+.cell > .slot:only-child {
+  flex: 1;
+}
+/* The crossing card lies on its side, with a double border; its text stays
+   horizontal. */
 .slot.crossing {
-  min-height: 0;
+  min-height: var(--cross-min-h);
   border-style: double;
   border-width: var(--border-w-strong);
 }
+.slot.crossing .card-image-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--ih) / var(--iw);
+  container-type: size;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+/* One transform, so the build cannot reorder the parts. */
+.slot.crossing .card-image-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100cqh;
+  height: 100cqw;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.slot.crossing .card-image.reversed .card-image-img {
+  transform: translate(-50%, -50%) rotate(270deg);
+}
+.slot.crossing .card-face-name {
+  text-align: center;
+}
+/* On a board that is only read, it lies across the lower part of the picture
+   under it; that card's label and name move above its picture. A deck drawn
+   in type has no picture to lie across, so there the two stay stacked. */
+.board:not(.stacked) .cell.crossed:not(:has(.card-face:not(.card-image))) {
+  position: relative;
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot:not(.crossing) {
+  flex: 1;
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot:not(.crossing)
+  .card-image-frame {
+  order: 2;
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot.crossing {
+  position: absolute;
+  left: calc(-1 * var(--space-1));
+  right: calc(-1 * var(--space-1));
+  bottom: var(--space-1);
+  min-height: 0;
+  padding: var(--space-1);
+  gap: 0;
+  font-size: var(--text-xs);
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot.crossing
+  .card-face-name {
+  font-size: var(--text-sm);
+}
+.card-image-frame {
+  display: block;
+  width: 100%;
+}
 .slot.hinge {
-  border: var(--border-w-strong) solid var(--gold);
+  position: relative;
+  /* The heavier line is drawn inside, so the hinge does not grow the grid. */
+  border-color: var(--gold);
+  border-style: solid;
+  box-shadow: inset 0 0 0 calc(var(--border-w-strong) - var(--border-w))
+    var(--gold);
+}
+/* The hinge badge sits on the border, so it takes no room in the position. */
+.slot > .chip-hinge {
+  position: absolute;
+  top: 0;
+  right: var(--space-2);
+  transform: translateY(-50%);
+  z-index: 1;
 }
 .slot-empty {
   color: var(--text-muted);
@@ -166,7 +240,7 @@ body {
 .card-image.reversed .card-image-img {
   transform: rotate(180deg);
 }
-.card-image.compact .card-image-img {
+.card-image.compact .card-image-frame {
   width: var(--thumb-w);
   flex: none;
 }
@@ -188,8 +262,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1);
-  max-height: var(--palette-max-h);
-  overflow: auto;
 }
 .card-face.compact {
   flex-direction: row;
@@ -240,7 +312,7 @@ body {
 }
 @media (max-width: 40em) {
   .slot {
-    padding: var(--space-1);
+    --slot-pad: var(--space-1);
     font-size: var(--text-xs);
   }
   .chip {
@@ -356,6 +428,28 @@ body {
 .interpretation .note-meaning {
   margin: 0;
 }
+/* Other schools' readings of one card, side by side under its note. */
+.schools {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+}
+.schools summary {
+  padding-block: calc((var(--target) - 1lh) / 2);
+  cursor: pointer;
+  color: var(--text-muted);
+}
+.schools dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--card-w) * 2), 1fr));
+  gap: var(--space-3);
+  margin: var(--space-2) 0 0;
+}
+.schools dt {
+  font-weight: 600;
+}
+.schools dd {
+  margin: 0;
+}
 .connections {
   padding-top: var(--space-3);
   border-top: var(--border-w) solid var(--border);
@@ -377,8 +471,8 @@ body {
   font-style: italic;
 }
 
-/* Setup: the palette is a framed scroll area, so a cut-off row reads as
-   "scroll for more" and not as a broken layout. */
+/* Setup: the palette shows one part of the deck at a time, whole, with no
+   scroll box of its own. */
 .palette-box {
   margin: var(--space-4) 0;
 }
@@ -407,7 +501,7 @@ body {
 }
 @media (max-width: 40em) {
   .slot-label {
-    font-size: 0.9em;
+    font-size: var(--text-2xs);
     font-weight: 600;
   }
   .interpretation {
@@ -438,4 +532,573 @@ body {
 }
 .app-error h2 {
   margin-top: 0;
+}
+
+/* Shell: the title, the places you can go, then one screen. */
+.app-header h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+.nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: var(--space-3) 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  padding: 0 var(--space-3);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+.nav a:hover {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.nav a[aria-current='page'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+a {
+  color: var(--accent);
+}
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+.page h2 {
+  margin: 0;
+  font-size: var(--text-2xl);
+  line-height: 1.2;
+}
+.page h2:focus {
+  outline: none;
+}
+.lead {
+  max-width: var(--measure);
+  margin: var(--space-1) 0 var(--space-4);
+  font-size: var(--text-lg);
+  color: var(--text-muted);
+}
+.home-intro {
+  color: var(--text);
+}
+
+/* Home: the goals, each one a whole block you can press. */
+.goals {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, calc(var(--aside-w) * 0.6)), 1fr)
+  );
+  gap: var(--space-4);
+  margin: var(--space-4) 0;
+  padding: 0;
+  list-style: none;
+}
+.goal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--space-4);
+  border: var(--border-w-strong) solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+.goal:hover {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.goal-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--accent);
+}
+.goal-title::after {
+  content: ' →';
+}
+
+/* Numbered steps: what to do, in order. */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.step h3,
+.slot-menus h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg);
+}
+.step-n {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: var(--text-sm);
+}
+.step .controls {
+  margin: 0;
+}
+.step p {
+  margin: var(--space-2) 0 0;
+  max-width: var(--measure);
+}
+.step [role='status']:empty {
+  display: none;
+}
+.spread-about,
+.hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+/* The step title already names the field; the label stays for screen readers. */
+.visually-hidden,
+.label-hidden > label {
+  position: absolute;
+  width: var(--border-w);
+  height: var(--border-w);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.slot-menus-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(100%, calc(var(--aside-w) * 0.6)), 1fr)
+  );
+  gap: var(--space-2) var(--space-4);
+}
+.slot-menus .field select {
+  max-width: 100%;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.save-share .note,
+.save-share a {
+  display: inline-block;
+  margin: var(--space-2) var(--space-2) 0 0;
+}
+
+/* Journal: one block per saved reading, its actions always in view. */
+.journal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.entry-text {
+  flex: 1 1 var(--aside-w);
+  min-width: 0;
+}
+.entry h3 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+.entry p {
+  margin: var(--space-1) 0 0;
+}
+.entry-cards {
+  font-size: var(--text-sm);
+}
+.empty {
+  max-width: var(--measure);
+}
+.shared-question {
+  max-width: var(--measure);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+}
+.shared-question .meta {
+  display: block;
+  font-family: var(--font-body);
+}
+
+.spread-count {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Wide screens: question and spread side by side, and on the record screen
+   the cards to choose from sit beside the board, so a card and the position
+   it goes to are on screen together. */
+@media (min-width: 56em) {
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-6);
+  }
+  .steps > .step:nth-child(n + 3) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* The card library and a card's own page. */
+.cards-search input {
+  width: 100%;
+  max-width: var(--aside-w);
+  box-sizing: border-box;
+}
+.card-group h3 {
+  margin: var(--space-4) 0 var(--space-2);
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card-link {
+  display: block;
+  padding: var(--space-1);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+.card-link:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.card-page {
+  display: grid;
+  gap: var(--space-6);
+}
+.card-page-art {
+  width: min(70%, calc(var(--card-w) * 2.5));
+  margin: 0 auto;
+}
+.card-page-art .card-face-name {
+  display: none;
+}
+@media (min-width: 48em) {
+  .card-page {
+    grid-template-columns: calc(var(--card-w) * 2.5) minmax(0, 1fr);
+    align-items: start;
+  }
+  .card-page-art {
+    width: auto;
+    margin: 0;
+    position: sticky;
+    top: var(--space-4);
+  }
+}
+.card-page-text {
+  max-width: 44em;
+}
+.chips,
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+  padding: 0;
+  list-style: none;
+}
+.card-side h3 {
+  margin: var(--space-4) 0 var(--space-1);
+}
+.card-side p {
+  margin: 0;
+}
+.card-waite {
+  margin: 0;
+}
+.card-waite dt {
+  font-weight: 600;
+  margin-top: var(--space-2);
+}
+.card-waite dd {
+  margin: 0;
+}
+.card-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: var(--border-w) solid var(--border);
+}
+.card-prev::before {
+  content: '← ';
+}
+.card-next::after {
+  content: ' →';
+}
+.note-more {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+}
+
+/* Record a spread: the board, then the cards to choose from, then the notes,
+   so a card and the position it goes to stay close together on a phone. On a
+   wide screen the cards sit beside the board. */
+.record-table {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'board'
+    'palette'
+    'notes';
+}
+.record-table > .reading {
+  display: contents;
+}
+.record-table .board-wrap {
+  grid-area: board;
+}
+.record-table .palette-box {
+  grid-area: palette;
+}
+.record-table .interpretation {
+  grid-area: notes;
+  position: static;
+  max-height: none;
+  overflow: visible;
+}
+@media (min-width: 56em) {
+  .record-table {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-areas:
+      'board palette'
+      'notes palette';
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+}
+
+/* Record a spread: buttons on each placed card, and the deck in parts. */
+.board.stacked .slot {
+  min-height: calc(var(--slot-min-h) + var(--slot-actions-h));
+}
+.board.stacked .slot.crossing {
+  min-height: calc(var(--cross-min-h) + var(--slot-actions-h));
+}
+.slot-actions {
+  display: flex;
+  gap: var(--space-1);
+  margin-top: auto;
+}
+.slot-action {
+  flex: 1;
+  box-sizing: border-box;
+  min-width: 0;
+  font: inherit;
+  min-height: var(--target);
+  padding: 0;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+.slot-action:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.slot-action[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.palette-search input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.palette-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: var(--space-2) 0;
+}
+.palette-group {
+  font: inherit;
+  font-size: var(--text-sm);
+  min-height: var(--target);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-pill, var(--radius));
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+.palette-group:hover {
+  border-color: var(--accent);
+}
+.palette-group[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+.palette-count {
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+.palette-none {
+  margin: var(--space-2);
+}
+
+/* A dealt card turns face up, one after another. Not while placing cards by
+   hand, and not at all when the visitor asked for less motion (the durations
+   are then zero). */
+@keyframes card-turn {
+  from {
+    transform: perspective(40em) rotateY(90deg);
+  }
+  to {
+    transform: none;
+  }
+}
+.board:not(.stacked) .slot .card-face {
+  animation: card-turn var(--dur-reveal) var(--ease) backwards;
+  animation-delay: calc(var(--i) * var(--reveal-step));
+}
+
+/* Home: one tap to a first reading. */
+.home-start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-4) 0 var(--space-6);
+}
+.home-start .btn {
+  font-size: var(--text-lg);
+  padding: var(--space-2) var(--space-5);
+}
+.home-start .meta {
+  margin: 0;
+}
+
+/* The footer: what the app is for, and where to read more. */
+.app-footer {
+  margin-top: var(--space-7);
+  padding: var(--space-4) 0;
+  border-top: var(--border-w) solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+.app-footer p {
+  margin: 0 0 var(--space-2);
+}
+.app-footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.app-footer a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--target);
+  min-height: var(--target);
+}
+.about {
+  max-width: var(--measure);
+}
+.about h3 {
+  margin: var(--space-5) 0 var(--space-2);
+}
+
+/* A card on the board is a button: it shows that card's note. */
+.slot-card {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+.slot-card:hover .card-face-name {
+  text-decoration: underline;
+}
+.cell.crossed .slot-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.note-card:focus {
+  outline: none;
+  border-left-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.interpretation h2:focus {
+  outline: none;
+}
+/* From the board straight to the reading, where the reading is below it. */
+.to-reading {
+  margin: var(--space-3) 0 0;
+}
+.to-reading a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+}
+.to-reading a::after {
+  content: ' ↓';
+  white-space: pre;
+}
+@media (min-width: 56em) {
+  .reading:not(.record-table .reading) > .board-wrap > .to-reading {
+    display: none;
+  }
+}
+@media (max-width: 40em) {
+  /* A phone position is two targets wide exactly, so the buttons run edge to
+     edge, over the padding and the border. */
+  .slot-actions {
+    gap: 0;
+    margin-inline: calc(-1 * (var(--slot-pad) + var(--border-w)));
+  }
 }

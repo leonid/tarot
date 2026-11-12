@@ -1,6 +1,7 @@
 import type { Element } from './elements';
+import type { CardFormula } from './formula';
 import type { Orientation, Suit } from './types';
-import type { Planet, Sign } from './zodiac';
+import type { Modality, Planet, Sign } from './zodiac';
 
 /**
  * The phrases the deterministic interpreter writes itself, per locale.
@@ -19,9 +20,28 @@ export interface ProviderStrings {
     position?: { label: string; meaning: string };
     base?: { summary: string; keywords: readonly string[] };
   }): string;
+  /**
+   * A card read from its parts alone (number, element, planet, sign), whatever
+   * its orientation. `name` gives a card's name in this locale.
+   */
+  cardFormula(formula: CardFormula, name: (cardId: string) => string): string;
   mostlyMajors: string;
   suitDominates(suit: Suit, count: number, total: number): string;
   mostlyReversed: string;
+  /** Consecutive pips of one suit, in number order. */
+  suitRun(suit: Suit, cards: readonly string[]): string;
+  modalityDominates(modality: Modality, count: number, total: number): string;
+  /** Cards in sign `a` face cards in the opposite sign `b`. */
+  signOpposition(
+    a: Sign,
+    aCards: readonly string[],
+    b: Sign,
+    bCards: readonly string[],
+  ): string;
+  /** Minor cards of one number: 1-10 pips, 11 page to 14 king. */
+  numberRepeats(number: number, cards: readonly string[]): string;
+  /** Cards whose numbers reduce to `root` (1-9), a Major among them. */
+  numberFamily(root: number, cards: readonly string[]): string;
   summary(question: string, cards: number): string;
   advice: string;
 

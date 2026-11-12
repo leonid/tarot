@@ -24,7 +24,9 @@ describe('locale switching', () => {
   it('switches the interface language and the document language', async () => {
     render(<App />);
     await userEvent.selectOptions(screen.getByLabelText('Language'), 'en-XA');
-    expect(screen.getByRole('tab', { name: '⟦Setup⟧' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: '⟦Record a spread⟧' }),
+    ).toBeInTheDocument();
     expect(document.documentElement.lang).toBe('en-XA');
     expect(useReadingStore.getState().locale).toBe('en-XA');
   });
@@ -41,11 +43,24 @@ describe('locale switching', () => {
   });
 
   it('leaves no English on screen in setup mode', async () => {
-    useReadingStore.setState({ locale: 'en-XA', mode: 'setup' });
+    useReadingStore.setState({ locale: 'en-XA' });
+    history.replaceState(null, '', '#/record');
     const { container } = render(<App />);
+    await screen.findByText(/Available cards/);
     const found = leaks(container).filter((t) => !/^(\d+|[IVX]+)$/.test(t));
     expect(found).toEqual([]);
   });
+
+  it.each(['#/', '#/journal', '#/cards', '#/cards/cups-13-queen', '#/about'])(
+    'leaves no English on screen at %s',
+    (hash) => {
+      useReadingStore.setState({ locale: 'en-XA' });
+      history.replaceState(null, '', hash);
+      const { container } = render(<App />);
+      const found = leaks(container).filter((t) => !/^(\d+|[IVX]+)$/.test(t));
+      expect(found).toEqual([]);
+    },
+  );
 
   it('ignores an unknown locale code', () => {
     useReadingStore.getState().setLocale('xx');
@@ -58,7 +73,7 @@ describe('Russian', () => {
     useReadingStore.setState({ locale: 'ru' });
     render(<App />);
     expect(
-      screen.getByRole('tab', { name: 'Расклад вручную' }),
+      screen.getByRole('link', { name: 'Записать свой расклад' }),
     ).toBeInTheDocument();
     await userEvent.click(screen.getByText('Перемешать и раскинуть'));
     expect(await screen.findByText('Толкование')).toBeInTheDocument();
