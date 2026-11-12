@@ -2,7 +2,9 @@
 
 Written 2026-11-10. Planning document only; no code was changed. Statements about the repo cite files read on this date. External facts cite a URL in section 7; anything not confirmed is marked **unverified**.
 
-## 0. Status (revised 2026-11-10, after commit 1032b10)
+## 0. Status (revised 2026-11-11, after commit a031324 and a browser review)
+
+Rows for M4 and M6, the evidence line, section 0.4 and all of section 0.5 were revised on 2026-11-11; the rest dates from 2026-11-10.
 
 This section is the current truth. Sections 1 to 5 below are the original plan and are kept for the reasoning; where they disagree with this section, this section wins. Section 2 in particular describes the repo **before** the work listed here.
 
@@ -14,11 +16,11 @@ This section is the current truth. Sections 1 to 5 below are the original plan a
 | M2 Text split    | Goal met another way  | M2.3 to M2.10: typed UI dictionary, locale in store, `<html lang>`, switcher, localized drag announcements, per-locale text tables, per-key fallback, coverage tests, ids-only share links                            | M2.1 (typed facts, `src/domain/facts.ts`) and M2.12 (dignities grouped by element pair) are done. Nothing remains                                                                                                                                |
 | Design system    | 8 of 11               | D0 (decisions recorded in `DESIGN.md`), D1 to D7, and D9 (`src/ui/contrast.test.ts`)                                                                                                                                  | D8 (suit and element icons exist; close and check are still text glyphs), D10 (review at the end of M3)                                                                                |
 | M3 Presentable   | Started through D4/D7 | M3.1 (image set chosen: the 1909 Roses & Lilies scans, see `sources.md`); M3.2 (manifest schema, `src/content/images/manifest.ts`); M3.3 (all 78 file pages checked by script, `rws-1909.json`); M3.4 (78 cards at 240 and 480 px, 6.84 MB of 8 MB, `npm run images`); M3.5 (image resolver, `src/content/images/resolve.ts`); M3.6 (alt text for all 78 cards in English and Russian); M3.7 (`CardImage`: lazy picture, reversed turned over plus the word, text face as fallback; shown on the catalogue page); M3.8 (board slots and palette use `CardImage`; names stay as text beside the pictures); M3.9 (click-to-place: click a card, then a position; a hint line and a status line say how); M3.14 (deploy workflow to GitHub Pages with `base` from `BASE_PATH` and a live-URL smoke test; needs Pages enabled in repo settings, not yet run); M3.13 (accessibility-tree review done, deal announcement added; the manual screen-reader pass is still to do, checklist in `screen-reader.md`); M3.12 (automated axe-core check in e2e on four main views in both themes, no violations after two fixes: palette is now a group of buttons, the scrolling interpretation panel is keyboard-focusable; focus-ring and reduced-motion checks); M3.11 (touch: press-and-hold drag, swipes scroll; emulated-phone e2e, real-device note in `touch.md`); M3.10 (keyboard drag: arrow keys jump from position to position and each move is announced; a whole three-card spread is placed by keyboard in e2e); the crossing-card label fix (half of M3.8); one keyboard-drag e2e (part of M3.10); contrast and focus tokens (part of M3.12)                                                                                          | Image work: none left, touch (M3.11), screen-reader pass (M3.13), deploy (M3.14)                                                                        |
-| M4 LLM           | Not started           | Decisions taken (section 6)                                                                                                                                                                                           | Everything; blocked on choosing a proxy host                                                                                                                              |
+| M4 LLM           | Code merged, not deployed | M4.1 to M4.11 are on `main`: Cloudflare Worker proxy (`proxy/`), request schema, prompt builder with the question marked untrusted, upstream call, client `llmProvider` that falls back on every failure, AI switch with source label and privacy note, cache and rate-limit shield, locale in the prompt, eval | M4.12 (#70, spend limit and monitoring). The Worker is not deployed: `proxy/wrangler.toml` still has the placeholder origin and the rate limiter and KV cache are commented out. No build sets `VITE_PROXY_URL`, so no user has seen the AI reader |
 | M5, M7, M8       | Not started           |                                                                                                                                                                                                                       |                                                                                                                                                                                        |
-| M6 Content       | One item early        | Russian (M6.7, M6.8): UI, 78 cards, meanings, spreads, interpreter phrases, with full coverage tests. It is a **machine draft**                                                                                       | Review of the Russian text by a fluent reader; everything else in M6                                                                                                                   |
+| M6 Content       | One item early        | Russian (M6.7, M6.8): UI, 78 cards, meanings, spreads, interpreter phrases, with full coverage tests. It is a **machine draft**                                                                                       | Review of the Russian text by a fluent reader (#86). M6.5, M6.11, M6.12 and M6.13 (number facts, modality and sign facts, card formula, Waite 1911 meanings) are written but **unmerged**: five commits stacked on local branches `m6.5-number-facts` to `m6.13-waite`, not pushed, no pull requests (#84, #141, #142, #143). Everything else in M6 |
 
-Evidence at this revision: 343 unit and component tests, 23 Playwright tests on Chromium, Firefox and WebKit (69 runs, green in CI), typecheck, lint and build all pass.
+Evidence on 2026-11-11, `main` at a031324: 443 unit and component tests in 36 files, typecheck, lint and build pass locally. Playwright was not re-run for this revision. The production build is one 493 kB script (151 kB gzip) and 11 MB in `dist`, of which the card images are about 7 MB.
 
 ### 0.2 Where the build left the plan
 
@@ -51,9 +53,51 @@ Applied to the GitHub issues on 2026-11-10. New issues: #119 (M2.12, group long 
 
 1. **M1 is finished.** (M1.11 is done: the provider runs when the cards, deck, spread or language change, never while the question is typed; a changed question shows an update button. An LLM provider may want a fully manual trigger; decide in M4.8.)
 2. **Typed facts are done** (M2.1: `compare()` returns `Fact[]`, `renderFact` applies the locale templates; the sentences are unchanged, pinned by `relations-text.test.ts`). **Grouping is done** (M2.12): dignities are one fact per pair of elements with the cards of each, so a ten-card reading has at most four conflict lines and two friendly ones and no pair is lost. `Interpretation.relations` is still a list of sentences; the facts do not reach the interface, which did not need them.
-3. **M3:** images (M3.1 to M3.8), click-to-place, touch, deploy to GitHub Pages.
-4. **M4** after the proxy host is chosen.
-5. M5 to M8 as planned.
+3. **M3 and M4 code are done**; neither is deployed.
+4. **Next: section 0.5**, in its order: R-A (correctness and release), then R-B (the reading and the screens, with R18 as the frame for R8 to R12), then R-C. M5 follows R-B; M6 theme notes, M7 and M8 follow as planned.
+
+### 0.5 Review of 2026-11-11: findings and the tasks they add
+
+Method: both modes, all three spreads, both decks, both themes, English, Russian, a narrow window (606 px, the narrowest the desktop browser allowed), save, history, a damaged share link, and Setup by click and by menus, in Chrome against `main` and against `m6.13-waite`. Code read for the proxy, store, history and share link. Not exercised: the AI reader (no proxy URL locally), a real phone, a screen reader, opening a valid share link (covered by e2e only).
+
+**What the review concluded.** The engineering is ahead of the product. The domain split, seeded deals, typed facts, proxy validation and tests are sound. What a visitor gets is a form, a board and a list of card definitions: the built-in reader never answers the question, the screens lose work without warning, and nothing is deployed. More content (M6) does not fix that; the tasks below do.
+
+Tasks are named R1 to R18. Issues: epic #144; R1 to R18 are #145 to #162 in order. R18 was added on 2026-11-12 from the owner's reading of this review.
+
+**R-A. Correctness and release (do first)**
+
+| Task | Finding | Acceptance |
+| ---- | ------- | ---------- |
+| R1 Dignity table | `dignity()` in `src/domain/elements.ts` returns `conflicted` for fire with earth and air with water. The project's own guide ("Structural Tarot Method", elemental dignities) lists only fire with water and air with earth as opposed. The screen says "Fire against earth: … conflicts with …" | A `neutral` result for fire/earth and air/water; no conflict line for them; tests for all ten pairs; guide and code agree |
+| R2 Card order in Setup | `place()` in `src/features/store.ts` appends, and the interpretation lists cards in placement order. Reversing the Past card moved it to the end: Present, Future, Past | Notes always follow spread order; a test that places out of order and flips a card |
+| R3 Losing a reading | `setMode`, `setDeck` and `setSpread` clear the board. Switching to Setup wiped a dealt Celtic Cross with no warning. Opening a saved reading or a share link overwrites the board; Delete in history is immediate | Each mode keeps its own board; deck or spread change, Open and Delete offer undo |
+| R4 Land the M6 stack | Five commits on unpushed local branches, against the one issue, one branch, one pull request rule | One pull request per issue (#84, #141, #142, #143), merged in order. R1 is stacked on top of them so that the new facts and the corrected dignity lines are tested together |
+| R5 First deploy | Pages is not enabled (#47). The Worker is not deployed | The site is live from `main`; the Worker is deployed with the real origin, the rate limiter and KV cache switched on and a spend limit (#70) **before** any build sets `VITE_PROXY_URL` |
+
+**R-B. The reading and the two screens**
+
+| Task | Finding | Acceptance |
+| ---- | ------- | ---------- |
+| R6 A reader that reads | The summary is "3 cards were read." or the question echoed back; the advice is one fixed sentence; each note is the base meaning plus keywords. The question is never addressed | The built-in summary is composed from position roles, the hinge and the two or three strongest facts; the advice varies with them; a set of fixture readings is judged by the M4.11 eval rubric |
+| R7 Plain words | "Hinge", "seed 2107528904" and dignity lines are unexplained. A ten-card reading shows up to ten technical lines | Each term has a one-line explanation in place; Connections shows the strongest three and folds the rest; the seed moves into a "replay this deal" detail |
+| R8 Card detail and library | Clicking a card does nothing. There is no way to browse the deck. The formula and Waite text (M6.12, M6.13) are hidden inside a fold in the reading | A card opens to a large image, upright and reversed meanings, correspondences, formula and Waite text; a library screen lists all 78 with search |
+| R9 Setup on the board | Reverse and remove exist only in the folded "Place with menus" list. The palette is 78 chips in a 200 px box with no search, below a tall board, and it shifts when a card is placed (a click landed on the wrong card). Nothing is interpreted until every position is filled | Flip and remove on each placed card; palette search and suit filter; palette beside the board on wide screens; notes appear per card as placed, connections when complete |
+| R10 Celtic Cross layout | The crossing card sits below the Present card and the grid stretches when it is filled. On desktop the interpretation is an inner scroll area beside a taller board, so the wheel scrolls the panel and not the page. The status line says "below the board" when it is beside it | The crossing card lies across the Present card; the grid does not move when filled; one scroll per page; the status text matches the layout |
+| R11 First visit | The first screen is a form. No statement of what the app is, no "for reflection, not advice" note outside the AI path, no about or sources page, no favicon, description or share preview. The deal is instant | A short introduction and a one-tap first reading; a footer with about, sources and licence; page metadata; a card-turn reveal that respects reduced motion |
+| R12 Narrow screens | Controls are 32 to 35 px tall, the smallest text is 11.7 px, and a Celtic Cross puts the interpretation about 1500 px down the page | Touch targets of 44 px; no text under 12 px; tapping a card on the board opens its note; a link from the board to the reading |
+| R18 Role-led interface | Owner feedback: it is not clear what goes where, some controls are off screen, it is not obvious what can be interacted with, and the main goals are not represented in the interface. The app has four goals, one per role: get a reading, record my own spread, learn the cards, keep and revisit readings | A home screen that offers the four goals by name; one screen per goal with a title, one sentence of purpose and one obvious primary action; navigation always visible; no control reachable only inside an inner scroll box or a fold; a shared reading opens in its own view. Checked at 390 px and 1280 px in both themes |
+
+**R-C. Hardening after first users**
+
+| Task | Finding | Acceptance |
+| ---- | ------- | ---------- |
+| R13 Save feedback | Save shows no confirmation of its own; saving twice makes two entries; storage errors are swallowed in `src/features/history.ts` | A visible "saved" state; no duplicate of an unchanged reading; a message when storage is full or blocked. Do with M5.5 (#75) |
+| R14 Proxy and page security | The origin check in `proxy/src/handler.ts` stops other websites, not scripts, which can send any `Origin`; the rate limiter is optional and fails open. The cache stores text derived from the question for 24 hours. The page has no Content-Security-Policy. The share link carries the question | Rate limit required in production with a daily ceiling; the privacy note states the 24 hour cache; a CSP that allows only self and the proxy; the copy-link notice says the question is in the link |
+| R15 Load size | One 493 kB script holds every locale, the Waite and formula text, Zod and dnd-kit | Locale text and Setup's drag code load on demand; first load under 100 kB gzip; a size budget in CI |
+| R16 Pseudo-locale | "Pseudo-locale" is offered in the language menu | Confirm it is absent from a production build, with a test |
+| R17 Russian | Still a machine draft (#86), and the new Waite and formula text adds to it | Reviewed by a fluent reader before Russian is offered by default from `navigator.language` |
+
+**Changes to earlier milestones.** M5.1 to M5.4 (journal notes, tags, search, export) keep their place after R-B: they are what brings a user back, and R3 and R13 are their groundwork. M5.9 (daily card) moves up beside R11, since it is the cheapest reason to return. M6.9 and M6.10 (a second deck) move to the end: no reviewed finding asks for them. M7 (offline) is worth doing only after R15.
 
 ## 1. Summary
 
