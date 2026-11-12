@@ -3,7 +3,7 @@ import { deal } from './deal';
 import { createRng, shuffle } from './rng';
 import { validateReading } from './validate';
 import { fallbackProvider } from './fallback';
-import { dignity, elementOf } from './elements';
+import { dignity, elementOf, ELEMENTS } from './elements';
 import { majorOnlyDeck, rwsDeck } from '../content/decks/rws';
 import { celticCross, spreads, threeCard } from '../content/spreads';
 import { en } from '../content/locales/en';
@@ -122,6 +122,11 @@ describe('elemental dignities', () => {
     expect(dignity('water', 'earth')).toBe('friendly');
     expect(dignity('fire', 'water')).toBe('conflicted');
     expect(dignity('air', 'earth')).toBe('conflicted');
+    expect(dignity('fire', 'earth')).toBe('neutral');
+    expect(dignity('air', 'water')).toBe('neutral');
+    // Symmetric for every pair.
+    for (const a of ELEMENTS)
+      for (const b of ELEMENTS) expect(dignity(a, b)).toBe(dignity(b, a));
   });
   it('maps suits to elements; majors have none', () => {
     const wands = rwsDeck.cards.find((c) => c.id === 'wands-01-ace')!;

@@ -65,14 +65,25 @@ describe('compare (DCAS step 2)', () => {
   });
 
   it('reports conflicts and picks the card with the most ties as hinge', () => {
-    // Fool (traditional air) conflicts with Death (water) and the Ace of Cups.
-    const r = compare(ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']));
+    // The Ace of Wands (fire) opposes Death (water) and the Ace of Cups.
+    const r = compare(ctx(['wands-01-ace', 'major-13-death', 'cups-01-ace']));
     expect(r.facts).toContainEqual({
       kind: 'element-conflict',
-      elements: ['water', 'air'],
-      cardIds: [['major-13-death', 'cups-01-ace'], ['major-00-fool']],
+      elements: ['fire', 'water'],
+      cardIds: [['wands-01-ace'], ['major-13-death', 'cups-01-ace']],
     });
-    expect(r.hingeCardId).toBe('major-00-fool');
+    expect(r.hingeCardId).toBe('wands-01-ace');
+  });
+
+  it('says nothing about neutral pairs: air with water, fire with earth', () => {
+    // The Fool (air) beside Death and the Ace of Cups (water).
+    const r = compare(ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']));
+    expect(
+      r.facts.filter(
+        (f) => f.kind === 'element-conflict' || f.kind === 'element-friendship',
+      ),
+    ).toEqual([]);
+    expect(r.hingeCardId).toBeUndefined();
   });
 
   it('names no hinge when ties are even or absent', () => {
@@ -83,7 +94,7 @@ describe('compare (DCAS step 2)', () => {
 
   it('without a correspondence table, majors yield only the count facts', () => {
     expect(
-      kinds(['major-13-death', 'major-00-fool', 'major-16-tower'], false),
+      kinds(['major-13-death', 'major-00-fool', 'wands-01-ace'], false),
     ).toEqual(['mostly-majors']);
   });
 
@@ -173,7 +184,7 @@ describe('compare (DCAS step 2)', () => {
       'wands-03-three',
       'swords-05-five',
       'pentacles-14-king',
-      'major-16-tower',
+      'wands-01-ace',
       'cups-05-five',
     ];
     const c: ReadingContext = {
@@ -206,10 +217,10 @@ describe('compare (DCAS step 2)', () => {
           const y = element(TEN[b]!);
           if (!x || !y) continue;
           const d = dignity(x, y);
-          if (d !== 'strengthened')
+          if (d === 'conflicted' || d === 'friendly')
             want[d].push([TEN[a]!, TEN[b]!].sort().join(' + '));
         }
-      expect(want.conflicted.length).toBe(20);
+      expect(want.conflicted.length).toBe(14);
       expect(pairsOf('element-conflict')).toEqual(want.conflicted.sort());
       expect(pairsOf('element-friendship')).toEqual(want.friendly.sort());
     });
@@ -225,20 +236,20 @@ describe('compare (DCAS step 2)', () => {
         }
         expect(line.length).toBeLessThan(160);
       }
-      // At most four enemy pairs of elements and two friendly ones exist.
+      // Two opposed pairs of elements and two friendly ones exist.
       expect(
         facts.filter((f) => f.kind === 'element-conflict').length,
-      ).toBeLessThanOrEqual(4);
+      ).toBeLessThanOrEqual(2);
     });
   });
 
   it('flows through the fallback provider as rendered sentences', async () => {
     const out = await fallbackProvider.interpret(
-      ctx(['major-00-fool', 'major-13-death', 'cups-01-ace']),
+      ctx(['wands-01-ace', 'major-13-death', 'cups-01-ace']),
     );
-    expect(out.hingeCardId).toBe('major-00-fool');
+    expect(out.hingeCardId).toBe('wands-01-ace');
     expect(out.relations).toContain(
-      'Water against air: Death and Ace of Cups conflict with The Fool.',
+      'Fire against water: Ace of Wands conflicts with Death and Ace of Cups.',
     );
   });
 });

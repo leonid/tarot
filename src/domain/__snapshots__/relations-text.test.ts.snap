@@ -19,7 +19,6 @@ exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 1`] = `
 [
   "Mostly Major Arcana: weighty, fated themes.",
   "Water dominates (2 of 3 cards with an element).",
-  "Water against air: Death and Ace of Cups conflict with The Fool.",
 ]
 `;
 
@@ -33,8 +32,6 @@ exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 2`] = `
   "Ten of Cups and Three of Wands fall within the span of Queen of Wands.",
   "King of Pentacles (Air of Earth) echoes air in The Fool and Five of Swords.",
   "Fire against water: Queen of Wands and Three of Wands conflict with Death, Ace of Cups, Ten of Cups and Five of Cups.",
-  "Fire against earth: Queen of Wands and Three of Wands conflict with King of Pentacles.",
-  "Water against air: Death, Ace of Cups, Ten of Cups and Five of Cups conflict with The Fool and Five of Swords.",
   "Air against earth: The Fool and Five of Swords conflict with King of Pentacles.",
   "Fire with air: Queen of Wands and Three of Wands support The Fool and Five of Swords.",
   "Water with earth: Death, Ace of Cups, Ten of Cups and Five of Cups support King of Pentacles.",
@@ -52,7 +49,6 @@ exports[`relation text, 'en' > major-13-death cups-06-six swords-01-ace 1`] = `
 [
   "Water dominates (2 of 3 cards with an element).",
   "Scorpio links Death and Six of Cups.",
-  "Water against air: Death and Six of Cups conflict with Ace of Swords.",
 ]
 `;
 
@@ -85,7 +81,6 @@ exports[`relation text, 'en' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
   "The Aces repeat: Ace of Cups and Ace of Swords.",
   "Queen of Wands (Water of Fire) echoes water in Ace of Cups.",
   "Fire against water: Queen of Wands conflicts with Ace of Cups.",
-  "Water against air: Ace of Cups conflicts with Ace of Swords.",
   "Fire with air: Queen of Wands supports Ace of Swords.",
 ]
 `;
@@ -128,7 +123,6 @@ exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 1`] = `
 [
   "Преимущественно Старшие арканы: весомые, судьбоносные темы.",
   "Преобладает стихия воды (2 из 3 карт со стихией).",
-  "Вода и Воздух конфликтуют. Вода: Смерть и Туз Кубков. Воздух: Шут.",
 ]
 `;
 
@@ -142,8 +136,6 @@ exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 2`] = `
   "Десятка Кубков и Тройка Жезлов попадают в зодиакальный диапазон карты «Королева Жезлов».",
   "Король Пентаклей (Воздух земли) перекликается со стихией воздуха в картах: Шут и Пятёрка Мечей.",
   "Огонь и Вода конфликтуют. Огонь: Королева Жезлов и Тройка Жезлов. Вода: Смерть, Туз Кубков, Десятка Кубков и Пятёрка Кубков.",
-  "Огонь и Земля конфликтуют. Огонь: Королева Жезлов и Тройка Жезлов. Земля: Король Пентаклей.",
-  "Вода и Воздух конфликтуют. Вода: Смерть, Туз Кубков, Десятка Кубков и Пятёрка Кубков. Воздух: Шут и Пятёрка Мечей.",
   "Воздух и Земля конфликтуют. Воздух: Шут и Пятёрка Мечей. Земля: Король Пентаклей.",
   "Огонь и Воздух дружественны. Огонь: Королева Жезлов и Тройка Жезлов. Воздух: Шут и Пятёрка Мечей.",
   "Вода и Земля дружественны. Вода: Смерть, Туз Кубков, Десятка Кубков и Пятёрка Кубков. Земля: Король Пентаклей.",
@@ -161,7 +153,6 @@ exports[`relation text, 'ru' > major-13-death cups-06-six swords-01-ace 1`] = `
 [
   "Преобладает стихия воды (2 из 3 карт со стихией).",
   "Знак Скорпион связывает карты: Смерть и Шестёрка Кубков.",
-  "Вода и Воздух конфликтуют. Вода: Смерть и Шестёрка Кубков. Воздух: Туз Мечей.",
 ]
 `;
 
@@ -194,7 +185,6 @@ exports[`relation text, 'ru' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
   "Повторяются Тузы: Туз Кубков и Туз Мечей.",
   "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Туз Кубков.",
   "Огонь и Вода конфликтуют. Огонь: Королева Жезлов. Вода: Туз Кубков.",
-  "Вода и Воздух конфликтуют. Вода: Туз Кубков. Воздух: Туз Мечей.",
   "Огонь и Воздух дружественны. Огонь: Королева Жезлов. Воздух: Туз Мечей.",
 ]
 `;

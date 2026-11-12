@@ -158,7 +158,7 @@ export function compare(ctx: ReadingContext): Comparison {
   // Elemental dignities, grouped by element pair: every card of one element
   // stands in the same relation to every card of the other, so two groups say
   // what a list of pairs would, in far fewer words. Ties per card (the number
-  // of cards in a different element) pick the hinge.
+  // of cards in a friendly or opposed element) pick the hinge.
   const byElement = ELEMENTS.map(
     (element) =>
       [
@@ -166,24 +166,30 @@ export function compare(ctx: ReadingContext): Comparison {
         items.filter((i) => i.element === element).map((i) => i.card.id),
       ] as const,
   ).filter(([, ids]) => ids.length > 0);
+  const ties = new Map<string, number>();
   const clashes: Fact[] = [];
   const alliances: Fact[] = [];
   for (let a = 0; a < byElement.length; a++)
     for (let b = a + 1; b < byElement.length; b++) {
       const [x, xs] = byElement[a]!;
       const [y, ys] = byElement[b]!;
-      const conflicted = dignity(x, y) === 'conflicted';
+      const d = dignity(x, y);
+      // Neutral pairs (fire with earth, air with water) say nothing.
+      if (d === 'neutral') continue;
+      const conflicted = d === 'conflicted';
       (conflicted ? clashes : alliances).push({
         kind: conflicted ? 'element-conflict' : 'element-friendship',
         elements: [x, y],
         cardIds: [xs, ys],
       });
+      for (const [mine, theirs] of [
+        [xs, ys],
+        [ys, xs],
+      ] as const)
+        for (const id of mine)
+          ties.set(id, (ties.get(id) ?? 0) + theirs.length);
     }
   facts.push(...clashes, ...alliances);
-  const ties = new Map<string, number>();
-  for (const [, ids] of byElement)
-    if (withElement > ids.length)
-      for (const id of ids) ties.set(id, withElement - ids.length);
 
   // Hinge: the single card with the most non-neutral ties, if it is unique and
   // has at least two.
