@@ -45,18 +45,27 @@ export function CardImage({
     <span
       className={`card-face card-image${reversed ? ' reversed' : ''}${compact ? ' compact' : ''}`}
     >
-      <img
-        className="card-image-img"
-        src={`${base}${fallback.path}`}
-        srcSet={srcSet(image, base)}
-        sizes={sizes}
-        width={image.width}
-        height={image.height}
-        loading="lazy"
-        decoding="async"
-        alt={compact ? '' : alt(named)}
-        onError={() => setFailed(card.id)}
-      />
+      {/* The frame carries the picture's proportions, so a card lying on
+          its side (the crossing card) can be drawn to fit. */}
+      <span
+        className="card-image-frame"
+        style={
+          { '--iw': image.width, '--ih': image.height } as React.CSSProperties
+        }
+      >
+        <img
+          className="card-image-img"
+          src={`${base}${fallback.path}`}
+          srcSet={srcSet(image, base)}
+          sizes={sizes}
+          width={image.width}
+          height={image.height}
+          loading="lazy"
+          decoding="async"
+          alt={compact ? '' : alt(named)}
+          onError={() => setFailed(card.id)}
+        />
+      </span>
       <span className="card-face-name">{named.name}</span>
       {reversed && <span className="card-face-rev">{t.slotReversed}</span>}
     </span>

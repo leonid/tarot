@@ -35,9 +35,10 @@ export function SpreadBoard({
   onRemove,
 }: Props) {
   const cols = Math.max(...spread.positions.map((p) => p.x)) + 1;
-  // Positions that share a grid cell (the Celtic Cross crossing card) are
-  // stacked in that cell, never rotated or overlapped, so every label stays
-  // horizontal and readable.
+  // Positions that share a grid cell (the Celtic Cross crossing card): on a
+  // board that is only read, the crossing card lies across the lower part of
+  // the card under it, as on a table. While cards are being placed each
+  // position must stay a separate target, so there they are stacked.
   const cells = new Map<string, SpreadPosition[]>();
   for (const pos of spread.positions) {
     const key = `${pos.x},${pos.y}`;
@@ -45,7 +46,7 @@ export function SpreadBoard({
   }
   return (
     <div
-      className="board"
+      className={`board${droppable ? ' stacked' : ''}`}
       style={{
         gridTemplateColumns: `repeat(${cols}, minmax(0, var(--card-w)))`,
       }}
@@ -55,7 +56,7 @@ export function SpreadBoard({
         return (
           <div
             key={`${first.x},${first.y}`}
-            className="cell"
+            className={`cell${group.length > 1 ? ' crossed' : ''}`}
             style={{ gridColumn: first.x + 1, gridRow: first.y + 1 }}
           >
             {group.map((pos) => {

@@ -54,8 +54,8 @@ body {
 .reading {
   display: block;
 }
-/* Two columns from 56em: the board, and the interpretation beside it, sticky
-   so a long reading stays next to its cards. */
+/* Two columns from 56em: the board, and the interpretation beside it. The
+   page is the only thing that scrolls. */
 @media (min-width: 56em) {
   .app {
     max-width: var(--content-wide);
@@ -65,12 +65,6 @@ body {
     grid-template-columns: auto minmax(0, 1fr);
     gap: var(--space-6);
     align-items: start;
-  }
-  .reading > .interpretation {
-    position: sticky;
-    top: var(--space-4);
-    max-height: calc(100vh - var(--space-6));
-    overflow: auto;
   }
 }
 .board {
@@ -101,12 +95,84 @@ body {
   flex-direction: column;
   gap: var(--space-1);
 }
-/* The crossing card lies across the one above it: wider than tall, with a
-   double border, and its text stays horizontal. */
+/* A position alone in its cell fills it, so a row of positions is level. */
+.cell > .slot:only-child {
+  flex: 1;
+}
+/* The crossing card lies on its side, with a double border; its text stays
+   horizontal. */
 .slot.crossing {
-  min-height: 0;
+  min-height: var(--cross-min-h);
   border-style: double;
   border-width: var(--border-w-strong);
+}
+.slot.crossing .card-image-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--ih) / var(--iw);
+  container-type: size;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+/* One transform, so the build cannot reorder the parts. */
+.slot.crossing .card-image-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100cqh;
+  height: 100cqw;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.slot.crossing .card-image.reversed .card-image-img {
+  transform: translate(-50%, -50%) rotate(270deg);
+}
+.slot.crossing .card-face-name {
+  text-align: center;
+}
+/* On a board that is only read, it lies across the lower part of the picture
+   under it; that card's label and name move above its picture. A deck drawn
+   in type has no picture to lie across, so there the two stay stacked. */
+.board:not(.stacked) .cell.crossed:not(:has(.card-face:not(.card-image))) {
+  position: relative;
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot:not(.crossing) {
+  flex: 1;
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot:not(.crossing)
+  .card-image-frame {
+  order: 2;
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot:not(.crossing)
+  .chip {
+  order: -1;
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot.crossing {
+  position: absolute;
+  left: calc(-1 * var(--space-1));
+  right: calc(-1 * var(--space-1));
+  bottom: var(--space-1);
+  min-height: 0;
+  padding: var(--space-1);
+  gap: 0;
+  font-size: var(--text-xs);
+}
+.board:not(.stacked)
+  .cell.crossed:not(:has(.card-face:not(.card-image)))
+  > .slot.crossing
+  .card-face-name {
+  font-size: var(--text-sm);
+}
+.card-image-frame {
+  display: block;
+  width: 100%;
 }
 .slot.hinge {
   border: var(--border-w-strong) solid var(--gold);
@@ -166,7 +232,7 @@ body {
 .card-image.reversed .card-image-img {
   transform: rotate(180deg);
 }
-.card-image.compact .card-image-img {
+.card-image.compact .card-image-frame {
   width: var(--thumb-w);
   flex: none;
 }
@@ -836,6 +902,12 @@ a.btn {
 }
 
 /* Record a spread: buttons on each placed card, and the deck in parts. */
+.board.stacked .slot {
+  min-height: calc(var(--slot-min-h) + var(--target) + var(--space-1));
+}
+.board.stacked .slot.crossing {
+  min-height: calc(var(--cross-min-h) + var(--target) + var(--space-1));
+}
 .slot-actions {
   display: flex;
   gap: var(--space-1);

@@ -127,7 +127,7 @@ const ui: UiMessages = {
   placeHint:
     'Click a card, then click a position to place it. You can also drag a card, or use the lists below. A placed card has buttons to turn it over or take it off.',
   dealt: (count) =>
-    `Cards dealt: ${count}. The interpretation is below the board.`,
+    `Cards dealt: ${count}. The interpretation follows the board.`,
   cardSelected: (card) =>
     `${card} is selected. Click a position to place it, or click the card again to put it back.`,
   placeIn: (card, position) => `Place ${card} in ${position}`,

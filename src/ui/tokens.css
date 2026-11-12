@@ -58,7 +58,13 @@
   --content-max: 52rem;
   --content-wide: 76rem;
   --aside-w: 26rem;
-  --slot-min-h: 5rem;
+  /* A position is as tall empty as filled: label, picture, a name of two
+     lines and the word "reversed". The crossing card lies on its side. */
+  --slot-text-h: 6.5rem;
+  --slot-min-h: calc(
+    (var(--card-w) - var(--space-4)) * 1.75 + var(--slot-text-h)
+  );
+  --cross-min-h: calc((var(--card-w) - var(--space-4)) * 0.6 + 4rem);
   --card-w: 7rem;
   --thumb-w: 2.5rem;
   --palette-max-h: 14rem;
