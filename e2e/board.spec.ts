@@ -71,10 +71,13 @@ test('record a spread: the board keeps its size as cards are placed', async ({
   await page.goto('/#/record');
   await page.getByLabel('Spread').selectOption('celtic-cross');
   const before = (await page.locator('.board').boundingBox())!;
-  for (const id of ['present', 'challenge']) {
-    await page.locator('.palette-card').first().click();
-    await page.locator(`[data-position="${id}"]`).click();
-  }
+  // A long name too: it takes two lines on the card that lies sideways.
+  await page.getByLabel('Find a card').fill('high priestess');
+  await page.locator('.palette-card').first().click();
+  await page.locator('[data-position="challenge"]').click();
+  await page.getByLabel('Find a card').fill('');
+  await page.locator('.palette-card').first().click();
+  await page.locator('[data-position="present"]').click();
   const after = (await page.locator('.board').boundingBox())!;
   expect(after.height).toBeCloseTo(before.height, 0);
   expect(after.width).toBeCloseTo(before.width, 0);

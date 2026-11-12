@@ -64,7 +64,7 @@
   --slot-min-h: calc(
     (var(--card-w) - var(--space-4)) * 1.75 + var(--slot-text-h)
   );
-  --cross-min-h: calc((var(--card-w) - var(--space-4)) * 0.6 + 4rem);
+  --cross-min-h: calc((var(--card-w) - var(--space-4)) * 0.6 + 6rem);
   --card-w: 7rem;
   --thumb-w: 2.5rem;
   --palette-max-h: 14rem;
