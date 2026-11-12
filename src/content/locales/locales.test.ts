@@ -14,7 +14,9 @@ import {
 } from '.';
 import { altEnglish } from '../images/alt';
 import { en } from './en';
-import { pseudo } from './pseudo';
+import { makePseudo } from './pseudo';
+
+const pseudo = makePseudo();
 
 describe('locale registry', () => {
   it('has unique codes and English as the default', () => {
