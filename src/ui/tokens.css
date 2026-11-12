@@ -45,6 +45,7 @@
   /* Type */
   --font-body: 'JetBrains Sans', system-ui, sans-serif;
   --font-display: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  --text-2xs: 0.75rem; /* the smallest text anywhere: 12px */
   --text-xs: 0.8125rem;
   --text-sm: 0.875rem;
   --text-md: 1rem;
@@ -66,6 +67,8 @@
   );
   --cross-min-h: calc((var(--card-w) - var(--space-4)) * 0.6 + 6rem);
   --card-w: 7rem;
+  /* Room under a placed card for its turn and remove buttons. */
+  --slot-actions-h: calc(var(--target) + var(--space-1));
   --thumb-w: 2.5rem;
   --palette-max-h: 14rem;
 

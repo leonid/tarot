@@ -502,3 +502,45 @@ describe('screen reader feedback', () => {
     );
   });
 });
+
+describe('the board leads to the reading (R12)', () => {
+  const reading = () => {
+    useReadingStore.getState().dealRandom(7);
+    history.replaceState(null, '', '#/reading');
+    return render(<App />);
+  };
+
+  it('pressing a card on the board brings its note into focus', async () => {
+    const { container } = reading();
+    await screen.findByText(/./, { selector: '.reading-summary' });
+    const first = useReadingStore.getState().placements[0]!;
+    const card = container.querySelector<HTMLButtonElement>(
+      `[data-position="${first.positionId}"] .slot-card`,
+    )!;
+    expect(card).not.toBeNull();
+    await userEvent.click(card);
+    expect(document.activeElement).toBe(
+      container.querySelector(`.note-card[data-note="${first.positionId}"]`),
+    );
+  });
+
+  it('links from the board to the interpretation', async () => {
+    reading();
+    await screen.findByText(/./, { selector: '.reading-summary' });
+    await userEvent.click(
+      screen.getByRole('link', { name: 'Go to the interpretation' }),
+    );
+    expect(document.activeElement).toBe(
+      screen.getByRole('heading', { level: 2, name: 'Interpretation' }),
+    );
+  });
+
+  it('shows no link and no card buttons before anything is read', () => {
+    history.replaceState(null, '', '#/reading');
+    const { container } = render(<App />);
+    expect(
+      screen.queryByRole('link', { name: 'Go to the interpretation' }),
+    ).toBeNull();
+    expect(container.querySelector('.slot-card')).toBeNull();
+  });
+});

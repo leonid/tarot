@@ -74,8 +74,9 @@ body {
   justify-content: start;
 }
 .slot {
+  --slot-pad: var(--space-2);
   min-height: var(--slot-min-h);
-  padding: var(--space-2);
+  padding: var(--slot-pad);
   background: var(--surface);
   border: var(--border-w) dashed var(--border);
   border-radius: var(--radius);
@@ -307,7 +308,7 @@ body {
 }
 @media (max-width: 40em) {
   .slot {
-    padding: var(--space-1);
+    --slot-pad: var(--space-1);
     font-size: var(--text-xs);
   }
   .chip {
@@ -429,6 +430,7 @@ body {
   font-size: var(--text-sm);
 }
 .schools summary {
+  padding-block: calc((var(--target) - 1lh) / 2);
   cursor: pointer;
   color: var(--text-muted);
 }
@@ -495,7 +497,7 @@ body {
 }
 @media (max-width: 40em) {
   .slot-label {
-    font-size: 0.9em;
+    font-size: var(--text-2xs);
     font-weight: 600;
   }
   .interpretation {
@@ -881,7 +883,7 @@ a.btn {
 .record-table > .reading {
   display: contents;
 }
-.record-table .board {
+.record-table .board-wrap {
   grid-area: board;
 }
 .record-table .palette-box {
@@ -906,10 +908,10 @@ a.btn {
 
 /* Record a spread: buttons on each placed card, and the deck in parts. */
 .board.stacked .slot {
-  min-height: calc(var(--slot-min-h) + var(--target) + var(--space-1));
+  min-height: calc(var(--slot-min-h) + var(--slot-actions-h));
 }
 .board.stacked .slot.crossing {
-  min-height: calc(var(--cross-min-h) + var(--target) + var(--space-1));
+  min-height: calc(var(--cross-min-h) + var(--slot-actions-h));
 }
 .slot-actions {
   display: flex;
@@ -918,6 +920,8 @@ a.btn {
 }
 .slot-action {
   flex: 1;
+  box-sizing: border-box;
+  min-width: 0;
   font: inherit;
   min-height: var(--target);
   padding: 0;
@@ -985,7 +989,7 @@ a.btn {
     transform: none;
   }
 }
-.board:not(.stacked) .slot > .card-face {
+.board:not(.stacked) .slot .card-face {
   animation: card-turn var(--dur-reveal) var(--ease) backwards;
   animation-delay: calc(var(--i) * var(--reveal-step));
 }
@@ -1026,12 +1030,71 @@ a.btn {
   list-style: none;
 }
 .app-footer a {
-  display: inline-block;
-  padding: var(--space-2) 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--target);
+  min-height: var(--target);
 }
 .about {
   max-width: var(--measure);
 }
 .about h3 {
   margin: var(--space-5) 0 var(--space-2);
+}
+
+/* A card on the board is a button: it shows that card's note. */
+.slot-card {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+.slot-card:hover .card-face-name {
+  text-decoration: underline;
+}
+.cell.crossed .slot-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.note-card:focus {
+  outline: none;
+  border-left-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.interpretation h2:focus {
+  outline: none;
+}
+/* From the board straight to the reading, where the reading is below it. */
+.to-reading {
+  margin: var(--space-3) 0 0;
+}
+.to-reading a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+}
+.to-reading a::after {
+  content: ' ↓';
+  white-space: pre;
+}
+@media (min-width: 56em) {
+  .reading:not(.record-table .reading) > .board-wrap > .to-reading {
+    display: none;
+  }
+}
+@media (max-width: 40em) {
+  /* A phone position is two targets wide exactly, so the buttons run edge to
+     edge, over the padding and the border. */
+  .slot-actions {
+    gap: 0;
+    margin-inline: calc(-1 * (var(--slot-pad) + var(--border-w)));
+  }
 }

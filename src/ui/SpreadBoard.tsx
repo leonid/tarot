@@ -19,6 +19,8 @@ interface Props {
   /** Record a spread: each placed card carries its own turn and remove buttons. */
   onFlip?: (positionId: string) => void;
   onRemove?: (positionId: string) => void;
+  /** Pressing a card on the board: the reading shows that card's note. */
+  onCardClick?: (positionId: string) => void;
 }
 
 /** Lays positions out on a grid using their x/y coordinates. */
@@ -33,6 +35,7 @@ export function SpreadBoard({
   hingeCardId,
   onFlip,
   onRemove,
+  onCardClick,
 }: Props) {
   const cols = Math.max(...spread.positions.map((p) => p.x)) + 1;
   // Positions that share a grid cell (the Celtic Cross crossing card): on a
@@ -74,6 +77,7 @@ export function SpreadBoard({
                 index: spread.positions.indexOf(pos),
                 onFlip,
                 onRemove,
+                onCardClick,
               };
               return droppable ? (
                 <DroppableSlot key={pos.id} {...props} />
@@ -101,6 +105,7 @@ interface SlotProps {
   onSlotClick?: (positionId: string) => void;
   onFlip?: (positionId: string) => void;
   onRemove?: (positionId: string) => void;
+  onCardClick?: (positionId: string) => void;
 }
 
 function Slot({
@@ -116,6 +121,7 @@ function Slot({
   onSlotClick,
   onFlip,
   onRemove,
+  onCardClick,
 }: SlotProps) {
   const { t } = useI18n();
   const press = () => onSlotClick?.(pos.id);
@@ -142,13 +148,27 @@ function Slot({
     >
       <span className="slot-label">{pos.label}</span>
       {card ? (
-        // Keyed by card, so a newly dealt card is turned over afresh.
-        <CardImage
-          key={card.id}
-          deckId={deckId}
-          card={card}
-          orientation={orientation}
-        />
+        // Keyed by card, so a newly dealt card is turned over afresh. While a
+        // card is selected the whole position is one button already.
+        onCardClick && !armedCard ? (
+          <button
+            key={card.id}
+            type="button"
+            className="slot-card"
+            title={t.openNote(card.name)}
+            onClick={() => onCardClick(pos.id)}
+          >
+            <CardImage deckId={deckId} card={card} orientation={orientation} />
+            <span className="visually-hidden">{t.openNoteHint}</span>
+          </button>
+        ) : (
+          <CardImage
+            key={card.id}
+            deckId={deckId}
+            card={card}
+            orientation={orientation}
+          />
+        )
       ) : (
         <span className="slot-empty">{t.slotEmpty}</span>
       )}

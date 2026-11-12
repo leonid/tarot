@@ -86,3 +86,84 @@ test('touch: press and hold a card, drag it onto a position', async ({
   await expect(page.locator('[data-position="present"]')).toHaveClass(/filled/);
   await expect(page.locator('.palette-card')).toHaveCount(21);
 });
+
+// What a finger and an eye need, measured on every screen (R12).
+const SCREENS: [
+  string,
+  (page: import('@playwright/test').Page) => Promise<void>,
+][] = [
+  ['home', async (page) => void (await page.goto('/'))],
+  [
+    'reading',
+    async (page) => {
+      await page.goto('/#/reading');
+      await page.getByLabel('Spread').selectOption('celtic-cross');
+      await page.getByRole('button', { name: 'Shuffle and deal' }).click();
+      await page.locator('.interpretation .advice').waitFor();
+    },
+  ],
+  [
+    'record',
+    async (page) => {
+      await page.goto('/#/record');
+      await page.locator('.palette-card').first().click();
+      await page.locator('[data-position="past"]').click();
+    },
+  ],
+  ['cards', async (page) => void (await page.goto('/#/cards'))],
+  [
+    'one card',
+    async (page) => void (await page.goto('/#/cards/major-00-fool')),
+  ],
+  ['journal', async (page) => void (await page.goto('/#/journal'))],
+  ['about', async (page) => void (await page.goto('/#/about'))],
+];
+for (const [name, open] of SCREENS) {
+  test(`touch: ${name} has 44 px targets and no text under 12 px`, async ({
+    page,
+  }) => {
+    await open(page);
+    await page.locator('.app-footer').waitFor();
+    const found = await page.evaluate(() => {
+      const seen = (el: Element) => {
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      };
+      const say = (el: Element) =>
+        `${el.tagName.toLowerCase()}.${el.className} "${(el.textContent ?? '').trim().slice(0, 30)}"`;
+      const small: string[] = [];
+      for (const el of document.querySelectorAll(
+        'a, button, select, summary, input, [role="button"], [aria-pressed]',
+      )) {
+        if (!seen(el)) continue;
+        // A link inside a sentence is exempt; its line is the target.
+        if (el.tagName === 'A' && getComputedStyle(el).display === 'inline')
+          continue;
+        // A checkbox or radio is pressed through its label.
+        const box =
+          el instanceof HTMLInputElement &&
+          (el.type === 'checkbox' || el.type === 'radio')
+            ? (el.closest('label') ?? el)
+            : el;
+        const r = box.getBoundingClientRect();
+        if (r.height < 43.5 || r.width < 43.5)
+          small.push(
+            `${say(el)} ${Math.round(r.width)}x${Math.round(r.height)}`,
+          );
+      }
+      const tiny: string[] = [];
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+      );
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        const el = n.parentElement!;
+        if (!n.textContent?.trim() || !seen(el)) continue;
+        const size = parseFloat(getComputedStyle(el).fontSize);
+        if (size < 12) tiny.push(`${say(el)} ${size}px`);
+      }
+      return { small: [...new Set(small)], tiny: [...new Set(tiny)] };
+    });
+    expect(found).toEqual({ small: [], tiny: [] });
+  });
+}

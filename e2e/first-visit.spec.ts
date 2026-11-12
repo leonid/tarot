@@ -48,7 +48,7 @@ test('the page describes itself to browsers and link previews', async ({
 test.describe('card-turn reveal', () => {
   const turn = (page: import('@playwright/test').Page) =>
     page
-      .locator('.board .slot > .card-face')
+      .locator('.board .slot .card-face')
       .last()
       .evaluate((el) => {
         const s = getComputedStyle(el);

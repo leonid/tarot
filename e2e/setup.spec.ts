@@ -94,7 +94,9 @@ test('setup: fill a whole three-card spread with the keyboard only', async ({
   await keyboardPlace(page, ['ArrowUp', 'ArrowRight', 'ArrowRight'], 'future');
   await expect(page.locator('.board .slot.filled')).toHaveCount(3);
   await expect(page.locator('.palette-card')).toHaveCount(19);
-  await expect(page.getByText('Interpretation')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Interpretation' }),
+  ).toBeVisible();
 });
 
 test('setup: place a card with clicks only', async ({ page }) => {

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type { InterpretationProvider } from '../domain/interpretation';
 import type { Interpreted } from '../domain/llmProvider';
 import { correspondences } from '../content/correspondences';
@@ -69,26 +70,53 @@ export function ReadingView({
       : '',
   );
 
+  // A card on the board leads to its note, and the board to the reading, so
+  // a long spread does not have to be scrolled past to be read.
+  const root = useRef<HTMLElement>(null);
+  const hasNotes = complete || (droppable && placements.length > 0);
+  const focusIn = (selector: string) =>
+    root.current?.querySelector<HTMLElement>(selector)?.focus();
+
   if (!deck || !spread) return null;
   return (
-    <section className="reading">
-      <SpreadBoard
-        deckId={deck.id}
-        spread={spread}
-        cards={deck.cards}
-        placements={placements}
-        droppable={droppable}
-        armedCard={armedCard}
-        onSlotClick={onSlotClick}
-        hingeCardId={result?.hingeCardId}
-        onFlip={onFlip}
-        onRemove={onRemove}
-      />
+    <section className="reading" ref={root}>
+      <div className="board-wrap">
+        {hasNotes && (
+          <p className="to-reading">
+            <a
+              href="#interpretation"
+              onClick={(e) => {
+                e.preventDefault();
+                focusIn('.interpretation h2');
+              }}
+            >
+              {t.toReading}
+            </a>
+          </p>
+        )}
+        <SpreadBoard
+          deckId={deck.id}
+          spread={spread}
+          cards={deck.cards}
+          placements={placements}
+          droppable={droppable}
+          armedCard={armedCard}
+          onSlotClick={onSlotClick}
+          hingeCardId={result?.hingeCardId}
+          onFlip={onFlip}
+          onRemove={onRemove}
+          onCardClick={
+            hasNotes
+              ? (positionId) => focusIn(`.note-card[data-note="${positionId}"]`)
+              : undefined
+          }
+        />
+      </div>
       {/* Record a spread: each card is read as soon as it is placed. The
           connections need every card, so they wait for the last one. */}
       {!complete && droppable && placements.length > 0 && (
         <aside className="interpretation" aria-label={t.interpretation}>
-          <h2>{t.interpretation}</h2>
+          <h2 tabIndex={-1}>{t.interpretation}</h2>
           <p role="status" className="meta">
             {t.partialReading(placements.length, spread.positions.length)}
           </p>
@@ -101,7 +129,12 @@ export function ReadingView({
               const base = meanings[placed.cardId]?.[placed.orientation];
               if (!card) return null;
               return (
-                <li key={placed.positionId} className="note-card">
+                <li
+                  key={placed.positionId}
+                  className="note-card"
+                  data-note={placed.positionId}
+                  tabIndex={-1}
+                >
                   <h3>
                     <span className="note-position">{pos?.label}</span>
                     <span className="note-name">{card.name}</span>
@@ -137,12 +170,8 @@ export function ReadingView({
         </aside>
       )}
       {complete && (
-        <aside
-          className="interpretation"
-          aria-label={t.interpretation}
-          tabIndex={0} // it scrolls on wide screens, so the keyboard must reach it
-        >
-          <h2>{t.interpretation}</h2>
+        <aside className="interpretation" aria-label={t.interpretation}>
+          <h2 tabIndex={-1}>{t.interpretation}</h2>
           <p role="status" className="meta">
             {loading ? t.interpreting : ''}
           </p>
@@ -183,7 +212,12 @@ export function ReadingView({
                   );
                   const card = deck.cards.find((d) => d.id === c.cardId);
                   return (
-                    <li key={c.positionId} className="note-card">
+                    <li
+                      key={c.positionId}
+                      className="note-card"
+                      data-note={c.positionId}
+                      tabIndex={-1}
+                    >
                       <h3>
                         <span className="note-position">{pos?.label}</span>
                         <span className="note-name">{card?.name}</span>

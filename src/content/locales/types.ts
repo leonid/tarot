@@ -45,6 +45,10 @@ export interface UiMessages {
   paletteGroups: string;
   groupAll: string;
   paletteGroupEmpty: string;
+  /** A card on the board is a button that shows its note; the board links to the reading. */
+  openNote(card: string): string;
+  openNoteHint: string;
+  toReading: string;
   /** Buttons on a placed card. */
   flipCard(card: string): string;
   removeCard(card: string): string;

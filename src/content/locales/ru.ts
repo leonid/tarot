@@ -71,6 +71,9 @@ const ui: UiMessages = {
   paletteGroups: 'Какие карты показать',
   groupAll: 'Все',
   paletteGroupEmpty: 'Все карты этой части уже на столе.',
+  openNote: (card) => `Читать толкование: ${card}`,
+  openNoteHint: 'Читать толкование карты',
+  toReading: 'Перейти к толкованию',
   flipCard: (card) => `Перевернуть: ${card}`,
   removeCard: (card) => `Убрать со стола: ${card}`,
   partialReading: (placed, total) =>

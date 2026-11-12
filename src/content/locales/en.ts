@@ -71,6 +71,9 @@ const ui: UiMessages = {
   paletteGroups: 'Which cards to show',
   groupAll: 'All',
   paletteGroupEmpty: 'Every card of this part is on the board.',
+  openNote: (card) => `Read the note for ${card}`,
+  openNoteHint: 'Read its note',
+  toReading: 'Go to the interpretation',
   flipCard: (card) => `Turn ${card} over`,
   removeCard: (card) => `Take ${card} off the board`,
   partialReading: (placed, total) =>
