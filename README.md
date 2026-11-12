@@ -42,5 +42,7 @@ The plan, with current status at the top, is `docs/research/full-app-plan.md`; t
 
 1. Done: hardening (M1) and the text and structure split (M2).
 2. Public-domain card images and click-to-place are done; first deploy is set up (needs Pages enabled) (M3); touch drag is press-and-hold.
-3. LLM interpretation behind a small proxy (M4).
-4. Journal, more spreads, daily card (M5); more content and locales (M6); PWA (M7).
+3. LLM interpretation behind a small proxy (M4): code merged, proxy not deployed.
+4. Next, from the review of 2026-11-11 (plan section 0.5): fix the dignity table and Setup card order, stop losing a reading on mode or spread change, merge the pending M6 work, first deploy.
+5. Then the reading itself: a built-in reader that answers the question, card detail and library, Setup controls on the board, Celtic Cross layout, first-visit and phone polish.
+6. Journal, more spreads, daily card (M5); more content and locales (M6); PWA (M7).
