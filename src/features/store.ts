@@ -38,6 +38,25 @@ function initialLocale(): string {
   return locales.find((l) => l.code === browser)?.code ?? DEFAULT_LOCALE;
 }
 
+/**
+ * Placements in the order of the spread's positions, whatever order the cards
+ * were placed in: the reading, a saved entry and a share link all list the
+ * cards the way the spread does.
+ */
+function inSpreadOrder(
+  placements: readonly PlacedCard[],
+  spreadId: string,
+): PlacedCard[] {
+  const order = getSpread(spreadId)?.positions.map((p) => p.id) ?? [];
+  const rank = (id: string) => {
+    const i = order.indexOf(id);
+    return i < 0 ? order.length : i;
+  };
+  return [...placements].sort(
+    (a, b) => rank(a.positionId) - rank(b.positionId),
+  );
+}
+
 interface State {
   mode: Mode;
   locale: string;
@@ -111,13 +130,16 @@ export const useReadingStore = create<State>((set, get) => ({
   },
   place: (positionId, cardId, orientation = 'upright') =>
     set((s) => ({
-      placements: [
-        // A card can only be in one place; a position holds one card.
-        ...s.placements.filter(
-          (p) => p.positionId !== positionId && p.cardId !== cardId,
-        ),
-        { positionId, cardId, orientation },
-      ],
+      placements: inSpreadOrder(
+        [
+          // A card can only be in one place; a position holds one card.
+          ...s.placements.filter(
+            (p) => p.positionId !== positionId && p.cardId !== cardId,
+          ),
+          { positionId, cardId, orientation },
+        ],
+        s.spreadId,
+      ),
     })),
   clearPosition: (positionId) =>
     set((s) => ({
@@ -132,7 +154,7 @@ export const useReadingStore = create<State>((set, get) => ({
       deckId: r.deckId,
       spreadId: r.spreadId,
       question: r.question,
-      placements: r.placements,
+      placements: inSpreadOrder(r.placements, r.spreadId),
       seed: r.seed,
     });
   },

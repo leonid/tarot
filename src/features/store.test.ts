@@ -24,6 +24,22 @@ describe('setup placement rules', () => {
     ]);
   });
 
+  it('keeps cards in spread order, whatever order they were placed in (R2)', () => {
+    s().reset();
+    s().setSpread('three-card');
+    s().place('future', 'cups-01-ace');
+    s().place('past', 'major-00-fool');
+    s().place('present', 'major-13-death');
+    // Turning the first card over places it again; it must not move.
+    s().place('past', 'major-00-fool', 'reversed');
+    expect(s().placements.map((p) => p.positionId)).toEqual([
+      'past',
+      'present',
+      'future',
+    ]);
+    expect(s().placements[0]!.orientation).toBe('reversed');
+  });
+
   it('clears all placements when the spread changes', () => {
     s().place('past', 'major-00-fool');
     s().setSpread('celtic-cross');
