@@ -135,3 +135,36 @@ export function renderFact(
       );
   }
 }
+
+/** How much each kind of fact says about a reading, most telling first. */
+const KIND_WEIGHT: Record<Fact['kind'], number> = {
+  'mostly-majors': 90,
+  'mostly-reversed': 85,
+  'element-dominates': 80,
+  'suit-dominates': 78,
+  'modality-dominates': 60,
+  'number-repeats': 70,
+  'element-conflict': 65,
+  'sign-opposition': 55,
+  'court-echo': 50,
+  'planet-link': 45,
+  'sign-link': 40,
+  'element-friendship': 35,
+  'number-family': 30,
+  'suit-run': 30,
+  'court-span': 25,
+};
+
+/**
+ * How strong a fact is: its kind first, then how many cards it involves. The
+ * reading shows the strongest few and folds the rest away.
+ */
+export function factWeight(fact: Fact): number {
+  const cards =
+    'cardIds' in fact
+      ? Array.isArray(fact.cardIds[0])
+        ? (fact.cardIds as readonly (readonly string[])[]).flat().length
+        : (fact.cardIds as readonly string[]).length
+      : 0;
+  return KIND_WEIGHT[fact.kind] + Math.min(cards, 9) / 10;
+}

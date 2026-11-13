@@ -105,7 +105,13 @@ export interface UiMessages {
   reversals: string;
 
   shuffleAndDeal: string;
-  seed(seed: number): string;
+  /** The number a deal is made from, shown in a "replay this deal" detail. */
+  replayDeal: string;
+  replayExplain(seed: number): string;
+  connectionsExplain: string;
+  hingeExplain: string;
+  /** The folded rest of the connections: "5 more". */
+  moreConnections(count: number): string;
 
   placeWithMenus: string;
   chooseCard: string;

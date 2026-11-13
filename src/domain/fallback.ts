@@ -1,5 +1,5 @@
 import { compare } from './compare';
-import { renderFact } from './facts';
+import { factWeight, renderFact } from './facts';
 import {
   findCard,
   type Interpretation,
@@ -36,9 +36,18 @@ export const fallbackProvider: InterpretationProvider = {
     const cmp = compare(ctx);
     return {
       cards,
-      relations: cmp.facts.map((f) =>
-        renderFact(f, ctx.strings, (id) => findCard(ctx.deck, id)?.name ?? id),
-      ),
+      // Strongest first, so the page can show the top few.
+      relations: [...cmp.facts]
+        .map((f, i) => ({ f, i }))
+        .sort((a, b) => factWeight(b.f) - factWeight(a.f) || a.i - b.i)
+        .map(({ f }) => f)
+        .map((f) =>
+          renderFact(
+            f,
+            ctx.strings,
+            (id) => findCard(ctx.deck, id)?.name ?? id,
+          ),
+        ),
       ...(cmp.hingeCardId ? { hingeCardId: cmp.hingeCardId } : {}),
       summary: ctx.strings.summary(ctx.question, cards.length),
       advice: ctx.strings.advice,

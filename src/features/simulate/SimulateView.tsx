@@ -26,9 +26,6 @@ export function SimulateView() {
             <Button variant="primary" onClick={() => dealRandom()}>
               {t.shuffleAndDeal}
             </Button>
-            {seed !== undefined && (
-              <small className="meta">{t.seed(seed)}</small>
-            )}
           </div>
           {/* Always present, so a screen reader announces the text when a deal fills it. */}
           <p role="status" className="meta">
@@ -37,6 +34,12 @@ export function SimulateView() {
         </Step>
       </ol>
       <ReadingView />
+      {seed !== undefined && dealtCount > 0 && (
+        <details className="replay">
+          <summary>{t.replayDeal}</summary>
+          <p>{t.replayExplain(seed)}</p>
+        </details>
+      )}
       <SaveShare />
     </>
   );

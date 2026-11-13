@@ -16,7 +16,7 @@ for (const { id, positions } of spreads) {
     await page.getByRole('button', { name: 'Shuffle and deal' }).click();
 
     await expect(page.locator('.board .slot.filled')).toHaveCount(positions);
-    await expect(page.getByText(/seed \d+/)).toBeVisible();
+    await expect(page.getByText('Replay this deal')).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Interpretation' }),
     ).toBeVisible();
@@ -29,9 +29,9 @@ test('a new deal changes the seed', async ({ page }) => {
   await page.goto('/#/reading');
   const deal = page.getByRole('button', { name: 'Shuffle and deal' });
   await deal.click();
-  const first = await page.getByText(/seed \d+/).textContent();
+  const first = await page.locator('.replay p').textContent();
   await deal.click();
-  await expect(page.getByText(/seed \d+/)).not.toHaveText(first ?? '');
+  await expect(page.locator('.replay p')).not.toHaveText(first ?? '');
 });
 
 test('a bad share link shows a dismissible message and the app still works', async ({

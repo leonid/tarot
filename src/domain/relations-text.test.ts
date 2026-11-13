@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { fallbackProvider } from './fallback';
+import { factWeight } from './facts';
 import type { Orientation } from './types';
 import { correspondences } from '../content/correspondences';
 import { rwsDeck } from '../content/decks/rws';
@@ -57,5 +58,43 @@ describe.each([en, ru])('relation text, $code', (locale) => {
       })),
     });
     expect(out.relations).toMatchSnapshot();
+  });
+});
+
+describe('the strongest facts come first (R7)', () => {
+  it('ranks a dominant element above a planet link and a friendship', () => {
+    expect(
+      factWeight({
+        kind: 'element-dominates',
+        element: 'water',
+        count: 3,
+        total: 3,
+      } as never),
+    ).toBeGreaterThan(
+      factWeight({
+        kind: 'planet-link',
+        planet: 'mars',
+        cardIds: ['a', 'b'],
+      } as never),
+    );
+    expect(
+      factWeight({
+        kind: 'planet-link',
+        planet: 'mars',
+        cardIds: ['a', 'b'],
+      } as never),
+    ).toBeGreaterThan(
+      factWeight({
+        kind: 'element-friendship',
+        elements: ['fire', 'air'],
+        cardIds: [['a'], ['b']],
+      } as never),
+    );
+  });
+
+  it('counts the cards a fact involves, as a tie-break', () => {
+    const link = (cardIds: string[]) =>
+      factWeight({ kind: 'planet-link', planet: 'mars', cardIds } as never);
+    expect(link(['a', 'b', 'c'])).toBeGreaterThan(link(['a', 'b']));
   });
 });
