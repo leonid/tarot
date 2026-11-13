@@ -7,6 +7,7 @@ import type { Card } from '../domain/types';
 import type { SharedReading } from '../domain/share';
 import { SpreadBoard } from './SpreadBoard';
 import { useI18n } from './i18n';
+import { useStudy } from './useStudy';
 import { Button } from './kit';
 import { PageLink } from './Nav';
 import { useInterpretation } from './useInterpretation';
@@ -43,7 +44,8 @@ export function ReadingView({
   const provider = given ?? chosen;
   const table = useReadingStore();
   const { deckId, spreadId, question, placements } = reading ?? table;
-  const { t, locale, getDeck, getSpread, meanings, formula, waite } = useI18n();
+  const { t, locale, getDeck, getSpread, meanings } = useI18n();
+  const { formula, waite } = useStudy();
   const deck = getDeck(deckId);
   const spread = getSpread(spreadId);
   const complete =

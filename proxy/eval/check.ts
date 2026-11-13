@@ -1,4 +1,4 @@
-import { interpretationSchema } from '../../src/domain/interpretation';
+import { interpretationSchema } from '../../src/domain/interpretationSchema';
 import type { InterpretRequest } from '../src/request';
 
 /**

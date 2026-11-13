@@ -8,7 +8,7 @@ import { useReadingStore } from './features/store';
 describe('App', () => {
   it('deals a full spread in simulate mode', async () => {
     render(<App />);
-    await userEvent.click(screen.getByText('Shuffle and deal'));
+    await userEvent.click(await screen.findByText('Shuffle and deal'));
     expect(await screen.findByText('Interpretation')).toBeInTheDocument();
   });
 
@@ -65,7 +65,7 @@ describe('finding your way (R18)', () => {
     localStorage.clear();
     render(<App />);
     await userEvent.type(screen.getByLabelText('Question'), 'kept?');
-    await userEvent.click(screen.getByText('Shuffle and deal'));
+    await userEvent.click(await screen.findByText('Shuffle and deal'));
     await userEvent.click(
       await screen.findByRole('button', { name: 'Save reading' }),
     );
@@ -93,7 +93,9 @@ describe('learning the cards (R8)', () => {
   it('lists all 78 cards in groups and narrows them by name or keyword', async () => {
     history.replaceState(null, '', '#/cards');
     const { container } = render(<App />);
-    expect(container.querySelectorAll('.card-link')).toHaveLength(78);
+    await waitFor(() =>
+      expect(container.querySelectorAll('.card-link')).toHaveLength(78),
+    );
     expect(
       screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent),
     ).toEqual(['Major Arcana', 'Wands', 'Cups', 'Swords', 'Pentacles']);
@@ -120,11 +122,16 @@ describe('learning the cards (R8)', () => {
   it('shows one card with both meanings, its parts and Waite', async () => {
     history.replaceState(null, '', '#/cards');
     const { container } = render(<App />);
+    await waitFor(() =>
+      expect(
+        container.querySelector('.card-link[href="#/cards/cups-13-queen"]'),
+      ).not.toBeNull(),
+    );
     await userEvent.click(
       container.querySelector('.card-link[href="#/cards/cups-13-queen"]')!,
     );
     expect(location.hash).toBe('#/cards/cups-13-queen');
-    const title = screen.getByRole('heading', { level: 2 });
+    const title = await screen.findByRole('heading', { level: 2 });
     expect(title).toHaveTextContent('Queen of Cups');
     expect(title).toHaveFocus();
     expect(document.title).toBe('Queen of Cups · Tarot');
@@ -157,7 +164,7 @@ describe('learning the cards (R8)', () => {
 
   it('links each card of a reading to its page', async () => {
     render(<App />);
-    await userEvent.click(screen.getByText('Shuffle and deal'));
+    await userEvent.click(await screen.findByText('Shuffle and deal'));
     await screen.findByText('Interpretation');
     const more = screen.getAllByRole('link', { name: /^More about / });
     expect(more).toHaveLength(3);
@@ -203,7 +210,7 @@ describe('shared links', () => {
     location.hash = `#r=${encodeShared(good as never)}`;
     const { container } = render(<App />);
     expect(
-      screen.getByRole('heading', { name: 'A reading shared with you' }),
+      await screen.findByRole('heading', { name: 'A reading shared with you' }),
     ).toBeInTheDocument();
     expect(screen.getByText('from a link')).toBeInTheDocument();
     expect(container.querySelector('[data-position="card"]')).toHaveTextContent(
@@ -222,7 +229,7 @@ describe('shared links', () => {
     location.hash = `#r=${link(good)}`;
     render(<App />);
     await userEvent.click(
-      screen.getByRole('button', { name: 'Keep it in my journal' }),
+      await screen.findByRole('button', { name: 'Keep it in my journal' }),
     );
     expect(screen.getByText('Kept in your journal.')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('link', { name: 'Journal' }));
@@ -236,7 +243,7 @@ describe('shared links', () => {
     location.hash = `#r=${link(good)}`;
     render(<App />);
     await userEvent.click(
-      screen.getByRole('button', { name: 'Open it to change it' }),
+      await screen.findByRole('button', { name: 'Open it to change it' }),
     );
     expect(location.hash).toBe('#/record');
     expect(await screen.findByLabelText('Question')).toHaveValue('from a link');
@@ -247,7 +254,7 @@ describe('shared links', () => {
     location.hash = `#r=${link(good)}`;
     render(<App />);
     await userEvent.click(
-      screen.getByRole('link', { name: 'Start my own reading' }),
+      await screen.findByRole('link', { name: 'Start my own reading' }),
     );
     expect(location.hash).toBe('#/reading');
     expect(await screen.findByLabelText('Question')).toHaveValue('');
@@ -394,7 +401,7 @@ describe('the first visit (R11)', () => {
     ]);
     await userEvent.click(footer.getByRole('link', { name: 'Sources' }));
     expect(document.title).toBe('About · Tarot');
-    const heading = screen.getByRole('heading', { name: 'Sources' });
+    const heading = await screen.findByRole('heading', { name: 'Sources' });
     expect(heading).toHaveFocus();
     expect(screen.getByText(/Pamela Colman Smith/)).toBeInTheDocument();
     expect(
@@ -407,7 +414,7 @@ describe('the first visit (R11)', () => {
     history.replaceState(null, '', '#/reading');
     const { container } = render(<App />);
     await userEvent.click(
-      screen.getByRole('button', { name: 'Shuffle and deal' }),
+      await screen.findByRole('button', { name: 'Shuffle and deal' }),
     );
     expect(
       [...container.querySelectorAll<HTMLElement>('.slot')].map((el) =>
@@ -495,7 +502,7 @@ describe('screen reader feedback', () => {
     expect(before.some((s) => /Cards dealt/.test(s.textContent ?? ''))).toBe(
       false,
     );
-    await userEvent.click(screen.getByText('Shuffle and deal'));
+    await userEvent.click(await screen.findByText('Shuffle and deal'));
     const after = await screen.findAllByRole('status');
     expect(after.some((s) => /Cards dealt: 3/.test(s.textContent ?? ''))).toBe(
       true,

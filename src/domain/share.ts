@@ -1,9 +1,9 @@
-import { sharedReadingSchema, type SharedReading } from './schema';
+import { type SharedReading } from './schema';
 import type { MigrateError } from './migrate';
 import { migrate } from './migrate';
 import type { Reading } from './types';
 
-export { sharedReadingSchema, type SharedReading };
+export { type SharedReading };
 
 export function toShared(
   reading: Reading,

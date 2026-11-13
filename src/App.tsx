@@ -1,19 +1,36 @@
 import { useReadingStore } from './features/store';
-import { SimulateView } from './features/simulate/SimulateView';
-import { SetupView } from './features/setup/SetupView';
 import { Home } from './ui/Home';
-import { Journal } from './ui/Journal';
-import { SharedView } from './ui/SharedView';
 import { navigate, pageOf, subOf, useHash, type Page } from './ui/route';
-import { Cards } from './ui/Cards';
-import { About } from './ui/About';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { decodeSharedResult, type SharedReading } from './domain/share';
-import { locales } from './content/locales';
+import { LOCALE_CHOICES } from './content/locales';
 import { useI18n } from './ui/i18n';
 import { ActionNote, Alert, Field } from './ui/kit';
 import { Nav, PageLink } from './ui/Nav';
 import { applyTheme, THEMES, type Theme } from './ui/theme';
+
+// Screens that are not the first one load when they are opened, so the first
+// download is the home and reading screens only (R15).
+const SimulateView = lazy(() =>
+  import('./features/simulate/SimulateView').then((m) => ({
+    default: m.SimulateView,
+  })),
+);
+const SetupView = lazy(() =>
+  import('./features/setup/SetupView').then((m) => ({ default: m.SetupView })),
+);
+const Journal = lazy(() =>
+  import('./ui/Journal').then((m) => ({ default: m.Journal })),
+);
+const SharedView = lazy(() =>
+  import('./ui/SharedView').then((m) => ({ default: m.SharedView })),
+);
+const Cards = lazy(() =>
+  import('./ui/Cards').then((m) => ({ default: m.Cards })),
+);
+const About = lazy(() =>
+  import('./ui/About').then((m) => ({ default: m.About })),
+);
 
 type Link =
   { reading: SharedReading } | { error: 'malformed' | 'newer' | 'unknown' };
@@ -98,10 +115,27 @@ export function App() {
   useEffect(() => {
     if (screen === shown.current) return;
     shown.current = screen;
-    (
+    const target = () =>
       document.querySelector<HTMLElement>('.page [data-focus]') ??
-      document.querySelector<HTMLElement>('.page h2')
-    )?.focus();
+      document.querySelector<HTMLElement>('.page h2');
+    // The previous screen can stay in the page, hidden, while a new one loads,
+    // so a heading inside hidden content does not count.
+    const ready = () => {
+      const el = target();
+      return el && !el.closest('[style*="display: none"]') ? el : null;
+    };
+    const page = document.querySelector('.page');
+    if (!page) return;
+    const now = ready();
+    if (now) return now.focus();
+    const watch = new MutationObserver(() => {
+      const el = ready();
+      if (!el) return;
+      watch.disconnect();
+      el.focus();
+    });
+    watch.observe(page, { childList: true, subtree: true });
+    return () => watch.disconnect();
   }, [screen]);
 
   return (
@@ -111,7 +145,7 @@ export function App() {
           <PageLink page="home">{t.appTitle}</PageLink>
         </h1>
         <div className="prefs">
-          {locales.length > 1 && (
+          {LOCALE_CHOICES.length > 1 && (
             <Field label={t.language} className="language">
               {(p) => (
                 <select
@@ -119,7 +153,7 @@ export function App() {
                   value={locale.code}
                   onChange={(e) => setLocale(e.target.value)}
                 >
-                  {locales.map((l) => (
+                  {LOCALE_CHOICES.map((l) => (
                     <option key={l.code} value={l.code} lang={l.code}>
                       {l.label}
                     </option>
@@ -181,21 +215,29 @@ export function App() {
           </ActionNote>
         )}
         <div className="page">
-          {shared ? (
-            <SharedView key={hash} reading={shared} />
-          ) : page === 'home' ? (
-            <Home />
-          ) : page === 'journal' ? (
-            <Journal />
-          ) : page === 'cards' ? (
-            <Cards cardId={cardId} />
-          ) : page === 'about' ? (
-            <About section={section} />
-          ) : mode !== wanted ? null : page === 'record' ? (
-            <SetupView />
-          ) : (
-            <SimulateView />
-          )}
+          <Suspense
+            fallback={
+              <p role="status" className="meta">
+                {t.loading}
+              </p>
+            }
+          >
+            {shared ? (
+              <SharedView key={hash} reading={shared} />
+            ) : page === 'home' ? (
+              <Home />
+            ) : page === 'journal' ? (
+              <Journal />
+            ) : page === 'cards' ? (
+              <Cards cardId={cardId} />
+            ) : page === 'about' ? (
+              <About section={section} />
+            ) : mode !== wanted ? null : page === 'record' ? (
+              <SetupView />
+            ) : (
+              <SimulateView />
+            )}
+          </Suspense>
         </div>
       </main>
       <footer className="app-footer">

@@ -4,6 +4,7 @@ import type { Card, Deck } from '../domain/types';
 import { useReadingStore } from '../features/store';
 import { CardImage } from './CardImage';
 import { useI18n } from './i18n';
+import { useStudy } from './useStudy';
 import { Chip, ElementChip, Field, PageHead } from './kit';
 import { PageLink } from './Nav';
 
@@ -96,7 +97,8 @@ function Library({ deck }: { deck: Deck }) {
 }
 
 function CardPage({ deck, cardId }: { deck: Deck; cardId: string }) {
-  const { t, meanings, waite, formula } = useI18n();
+  const { t, meanings } = useI18n();
+  const { waite, formula } = useStudy();
   const index = deck.cards.findIndex((c) => c.id === cardId);
   const card = deck.cards[index];
   const all = (

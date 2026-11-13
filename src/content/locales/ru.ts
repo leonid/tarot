@@ -182,6 +182,7 @@ const ui: UiMessages = {
 
   interpretation: 'Толкование',
   connections: 'Связи',
+  loading: 'Загрузка…',
   interpreting: 'Читаю карты…',
   interpretationFailed: 'Не удалось составить толкование.',
   tryAgain: 'Повторить',

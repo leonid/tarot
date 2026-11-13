@@ -1,4 +1,4 @@
-import { imageManifestSchema, type ImageEntry } from './manifest';
+import type { ImageEntry, ImageManifest } from './manifest';
 import { IMAGE_ASPECT, IMAGE_WIDTHS, imageFile, imageHeight } from './files';
 import rws1909 from './rws-1909.json';
 
@@ -10,7 +10,9 @@ import rws1909 from './rws-1909.json';
  */
 const SETS = [
   {
-    manifest: imageManifestSchema.parse(rws1909),
+    // Checked against the schema by manifest.test.ts and the images script, so
+    // the browser does not carry a validator for a file that ships with it.
+    manifest: rws1909 as ImageManifest,
     /** The 22-card deck reuses the first 22 pictures of the full deck. */
     deckIds: ['rws-78', 'major-22'],
   },

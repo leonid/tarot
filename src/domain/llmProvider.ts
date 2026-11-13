@@ -1,6 +1,6 @@
 import { fallbackProvider } from './fallback';
 import {
-  interpretationSchema,
+  parseInterpretation,
   type Interpretation,
   type InterpretationProvider,
   type ReadingContext,
@@ -57,11 +57,10 @@ export function llmProvider(opts: LlmProviderOptions): InterpretationProvider {
           signal: AbortSignal.timeout(opts.timeoutMs ?? 30_000),
         });
         if (!res.ok) return await fall(ctx);
-        const parsed = interpretationSchema.safeParse(await res.json());
-        if (!parsed.success || !covers(ctx, parsed.data))
-          return await fall(ctx);
+        const parsed = parseInterpretation(await res.json());
+        if (!parsed || !covers(ctx, parsed)) return await fall(ctx);
         const ids = new Set(ctx.placements.map((p) => p.cardId));
-        const { hingeCardId, ...rest } = parsed.data;
+        const { hingeCardId, ...rest } = parsed;
         return {
           ...rest,
           ...(hingeCardId && ids.has(hingeCardId) ? { hingeCardId } : {}),

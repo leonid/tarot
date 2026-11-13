@@ -1,4 +1,4 @@
-import { sharedReadingSchema, type SharedReading } from './schema';
+import { parseSharedReading, type SharedReading } from './schema';
 
 /** The payload version this build writes and understands natively. */
 export const CURRENT_VERSION = 1;
@@ -47,11 +47,11 @@ export function migrate(
     if (!step) return fail({ kind: 'no-migration', version: v });
     payload = { ...step(payload), v: v + 1 };
   }
-  const parsed = sharedReadingSchema.safeParse(payload);
-  if (!parsed.success) return fail({ kind: 'malformed' });
+  const reading = parseSharedReading(payload);
+  if (!reading) return fail({ kind: 'malformed' });
   return {
     ok: true,
-    reading: parsed.data,
+    reading,
     ...(from < current ? { migratedFrom: from } : {}),
   };
 }

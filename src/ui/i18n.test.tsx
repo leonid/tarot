@@ -34,7 +34,7 @@ describe('locale switching', () => {
   it('leaves no English on screen after a full simulated reading', async () => {
     useReadingStore.setState({ locale: 'en-XA' });
     const { container } = render(<App />);
-    await userEvent.click(screen.getByText(/Shuffle and deal/));
+    await userEvent.click(await screen.findByText(/Shuffle and deal/));
     await screen.findByText(/Interpretation/);
     // Seed digits, card numerals (digits, Roman) and the option lists' own
     // text are data, not copy.

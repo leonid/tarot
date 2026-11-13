@@ -2,11 +2,16 @@
 
 A React app for interpreting tarot readings.
 
-- **Simulate:** ask a question, pick a deck and a spread, then shuffle and deal.
-- **Setup:** pick a deck and a spread, then place specific cards in specific positions to analyse a reading.
-- Each card is interpreted by its meaning, its position, and the other cards in the reading.
+Four screens, each reached from the home page:
 
-Status: working app, not yet deployed. Both modes work with 2 decks, 3 spreads, base meanings for all 78 cards and Golden Dawn (Book T) correspondences. A deterministic interpreter reads each card in its position and compares the cards. The interface is in English and Russian (the Russian text is machine-written and awaits native review), with light and dark themes and public-domain card images (1909 Roses & Lilies scans) with a typographic fallback. Readings can be saved locally and shared as a link (`#r=...`).
+- **Do a reading:** ask a question, pick a deck and a spread, then shuffle and deal.
+- **Record a reading:** you already have a spread on the table; place the cards you drew, in order, and read them.
+- **Journal:** the readings you chose to keep, in this browser.
+- **Cards:** all 78 cards with both meanings, Waite's 1911 text and the card read from its parts.
+
+Each card is interpreted by its meaning, its position, and the other cards in the reading; the built-in reader composes a summary and advice from the centre, the obstacle, the outcome and the strongest connection.
+
+Status: working app, not yet deployed. 2 decks, 3 spreads, base meanings for all 78 cards and Golden Dawn (Book T) correspondences. The interface is in English and Russian (the Russian text is machine-written and awaits native review, so it is chosen from the language picker, never picked from the browser), with light and dark themes and public-domain card images (1909 Roses & Lilies scans) with a typographic fallback. Readings can be saved locally and shared as a link (`#r=...`). The first download is about 95 kB gzipped; the other screens and Russian load when opened.
 
 ## Develop
 
@@ -18,7 +23,7 @@ npm run dev
 npm test
 ```
 
-Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`, and `images` (rebuilds the optimised card images from Wikimedia Commons; see `docs/research/sources.md`). CI runs typecheck, lint, test and build, and the end-to-end tests on all three browsers (the Playwright report is attached to a failed run).
+Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`, and `images` (rebuilds the optimised card images from Wikimedia Commons; see `docs/research/sources.md`). CI runs typecheck, lint, test and build (then a secrets check and a size check: the first download, gzipped, must stay under 100 kB; the Russian text, Setup, the journal, the card library and the reading screen load on demand, so new code for them does not count, but new code in the shared shell does), and the end-to-end tests on all three browsers (the Playwright report is attached to a failed run).
 
 End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and serve it on port 4391. First run: `npx playwright install chromium firefox webkit`. Run one browser with `npm run e2e -- --project=chromium`.
 

@@ -135,6 +135,8 @@ export interface UiMessages {
   interpretation: string;
   /** Heading over the relations between cards. */
   connections: string;
+  /** Shown for a moment while a screen's code is fetched. */
+  loading: string;
   interpreting: string;
   interpretationFailed: string;
   tryAgain: string;

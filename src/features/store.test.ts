@@ -118,17 +118,59 @@ describe('the first language (R17)', () => {
     if (saved) localStorage.setItem('tarot.locale.v1', saved);
     vi.spyOn(navigator, 'language', 'get').mockReturnValue(browserLanguage);
     const { useReadingStore } = await import('./store');
-    return useReadingStore.getState().locale;
+    return useReadingStore;
   };
   afterEach(() => vi.restoreAllMocks());
 
   it('is English for a Russian browser: the Russian text is not reviewed', async () => {
-    expect(await open('ru-RU')).toBe('en');
+    expect((await open('ru-RU')).getState().locale).toBe('en');
   });
   it('is English for any other browser', async () => {
-    expect(await open('de-DE')).toBe('en');
+    expect((await open('de-DE')).getState().locale).toBe('en');
   });
-  it('is still Russian when the visitor chose it', async () => {
-    expect(await open('en-US', 'ru')).toBe('ru');
+  it('is still Russian when the visitor chose it, once its text has loaded', async () => {
+    const store = await open('en-US', 'ru');
+    // Until the Russian text arrives the page reads in English, not blank.
+    expect(store.getState().locale).toBe('en');
+    await vi.waitFor(() => expect(store.getState().locale).toBe('ru'));
+  });
+});
+
+describe('languages load on demand (R15)', () => {
+  const fresh = async () => {
+    vi.resetModules();
+    localStorage.clear();
+    const locales = await import('../content/locales');
+    const { useReadingStore } = await import('./store');
+    return { locales, store: useReadingStore };
+  };
+
+  it('has only English loaded at start, and Russian after it is chosen', async () => {
+    const { locales, store } = await fresh();
+    expect(locales.locales.map((l) => l.code)).toEqual(['en']);
+    store.getState().setLocale('ru');
+    expect(store.getState().locale).toBe('en');
+    await vi.waitFor(() => expect(store.getState().locale).toBe('ru'));
+    expect(locales.locales.map((l) => l.code)).toEqual(['en', 'ru']);
+  });
+
+  it('lists Russian in the picker before it is loaded', async () => {
+    const { locales } = await fresh();
+    expect(locales.LOCALE_CHOICES.map((c) => c.code)).toContain('ru');
+  });
+
+  it('a later choice wins over a slower earlier one', async () => {
+    const { store } = await fresh();
+    store.getState().setLocale('ru');
+    store.getState().setLocale('en');
+    await new Promise((r) => setTimeout(r, 50));
+    expect(store.getState().locale).toBe('en');
+  });
+
+  it('ignores a language that is not shipped', async () => {
+    const { store } = await fresh();
+    store.getState().setLocale('xx');
+    expect(store.getState().locale).toBe('en');
+    expect(localStorage.getItem('tarot.locale.v1')).toBeNull();
   });
 });

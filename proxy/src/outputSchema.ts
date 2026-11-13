@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { interpretationSchema } from '../../src/domain/interpretation';
+import { interpretationSchema } from '../../src/domain/interpretationSchema';
 
 /** Keywords the structured-output feature does not support (plan S3). */
 export const UNSUPPORTED_KEYWORDS = [

@@ -6,7 +6,12 @@ import type { SharedReading } from '../domain/share';
 import { getDeck, decks } from '../content/decks';
 import { getSpread, spreads } from '../content/spreads';
 
-import { DEFAULT_LOCALE, locales } from '../content/locales';
+import {
+  DEFAULT_LOCALE,
+  isKnownLocale,
+  isLoaded,
+  loadLocale,
+} from '../content/locales';
 
 export type Mode = 'simulate' | 'setup';
 
@@ -27,13 +32,23 @@ function initialUseAi(): boolean {
   }
 }
 
-function initialLocale(): string {
+/** The language the visitor chose before, if it is one we ship. */
+function savedLocale(): string | undefined {
   try {
     const saved = localStorage.getItem(LOCALE_KEY);
-    if (saved && locales.some((l) => l.code === saved)) return saved;
+    if (saved && isKnownLocale(saved)) return saved;
   } catch {
     // Storage can be blocked; the language falls back to the default.
   }
+  return undefined;
+}
+
+function initialLocale(): string {
+  // A saved language other than English is fetched after start (see the end of
+  // this file); until it arrives the page reads in English.
+  const saved = savedLocale();
+  if (saved && isLoaded(saved)) return saved;
+  if (saved) return DEFAULT_LOCALE;
   // First visit: English. A reviewed language could follow the browser's, but
   // the Russian text is still a machine draft (R17, #86), so it is something to
   // choose, not something to be given. Add a code to REVIEWED once a fluent
@@ -41,10 +56,13 @@ function initialLocale(): string {
   const browser = (typeof navigator === 'undefined' ? '' : navigator.language)
     .slice(0, 2)
     .toLowerCase();
-  return REVIEWED.includes(browser) && locales.some((l) => l.code === browser)
+  return REVIEWED.includes(browser) && isLoaded(browser)
     ? browser
     : DEFAULT_LOCALE;
 }
+
+/** The language most recently asked for, so a slow load cannot undo a later choice. */
+let wanted = '';
 
 /**
  * Placements in the order of the spread's positions, whatever order the cards
@@ -141,13 +159,18 @@ export const useReadingStore = create<State>((set, get) => ({
   placements: [],
   boards: {},
   setLocale: (locale) => {
-    if (!locales.some((l) => l.code === locale)) return;
+    if (!isKnownLocale(locale)) return;
     try {
       localStorage.setItem(LOCALE_KEY, locale);
     } catch {
       // Not persisting the choice is harmless.
     }
-    set({ locale });
+    wanted = locale;
+    if (isLoaded(locale)) return set({ locale });
+    // Not here yet: keep reading in the current language until it arrives.
+    void loadLocale(locale).then((ok) => {
+      if (ok && wanted === locale) set({ locale });
+    });
   },
   setTheme: (theme) => {
     saveTheme(theme);
@@ -256,3 +279,7 @@ export const useReadingStore = create<State>((set, get) => ({
     }));
   },
 }));
+
+// Returning visitor who chose another language: fetch it now.
+const chosen = savedLocale();
+if (chosen && !isLoaded(chosen)) useReadingStore.getState().setLocale(chosen);
