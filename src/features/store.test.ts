@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useReadingStore } from './store';
 
 const s = () => useReadingStore.getState();
@@ -108,5 +108,27 @@ describe('setup placement rules', () => {
       expect(s().placements).toEqual(dealt);
       s().setQuestion('');
     });
+  });
+});
+
+describe('the first language (R17)', () => {
+  const open = async (browserLanguage: string, saved?: string) => {
+    vi.resetModules();
+    localStorage.clear();
+    if (saved) localStorage.setItem('tarot.locale.v1', saved);
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue(browserLanguage);
+    const { useReadingStore } = await import('./store');
+    return useReadingStore.getState().locale;
+  };
+  afterEach(() => vi.restoreAllMocks());
+
+  it('is English for a Russian browser: the Russian text is not reviewed', async () => {
+    expect(await open('ru-RU')).toBe('en');
+  });
+  it('is English for any other browser', async () => {
+    expect(await open('de-DE')).toBe('en');
+  });
+  it('is still Russian when the visitor chose it', async () => {
+    expect(await open('en-US', 'ru')).toBe('ru');
   });
 });
