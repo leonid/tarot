@@ -602,3 +602,39 @@ describe('saving a reading (R13)', () => {
     }
   });
 });
+
+describe('plain words (R7)', () => {
+  it('explains the hinge, shows the strongest three connections and folds the rest', async () => {
+    useReadingStore.setState({ spreadId: 'celtic-cross' });
+    useReadingStore.getState().dealRandom(2107528904);
+    history.replaceState(null, '', '#/reading');
+    const { container } = render(<App />);
+    await screen.findByText(/./, { selector: '.reading-summary' });
+    expect(
+      screen.getByText(/the card the others lean on most/i),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelectorAll('.connections > ul > li').length,
+    ).toBeLessThanOrEqual(3);
+    const more = container.querySelector('.more-connections');
+    if (more) {
+      expect(more).not.toHaveAttribute('open');
+      expect(more.querySelectorAll('li').length).toBeGreaterThan(0);
+    }
+  });
+
+  it('keeps the seed in a "replay this deal" detail, not beside the button', async () => {
+    useReadingStore.getState().dealRandom(2107528904);
+    history.replaceState(null, '', '#/reading');
+    const { container } = render(<App />);
+    const detail = container.querySelector('.replay')!;
+    expect(detail).not.toHaveAttribute('open');
+    expect(
+      within(detail as HTMLElement).getByText('Replay this deal'),
+    ).toBeInTheDocument();
+    expect(detail).toHaveTextContent('2107528904');
+    expect(container.querySelector('.deal')).not.toHaveTextContent(
+      '2107528904',
+    );
+  });
+});

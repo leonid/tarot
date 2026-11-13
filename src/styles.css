@@ -1102,3 +1102,25 @@ a.btn {
     margin-inline: calc(-1 * (var(--slot-pad) + var(--border-w)));
   }
 }
+
+/* Plain-word explanations sit right under what they explain. */
+.hinge-explain {
+  display: block;
+}
+.more-connections,
+.replay {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+}
+.more-connections summary,
+.replay summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--target);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.more-connections ul {
+  margin: 0;
+  padding-left: var(--space-5);
+}

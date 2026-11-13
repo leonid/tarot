@@ -12,6 +12,9 @@ import { PageLink } from './Nav';
 import { useInterpretation } from './useInterpretation';
 import { useProvider } from './useProvider';
 
+/** How many connections show at once; the rest are folded away. */
+const TOP_CONNECTIONS = 3;
+
 /** Renders the spread board with its cards and the interpretation. */
 export function ReadingView({
   droppable = false,
@@ -266,6 +269,7 @@ export function ReadingView({
               {(result.relations.length > 0 || result.hingeCardId) && (
                 <section className="connections">
                   <h3>{t.connections}</h3>
+                  <p className="meta">{t.connectionsExplain}</p>
                   {result.hingeCardId && (
                     <p>
                       <strong>{t.hingeLabel}</strong>{' '}
@@ -273,13 +277,30 @@ export function ReadingView({
                         deck.cards.find((c) => c.id === result.hingeCardId)
                           ?.name
                       }
+                      <span className="meta hinge-explain">
+                        {t.hingeExplain}
+                      </span>
                     </p>
                   )}
                   <ul>
-                    {result.relations.map((r) => (
+                    {result.relations.slice(0, TOP_CONNECTIONS).map((r) => (
                       <li key={r}>{r}</li>
                     ))}
                   </ul>
+                  {result.relations.length > TOP_CONNECTIONS && (
+                    <details className="more-connections">
+                      <summary>
+                        {t.moreConnections(
+                          result.relations.length - TOP_CONNECTIONS,
+                        )}
+                      </summary>
+                      <ul>
+                        {result.relations.slice(TOP_CONNECTIONS).map((r) => (
+                          <li key={r}>{r}</li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
                 </section>
               )}
               <p className="advice">{result.advice}</p>

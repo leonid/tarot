@@ -22,7 +22,7 @@ test('a saved reading survives a reload and opens as it was', async ({
   await page.getByLabel('Spread').selectOption('celtic-cross');
   await page.getByRole('button', { name: 'Shuffle and deal' }).click();
   await expect(page.locator('.board .slot.filled')).toHaveCount(10);
-  const seed = await page.getByText(/seed \d+/).textContent();
+  const seed = await page.locator('.replay p').textContent();
   const original = await readingState(page);
 
   await page.getByRole('button', { name: 'Save reading' }).click();
@@ -44,7 +44,7 @@ test('a saved reading survives a reload and opens as it was', async ({
   await page.getByRole('button', { name: 'Open', exact: true }).click();
 
   await expect(page.locator('.board .slot.filled')).toHaveCount(10);
-  await expect(page.getByText(/seed \d+/)).toHaveText(seed ?? '');
+  await expect(page.locator('.replay p')).toHaveText(seed ?? '');
   expect(await readingState(page)).toEqual(original);
 });
 

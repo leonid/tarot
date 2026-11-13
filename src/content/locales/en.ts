@@ -150,7 +150,15 @@ const ui: UiMessages = {
   reversals: 'Reversals',
 
   shuffleAndDeal: 'Shuffle and deal',
-  seed: (seed) => `seed ${seed}`,
+  replayDeal: 'Replay this deal',
+  replayExplain: (seed) =>
+    `Every deal is made from a number. This one is ${seed}; dealing with the same number, spread and deck gives the same cards.`,
+  connectionsExplain:
+    'How the cards relate to each other: shared suits, numbers, elements and planets. The strongest come first.',
+  hingeExplain:
+    'The card the others lean on most: it has the most links to them, so reading it first helps the rest make sense.',
+  moreConnections: (count) =>
+    count === 1 ? 'One more connection' : `${count} more connections`,
 
   placeWithMenus: 'Or choose each card from a list',
   chooseCard: '-- choose a card --',
