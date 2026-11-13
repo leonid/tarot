@@ -3,6 +3,24 @@ import type { CardFormula } from './formula';
 import type { Orientation, Suit } from './types';
 import type { Modality, Planet, Sign } from './zodiac';
 
+/** A card in a position that matters, with what it says there. */
+export interface KeyCard {
+  position: string;
+  card: string;
+  orientation: Orientation;
+  keywords: readonly string[];
+}
+
+/** What the built-in reader composes a summary and advice from. */
+export interface ReadingParts {
+  focus?: KeyCard;
+  obstacle?: KeyCard;
+  outcome?: KeyCard;
+  /** The strongest connection, as a sentence. */
+  strongest?: string;
+  hinge?: string;
+}
+
 /**
  * The phrases the deterministic interpreter writes itself, per locale.
  * Templates are functions so a locale controls word order, plurals and the
@@ -42,8 +60,15 @@ export interface ProviderStrings {
   numberRepeats(number: number, cards: readonly string[]): string;
   /** Cards whose numbers reduce to `root` (1-9), a Major among them. */
   numberFamily(root: number, cards: readonly string[]): string;
-  summary(question: string, cards: number): string;
-  advice: string;
+  /**
+   * The reading in a few sentences. `focus` is the card in the core position,
+   * `obstacle` the one in the way, `outcome` where it leads, `strongest` the
+   * most telling connection already written out, `hinge` the card the others
+   * lean on. Any of them may be missing; leave a sentence out then.
+   */
+  summary(question: string, cards: number, parts: ReadingParts): string;
+  /** What to do with it, from the same parts. */
+  advice(parts: ReadingParts): string;
 
   elementDominates(element: Element, count: number, total: number): string;
   planetLinks(planet: Planet, cards: readonly string[]): string;

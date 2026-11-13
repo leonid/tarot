@@ -7,6 +7,7 @@ export const singleCard: Spread = {
   positions: [
     {
       id: 'card',
+      role: 'focus',
       label: 'The card',
       meaning: 'The core of the matter',
       x: 0,
@@ -23,6 +24,7 @@ export const threeCard: Spread = {
     { id: 'past', label: 'Past', meaning: 'What led here', x: 0, y: 0 },
     {
       id: 'present',
+      role: 'focus',
       label: 'Present',
       meaning: 'The current situation',
       x: 1,
@@ -30,6 +32,7 @@ export const threeCard: Spread = {
     },
     {
       id: 'future',
+      role: 'outcome',
       label: 'Future',
       meaning: 'Where it is heading',
       x: 2,
@@ -45,6 +48,7 @@ export const celticCross: Spread = {
   positions: [
     {
       id: 'present',
+      role: 'focus',
       label: 'Present',
       meaning: 'The heart of the matter',
       x: 1,
@@ -52,6 +56,7 @@ export const celticCross: Spread = {
     },
     {
       id: 'challenge',
+      role: 'obstacle',
       label: 'Challenge',
       meaning: 'What crosses you',
       x: 1,
@@ -109,6 +114,7 @@ export const celticCross: Spread = {
     },
     {
       id: 'outcome',
+      role: 'outcome',
       label: 'Outcome',
       meaning: 'Where the path leads',
       x: 3,

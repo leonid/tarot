@@ -58,6 +58,9 @@ describe.each([en, ru])('relation text, $code', (locale) => {
       })),
     });
     expect(out.relations).toMatchSnapshot();
+    expect({ summary: out.summary, advice: out.advice }).toMatchSnapshot(
+      'composed',
+    );
   });
 });
 
@@ -96,5 +99,54 @@ describe('the strongest facts come first (R7)', () => {
     const link = (cardIds: string[]) =>
       factWeight({ kind: 'planet-link', planet: 'mars', cardIds } as never);
     expect(link(['a', 'b', 'c'])).toBeGreaterThan(link(['a', 'b']));
+  });
+});
+
+describe('the composed reading (R6)', () => {
+  const read = (locale: typeof en, question: string, ids: string[]) =>
+    fallbackProvider.interpret({
+      question,
+      deck: localizeDeck(rwsDeck, locale),
+      spread: celticCross,
+      meanings: localizeMeanings(meanings, locale),
+      strings: locale.provider,
+      correspondences,
+      placements: ids.map((cardId, i) => ({
+        positionId: celticCross.positions[i]!.id,
+        cardId,
+        orientation: 'upright' as Orientation,
+      })),
+    });
+  const TEN = CASES[CASES.length - 1]!;
+
+  it.each([en, ru])(
+    'names the centre, the obstacle and the outcome in $code',
+    async (locale) => {
+      const out = await read(locale, 'Should I move?', TEN);
+      const deck = localizeDeck(rwsDeck, locale);
+      const name = (id: string) => deck.cards.find((c) => c.id === id)!.name;
+      const roleCard = (role: string) =>
+        name(TEN[celticCross.positions.findIndex((p) => p.role === role)]!);
+      expect(out.summary).toContain(roleCard('focus'));
+      expect(out.summary).toContain(roleCard('obstacle'));
+      expect(out.summary).toContain(roleCard('outcome'));
+      expect(out.advice).toContain(roleCard('obstacle'));
+    },
+  );
+
+  it('is different for different cards', async () => {
+    const a = await read(en, '', TEN);
+    const b = await read(en, '', [...TEN].reverse());
+    expect(a.summary).not.toBe(b.summary);
+    expect(a.advice).not.toBe(b.advice);
+  });
+
+  it('is the same for the same cards', async () => {
+    expect(await read(en, 'q', TEN)).toEqual(await read(en, 'q', TEN));
+  });
+
+  it('says nothing about a position that has no card yet', async () => {
+    const out = await read(en, '', TEN.slice(0, 1));
+    expect(out.summary).not.toMatch(/stands in the way/);
   });
 });
