@@ -2,11 +2,16 @@
 
 A React app for interpreting tarot readings.
 
-- **Simulate:** ask a question, pick a deck and a spread, then shuffle and deal.
-- **Setup:** pick a deck and a spread, then place specific cards in specific positions to analyse a reading.
-- Each card is interpreted by its meaning, its position, and the other cards in the reading.
+Four screens, each reached from the home page:
 
-Status: working app, not yet deployed. Both modes work with 2 decks, 3 spreads, base meanings for all 78 cards and Golden Dawn (Book T) correspondences. A deterministic interpreter reads each card in its position and compares the cards. The interface is in English and Russian (the Russian text is machine-written and awaits native review), with light and dark themes and public-domain card images (1909 Roses & Lilies scans) with a typographic fallback. Readings can be saved locally and shared as a link (`#r=...`).
+- **Do a reading:** ask a question, pick a deck and a spread, then shuffle and deal.
+- **Record a reading:** you already have a spread on the table; place the cards you drew, in order, and read them.
+- **Journal:** the readings you chose to keep, in this browser.
+- **Cards:** all 78 cards with both meanings, Waite's 1911 text and the card read from its parts.
+
+Each card is interpreted by its meaning, its position, and the other cards in the reading; the built-in reader composes a summary and advice from the centre, the obstacle, the outcome and the strongest connection.
+
+Status: working app, not yet deployed. 2 decks, 3 spreads, base meanings for all 78 cards and Golden Dawn (Book T) correspondences. The interface is in English and Russian (the Russian text is machine-written and awaits native review, so it is chosen from the language picker, never picked from the browser), with light and dark themes and public-domain card images (1909 Roses & Lilies scans) with a typographic fallback. Readings can be saved locally and shared as a link (`#r=...`). The first download is about 95 kB gzipped; the other screens and Russian load when opened.
 
 ## Develop
 
