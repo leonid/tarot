@@ -15,6 +15,9 @@ import { applyTheme, readTheme, saveTheme, type Theme } from '../ui/theme';
 const LOCALE_KEY = 'tarot.locale.v1';
 const AI_KEY = 'tarot.ai.v1';
 
+/** Languages a fluent reader has reviewed: only these are picked automatically. */
+const REVIEWED: readonly string[] = ['en'];
+
 /** The AI reader is opt-in: only an explicit saved "on" turns it on. */
 function initialUseAi(): boolean {
   try {
@@ -31,11 +34,16 @@ function initialLocale(): string {
   } catch {
     // Storage can be blocked; the language falls back to the default.
   }
-  // First visit: follow the browser language when we ship it.
+  // First visit: English. A reviewed language could follow the browser's, but
+  // the Russian text is still a machine draft (R17, #86), so it is something to
+  // choose, not something to be given. Add a code to REVIEWED once a fluent
+  // reader has gone through it.
   const browser = (typeof navigator === 'undefined' ? '' : navigator.language)
     .slice(0, 2)
     .toLowerCase();
-  return locales.find((l) => l.code === browser)?.code ?? DEFAULT_LOCALE;
+  return REVIEWED.includes(browser) && locales.some((l) => l.code === browser)
+    ? browser
+    : DEFAULT_LOCALE;
 }
 
 /**
