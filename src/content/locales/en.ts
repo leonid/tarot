@@ -189,7 +189,7 @@ const ui: UiMessages = {
   updateInterpretation: 'Update for the new question',
   aiToggle: 'Write the reading with AI',
   aiNote:
-    'Off by default. When on, your question and the cards are sent to our server and processed by Anthropic (Claude), which may keep them for up to 30 days. For reflection and entertainment, not advice. If the service is unavailable the built-in reader writes the reading instead.',
+    'Off by default. When on, your question and the cards are sent to our server and processed by Anthropic (Claude), which may keep them for up to 30 days. Our server also keeps the reading it wrote for 24 hours, so the same question and cards are answered without asking again. For reflection and entertainment, not advice. If the service is unavailable the built-in reader writes the reading instead.',
   sourceAi: 'Written by AI (Claude)',
   sourceBuiltIn: 'Written by the built-in reader',
   sourceFellBack:
@@ -207,7 +207,8 @@ const ui: UiMessages = {
 
   saveReading: 'Save reading',
   copyShareLink: 'Copy share link',
-  linkCopied: 'Link copied.',
+  linkCopied:
+    'Link copied. It contains your question and cards, so anyone you send it to can read them.',
   dismiss: 'Dismiss',
   undo: 'Undo',
   readingCleared: 'The cards were cleared for the new deck or spread.',

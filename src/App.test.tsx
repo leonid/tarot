@@ -638,3 +638,20 @@ describe('plain words (R7)', () => {
     );
   });
 });
+
+describe('the share link tells what is in it (R14)', () => {
+  it('says the link contains the question and the cards', async () => {
+    Object.assign(navigator, {
+      clipboard: { writeText: async () => undefined },
+    });
+    useReadingStore.getState().dealRandom(5);
+    history.replaceState(null, '', '#/reading');
+    render(<App />);
+    await userEvent.click(
+      await screen.findByRole('button', { name: /copy.*link/i }),
+    );
+    expect(
+      await screen.findByText(/contains your question and cards/),
+    ).toBeInTheDocument();
+  });
+});

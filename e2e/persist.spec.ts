@@ -76,7 +76,7 @@ test('a copied share link opens the same reading in a fresh browser', async ({
   const original = await readingState(page);
 
   await page.getByRole('button', { name: 'Copy share link' }).click();
-  await expect(page.getByText('Link copied.')).toBeVisible();
+  await expect(page.getByText(/^Link copied\./)).toBeVisible();
   const url = await page.evaluate(
     () => (window as unknown as { copied: string }).copied,
   );

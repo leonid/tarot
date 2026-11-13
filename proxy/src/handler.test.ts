@@ -5,7 +5,9 @@ import type { InterpretRequest } from './request';
 import { MAX_BODY_BYTES } from './request';
 
 const ORIGIN = 'https://owner.github.io';
-const env: Env = { ALLOWED_ORIGINS: `${ORIGIN}, http://localhost:5173` };
+const ORIGINS = `${ORIGIN}, http://localhost:5173`;
+// The shared env is the local-work setup; the production setup is tested below.
+const env: Env = { ALLOWED_ORIGINS: ORIGINS, ALLOW_NO_RATE_LIMIT: 'true' };
 
 const good = {
   v: 1,
@@ -158,5 +160,58 @@ describe('proxy handler', () => {
     );
     expect(bad.status).toBe(403);
     expect(bad.headers.get('access-control-allow-origin')).toBeNull();
+  });
+});
+
+describe('the rate limiter is required (R14)', () => {
+  const limiter = (success: boolean) => ({ limit: async () => ({ success }) });
+
+  it('refuses every request when no limiter is bound and it was not switched off', async () => {
+    const { res, reached } = await run(post(good), {
+      ALLOWED_ORIGINS: ORIGINS,
+    });
+    expect(res.status).toBe(503);
+    expect(reached).toBe(false);
+  });
+
+  it('refuses when the limiter cannot answer', async () => {
+    const broken = {
+      limit: async () => {
+        throw new Error('down');
+      },
+    };
+    const { res, reached } = await run(post(good), {
+      ALLOWED_ORIGINS: ORIGINS,
+      RATE_LIMITER: broken,
+    });
+    expect(res.status).toBe(503);
+    expect(reached).toBe(false);
+  });
+
+  it('answers 429 over the limit and passes under it', async () => {
+    const over = await run(post(good), {
+      ALLOWED_ORIGINS: ORIGINS,
+      RATE_LIMITER: limiter(false),
+    });
+    expect(over.res.status).toBe(429);
+    expect(over.reached).toBe(false);
+    const under = await run(post(good), {
+      ALLOWED_ORIGINS: ORIGINS,
+      RATE_LIMITER: limiter(true),
+    });
+    expect(under.res.status).toBe(200);
+  });
+
+  it('only a bad origin is turned away before the limiter, as before', async () => {
+    const { res } = await run(
+      post(good, {
+        headers: {
+          origin: 'https://evil.test',
+          'content-type': 'application/json',
+        },
+      }),
+      { ALLOWED_ORIGINS: ORIGINS },
+    );
+    expect(res.status).toBe(403);
   });
 });

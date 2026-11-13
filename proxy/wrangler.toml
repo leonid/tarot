@@ -8,14 +8,21 @@ compatibility_date = "2026-11-01"
 # Comma-separated origins allowed to call the proxy. Replace with the real site.
 ALLOWED_ORIGINS = "https://OWNER.github.io"
 
-# Reading cache (create once: `npx wrangler kv namespace create CACHE`, then
-# paste the id). Optional: without it every reading is a paid call.
+# Paid upstream calls allowed per UTC day. Counted in the CACHE namespace.
+DAILY_CEILING = "1000"
+
+# Required. Without these two the Worker refuses every request (a missing
+# shield must not mean no shield). For local work only, put
+# ALLOW_NO_RATE_LIMIT=true in proxy/.dev.vars.
+
+# Reading cache and daily counter (create once:
+# `npx wrangler kv namespace create CACHE`, then paste the id).
 # [[kv_namespaces]]
 # binding = "CACHE"
 # id = "<namespace id>"
 
 # Soft per-client rate limit; see the notes in proxy/README.md.
-# [[ratelimits]]
-# name = "RATE_LIMITER"
-# namespace_id = "1001"
-# simple = { limit = 10, period = 60 }
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }

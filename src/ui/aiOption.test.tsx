@@ -54,7 +54,9 @@ describe('AI reader option (M4.8)', () => {
     render(<Page />);
     const box = screen.getByLabelText('Write the reading with AI');
     expect(box).not.toBeChecked();
-    expect(box).toHaveAccessibleDescription(/Anthropic.*up to 30 days/);
+    expect(box).toHaveAccessibleDescription(
+      /Anthropic.*up to 30 days.*24 hours/,
+    );
     expect(box).toHaveAccessibleDescription(/Off by default/);
   });
 
