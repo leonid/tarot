@@ -1,5 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`relation text, 'en' > cups-01-ace cups-02-two cups-03-three > composed 1`] = `
+{
+  "advice": "Ask whether where Three of Cups leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Two of Cups, which speaks of partnership, mutual attraction and harmony. It leads toward (Future) Three of Cups (reversed), which speaks of overindulgence, gossip and exclusion. The clearest pattern: water dominates (3 of 3 cards with an element).",
+}
+`;
+
 exports[`relation text, 'en' > cups-01-ace cups-02-two cups-03-three 1`] = `
 [
   "Water dominates (3 of 3 cards with an element).",
@@ -9,10 +16,31 @@ exports[`relation text, 'en' > cups-01-ace cups-02-two cups-03-three 1`] = `
 ]
 `;
 
+exports[`relation text, 'en' > major-00-fool major-01-magician major-02-high-priestess > composed 1`] = `
+{
+  "advice": "Ask whether where The High Priestess leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is The Magician, which speaks of skill, will and resourcefulness. It leads toward (Future) The High Priestess (reversed), which speaks of secrets, ignored instinct and surface noise. The clearest pattern: mostly Major Arcana: weighty, fated themes.",
+}
+`;
+
 exports[`relation text, 'en' > major-00-fool major-01-magician major-02-high-priestess 1`] = `
 [
   "Mostly Major Arcana: weighty, fated themes.",
 ]
+`;
+
+exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace > composed 1`] = `
+{
+  "advice": "Ask whether where Ace of Cups leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Death, which speaks of ending, transformation and release. It leads toward (Future) Ace of Cups (reversed), which speaks of blocked emotion, emptiness and withholding. The clearest pattern: mostly Major Arcana: weighty, fated themes.",
+}
+`;
+
+exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace > composed 2`] = `
+{
+  "advice": "Name what Death points to before acting. Ask whether where Five of Cups leads is where you want to go.",
+  "summary": "10 cards were read. At the centre (Present) is The Fool, which speaks of beginnings, trust and spontaneity. What stands in the way (Challenge) is Death, which speaks of ending, transformation and release. It leads toward (Outcome) Five of Cups, which speaks of loss, grief and regret. The clearest pattern: the number five repeats: Five of Swords and Five of Cups.",
+}
 `;
 
 exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 1`] = `
@@ -38,11 +66,25 @@ exports[`relation text, 'en' > major-00-fool major-13-death cups-01-ace 2`] = `
 ]
 `;
 
+exports[`relation text, 'en' > major-13-death cups-01-ace cups-02-two > composed 1`] = `
+{
+  "advice": "Ask whether where Two of Cups leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Ace of Cups, which speaks of new feeling, compassion and openness. It leads toward (Future) Two of Cups (reversed), which speaks of imbalance, miscommunication and break in trust. The clearest pattern: water dominates (3 of 3 cards with an element).",
+}
+`;
+
 exports[`relation text, 'en' > major-13-death cups-01-ace cups-02-two 1`] = `
 [
   "Water dominates (3 of 3 cards with an element).",
   "cups dominate (2 of 3).",
 ]
+`;
+
+exports[`relation text, 'en' > major-13-death cups-06-six swords-01-ace > composed 1`] = `
+{
+  "advice": "Ask whether where Ace of Swords leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Six of Cups, which speaks of nostalgia, innocence and kindness. It leads toward (Future) Ace of Swords (reversed), which speaks of confusion, harsh words and clouded judgement. The clearest pattern: water dominates (2 of 3 cards with an element).",
+}
 `;
 
 exports[`relation text, 'en' > major-13-death cups-06-six swords-01-ace 1`] = `
@@ -52,11 +94,25 @@ exports[`relation text, 'en' > major-13-death cups-06-six swords-01-ace 1`] = `
 ]
 `;
 
+exports[`relation text, 'en' > major-16-tower cups-05-five wands-01-ace > composed 1`] = `
+{
+  "advice": "Ask whether where Ace of Wands leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Five of Cups, which speaks of loss, grief and regret. It leads toward (Future) Ace of Wands (reversed), which speaks of false start, lack of drive and delay. The clearest pattern: fire against water: Ace of Wands conflicts with Five of Cups.",
+}
+`;
+
 exports[`relation text, 'en' > major-16-tower cups-05-five wands-01-ace 1`] = `
 [
   "Fire against water: Ace of Wands conflicts with Five of Cups.",
   "Mars links The Tower and Five of Cups.",
 ]
+`;
+
+exports[`relation text, 'en' > major-21-world pentacles-01-ace swords-01-ace > composed 1`] = `
+{
+  "advice": "Start with Ace of Swords: the other cards lean on it. Ask whether where Ace of Swords leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Ace of Pentacles, which speaks of opportunity, prosperity and new venture. It leads toward (Future) Ace of Swords (reversed), which speaks of confusion, harsh words and clouded judgement. The clearest pattern: earth dominates (2 of 3 cards with an element).",
+}
 `;
 
 exports[`relation text, 'en' > major-21-world pentacles-01-ace swords-01-ace 1`] = `
@@ -65,6 +121,13 @@ exports[`relation text, 'en' > major-21-world pentacles-01-ace swords-01-ace 1`]
   "The Aces repeat: Ace of Pentacles and Ace of Swords.",
   "Air against earth: Ace of Swords conflicts with The World and Ace of Pentacles.",
 ]
+`;
+
+exports[`relation text, 'en' > wands-12-knight wands-01-ace cups-01-ace > composed 1`] = `
+{
+  "advice": "Start with Ace of Cups: the other cards lean on it. Ask whether where Ace of Cups leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Ace of Wands, which speaks of spark, inspiration and new venture. It leads toward (Future) Ace of Cups (reversed), which speaks of blocked emotion, emptiness and withholding. The clearest pattern: fire dominates (2 of 3 cards with an element).",
+}
 `;
 
 exports[`relation text, 'en' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
@@ -76,6 +139,13 @@ exports[`relation text, 'en' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
 ]
 `;
 
+exports[`relation text, 'en' > wands-13-queen cups-01-ace swords-01-ace > composed 1`] = `
+{
+  "advice": "Start with Queen of Wands: the other cards lean on it. Ask whether where Ace of Swords leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Ace of Cups, which speaks of new feeling, compassion and openness. It leads toward (Future) Ace of Swords (reversed), which speaks of confusion, harsh words and clouded judgement. The clearest pattern: the Aces repeat: Ace of Cups and Ace of Swords.",
+}
+`;
+
 exports[`relation text, 'en' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
 [
   "The Aces repeat: Ace of Cups and Ace of Swords.",
@@ -85,6 +155,13 @@ exports[`relation text, 'en' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
 ]
 `;
 
+exports[`relation text, 'en' > wands-13-queen cups-09-nine wands-04-four > composed 1`] = `
+{
+  "advice": "Start with Nine of Cups: the other cards lean on it. Ask whether where Four of Wands leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Nine of Cups, which speaks of contentment, wish fulfilled and satisfaction. It leads toward (Future) Four of Wands (reversed), which speaks of unease at home, unstable footing and cancelled plans. The clearest pattern: fire dominates (2 of 3 cards with an element).",
+}
+`;
+
 exports[`relation text, 'en' > wands-13-queen cups-09-nine wands-04-four 1`] = `
 [
   "Fire dominates (2 of 3 cards with an element).",
@@ -92,6 +169,13 @@ exports[`relation text, 'en' > wands-13-queen cups-09-nine wands-04-four 1`] = `
   "Fire against water: Queen of Wands and Four of Wands conflict with Nine of Cups.",
   "Queen of Wands (Water of Fire) echoes water in Nine of Cups.",
 ]
+`;
+
+exports[`relation text, 'en' > wands-13-queen cups-10-ten wands-03-three > composed 1`] = `
+{
+  "advice": "Start with Ten of Cups: the other cards lean on it. Ask whether where Three of Wands leads is where you want to go.",
+  "summary": "3 cards were read. At the centre (Present) is Ten of Cups, which speaks of emotional fulfilment, family and harmony. It leads toward (Future) Three of Wands (reversed), which speaks of obstacles, delays and poor planning. The clearest pattern: fire dominates (2 of 3 cards with an element).",
+}
 `;
 
 exports[`relation text, 'en' > wands-13-queen cups-10-ten wands-03-three 1`] = `
@@ -104,6 +188,13 @@ exports[`relation text, 'en' > wands-13-queen cups-10-ten wands-03-three 1`] = `
 ]
 `;
 
+exports[`relation text, 'ru' > cups-01-ace cups-02-two cups-03-three > composed 1`] = `
+{
+  "advice": "Спросите себя, туда ли вы хотите прийти, куда ведёт «Тройка Кубков».",
+  "summary": "Прочитано карт: 3. В центре (Present): Двойка Кубков: партнёрство, взаимное влечение, гармония. К чему ведёт (Future): Тройка Кубков (перевёрнутая): излишества, сплетни, исключение из круга. Самая заметная связь: преобладает стихия воды (3 из 3 карт со стихией).",
+}
+`;
+
 exports[`relation text, 'ru' > cups-01-ace cups-02-two cups-03-three 1`] = `
 [
   "Преобладает стихия воды (3 из 3 карт со стихией).",
@@ -113,10 +204,31 @@ exports[`relation text, 'ru' > cups-01-ace cups-02-two cups-03-three 1`] = `
 ]
 `;
 
+exports[`relation text, 'ru' > major-00-fool major-01-magician major-02-high-priestess > composed 1`] = `
+{
+  "advice": "Спросите себя, туда ли вы хотите прийти, куда ведёт «Верховная Жрица».",
+  "summary": "Прочитано карт: 3. В центре (Present): Маг: мастерство, воля, находчивость. К чему ведёт (Future): Верховная Жрица (перевёрнутая): секреты, проигнорированное чутьё, поверхностный шум. Самая заметная связь: преимущественно Старшие арканы: весомые, судьбоносные темы.",
+}
+`;
+
 exports[`relation text, 'ru' > major-00-fool major-01-magician major-02-high-priestess 1`] = `
 [
   "Преимущественно Старшие арканы: весомые, судьбоносные темы.",
 ]
+`;
+
+exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace > composed 1`] = `
+{
+  "advice": "Спросите себя, туда ли вы хотите прийти, куда ведёт «Туз Кубков».",
+  "summary": "Прочитано карт: 3. В центре (Present): Смерть: конец, преображение, освобождение. К чему ведёт (Future): Туз Кубков (перевёрнутая): заблокированные эмоции, пустота, сдержанность. Самая заметная связь: преимущественно Старшие арканы: весомые, судьбоносные темы.",
+}
+`;
+
+exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace > composed 2`] = `
+{
+  "advice": "Назовите, на что указывает «Смерть», прежде чем действовать. Спросите себя, туда ли вы хотите прийти, куда ведёт «Пятёрка Кубков».",
+  "summary": "Прочитано карт: 10. В центре (Present): Шут: начало, доверие, спонтанность. Что мешает (Challenge): Смерть: конец, преображение, освобождение. К чему ведёт (Outcome): Пятёрка Кубков: потеря, горе, сожаление. Самая заметная связь: повторяется число 5: Пятёрка Мечей и Пятёрка Кубков.",
+}
 `;
 
 exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 1`] = `
@@ -142,11 +254,25 @@ exports[`relation text, 'ru' > major-00-fool major-13-death cups-01-ace 2`] = `
 ]
 `;
 
+exports[`relation text, 'ru' > major-13-death cups-01-ace cups-02-two > composed 1`] = `
+{
+  "advice": "Спросите себя, туда ли вы хотите прийти, куда ведёт «Двойка Кубков».",
+  "summary": "Прочитано карт: 3. В центре (Present): Туз Кубков: новое чувство, сострадание, открытость. К чему ведёт (Future): Двойка Кубков (перевёрнутая): дисбаланс, недопонимание, трещина в доверии. Самая заметная связь: преобладает стихия воды (3 из 3 карт со стихией).",
+}
+`;
+
 exports[`relation text, 'ru' > major-13-death cups-01-ace cups-02-two 1`] = `
 [
   "Преобладает стихия воды (3 из 3 карт со стихией).",
   "Преобладают Кубки (2 из 3).",
 ]
+`;
+
+exports[`relation text, 'ru' > major-13-death cups-06-six swords-01-ace > composed 1`] = `
+{
+  "advice": "Спросите себя, туда ли вы хотите прийти, куда ведёт «Туз Мечей».",
+  "summary": "Прочитано карт: 3. В центре (Present): Шестёрка Кубков: ностальгия, невинность, доброта. К чему ведёт (Future): Туз Мечей (перевёрнутая): путаница, резкие слова, затуманенное суждение. Самая заметная связь: преобладает стихия воды (2 из 3 карт со стихией).",
+}
 `;
 
 exports[`relation text, 'ru' > major-13-death cups-06-six swords-01-ace 1`] = `
@@ -156,11 +282,25 @@ exports[`relation text, 'ru' > major-13-death cups-06-six swords-01-ace 1`] = `
 ]
 `;
 
+exports[`relation text, 'ru' > major-16-tower cups-05-five wands-01-ace > composed 1`] = `
+{
+  "advice": "Спросите себя, туда ли вы хотите прийти, куда ведёт «Туз Жезлов».",
+  "summary": "Прочитано карт: 3. В центре (Present): Пятёрка Кубков: потеря, горе, сожаление. К чему ведёт (Future): Туз Жезлов (перевёрнутая): ложный старт, нехватка напора, задержка. Самая заметная связь: огонь и Вода конфликтуют. Огонь: Туз Жезлов. Вода: Пятёрка Кубков.",
+}
+`;
+
 exports[`relation text, 'ru' > major-16-tower cups-05-five wands-01-ace 1`] = `
 [
   "Огонь и Вода конфликтуют. Огонь: Туз Жезлов. Вода: Пятёрка Кубков.",
   "Планета Марс связывает карты: Башня и Пятёрка Кубков.",
 ]
+`;
+
+exports[`relation text, 'ru' > major-21-world pentacles-01-ace swords-01-ace > composed 1`] = `
+{
+  "advice": "Начните с карты «Туз Мечей»: остальные опираются на неё. Спросите себя, туда ли вы хотите прийти, куда ведёт «Туз Мечей».",
+  "summary": "Прочитано карт: 3. В центре (Present): Туз Пентаклей: возможность, процветание, новое начинание. К чему ведёт (Future): Туз Мечей (перевёрнутая): путаница, резкие слова, затуманенное суждение. Самая заметная связь: преобладает стихия земли (2 из 3 карт со стихией).",
+}
 `;
 
 exports[`relation text, 'ru' > major-21-world pentacles-01-ace swords-01-ace 1`] = `
@@ -169,6 +309,13 @@ exports[`relation text, 'ru' > major-21-world pentacles-01-ace swords-01-ace 1`]
   "Повторяются Тузы: Туз Пентаклей и Туз Мечей.",
   "Воздух и Земля конфликтуют. Воздух: Туз Мечей. Земля: Мир и Туз Пентаклей.",
 ]
+`;
+
+exports[`relation text, 'ru' > wands-12-knight wands-01-ace cups-01-ace > composed 1`] = `
+{
+  "advice": "Начните с карты «Туз Кубков»: остальные опираются на неё. Спросите себя, туда ли вы хотите прийти, куда ведёт «Туз Кубков».",
+  "summary": "Прочитано карт: 3. В центре (Present): Туз Жезлов: искра, вдохновение, новое начинание. К чему ведёт (Future): Туз Кубков (перевёрнутая): заблокированные эмоции, пустота, сдержанность. Самая заметная связь: преобладает стихия огня (2 из 3 карт со стихией).",
+}
 `;
 
 exports[`relation text, 'ru' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
@@ -180,6 +327,13 @@ exports[`relation text, 'ru' > wands-12-knight wands-01-ace cups-01-ace 1`] = `
 ]
 `;
 
+exports[`relation text, 'ru' > wands-13-queen cups-01-ace swords-01-ace > composed 1`] = `
+{
+  "advice": "Начните с карты «Королева Жезлов»: остальные опираются на неё. Спросите себя, туда ли вы хотите прийти, куда ведёт «Туз Мечей».",
+  "summary": "Прочитано карт: 3. В центре (Present): Туз Кубков: новое чувство, сострадание, открытость. К чему ведёт (Future): Туз Мечей (перевёрнутая): путаница, резкие слова, затуманенное суждение. Самая заметная связь: повторяются Тузы: Туз Кубков и Туз Мечей.",
+}
+`;
+
 exports[`relation text, 'ru' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
 [
   "Повторяются Тузы: Туз Кубков и Туз Мечей.",
@@ -189,6 +343,13 @@ exports[`relation text, 'ru' > wands-13-queen cups-01-ace swords-01-ace 1`] = `
 ]
 `;
 
+exports[`relation text, 'ru' > wands-13-queen cups-09-nine wands-04-four > composed 1`] = `
+{
+  "advice": "Начните с карты «Девятка Кубков»: остальные опираются на неё. Спросите себя, туда ли вы хотите прийти, куда ведёт «Четвёрка Жезлов».",
+  "summary": "Прочитано карт: 3. В центре (Present): Девятка Кубков: удовлетворённость, исполненное желание, довольство. К чему ведёт (Future): Четвёрка Жезлов (перевёрнутая): тревога дома, шаткая опора, отменённые планы. Самая заметная связь: преобладает стихия огня (2 из 3 карт со стихией).",
+}
+`;
+
 exports[`relation text, 'ru' > wands-13-queen cups-09-nine wands-04-four 1`] = `
 [
   "Преобладает стихия огня (2 из 3 карт со стихией).",
@@ -196,6 +357,13 @@ exports[`relation text, 'ru' > wands-13-queen cups-09-nine wands-04-four 1`] = `
   "Огонь и Вода конфликтуют. Огонь: Королева Жезлов и Четвёрка Жезлов. Вода: Девятка Кубков.",
   "Королева Жезлов (Вода огня) перекликается со стихией воды в картах: Девятка Кубков.",
 ]
+`;
+
+exports[`relation text, 'ru' > wands-13-queen cups-10-ten wands-03-three > composed 1`] = `
+{
+  "advice": "Начните с карты «Десятка Кубков»: остальные опираются на неё. Спросите себя, туда ли вы хотите прийти, куда ведёт «Тройка Жезлов».",
+  "summary": "Прочитано карт: 3. В центре (Present): Десятка Кубков: эмоциональное наполнение, семья, гармония. К чему ведёт (Future): Тройка Жезлов (перевёрнутая): препятствия, задержки, плохое планирование. Самая заметная связь: преобладает стихия огня (2 из 3 карт со стихией).",
+}
 `;
 
 exports[`relation text, 'ru' > wands-13-queen cups-10-ten wands-03-three 1`] = `

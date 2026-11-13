@@ -1,4 +1,4 @@
-import type { ProviderStrings } from '../../domain/strings';
+import type { KeyCard, ProviderStrings } from '../../domain/strings';
 import type { Suit } from '../../domain/types';
 import type { Modality } from '../../domain/zodiac';
 import { decks } from '../decks';
@@ -13,6 +13,8 @@ import type { LocaleBundle, SpreadText, UiMessages } from './types';
  * Russian. Original wording; card names follow common Russian tarot usage
  * (Старшие и Младшие арканы). Needs review by a native speaker who reads tarot.
  */
+
+const lowerFirst = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
 
 const suitPlural: Record<Suit, string> = {
   wands: 'Жезлы',
@@ -257,11 +259,37 @@ const provider: ProviderStrings = {
         : `Повторяется число ${number}: ${and(cards)}.`,
   numberFamily: (root, cards) =>
     `Число ${root} объединяет карты: ${and(cards)}.`,
-  summary: (question, cards) =>
-    question
+  summary: (question, cards, parts) => {
+    const opening = question
       ? `По вопросу «${question}» прочитано карт: ${cards}.`
-      : `Прочитано карт: ${cards}.`,
-  advice: 'Соотносите каждую карту с позицией, в которую она выпала.',
+      : `Прочитано карт: ${cards}.`;
+    const key = (k: KeyCard, lead: string) =>
+      `${lead} ${k.card}${k.orientation === 'reversed' ? ' (перевёрнутая)' : ''}${k.keywords.length ? `: ${k.keywords.join(', ')}` : ''}.`;
+    return [
+      opening,
+      parts.focus && key(parts.focus, `В центре (${parts.focus.position}):`),
+      parts.obstacle &&
+        key(parts.obstacle, `Что мешает (${parts.obstacle.position}):`),
+      parts.outcome &&
+        key(parts.outcome, `К чему ведёт (${parts.outcome.position}):`),
+      parts.strongest && `Самая заметная связь: ${lowerFirst(parts.strongest)}`,
+    ]
+      .filter(Boolean)
+      .join(' ');
+  },
+  advice: (parts) => {
+    const steps = [
+      parts.hinge &&
+        `Начните с карты «${parts.hinge}»: остальные опираются на неё.`,
+      parts.obstacle &&
+        `Назовите, на что указывает «${parts.obstacle.card}», прежде чем действовать.`,
+      parts.outcome &&
+        `Спросите себя, туда ли вы хотите прийти, куда ведёт «${parts.outcome.card}».`,
+    ].filter(Boolean);
+    return steps.length
+      ? steps.join(' ')
+      : 'Соотносите каждую карту с позицией, в которую она выпала.';
+  },
 
   elementDominates: (element, count, total) =>
     `Преобладает стихия ${elementGen[element]} (${count} из ${total} карт со стихией).`,

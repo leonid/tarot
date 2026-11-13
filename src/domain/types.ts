@@ -41,6 +41,11 @@ export interface SpreadPosition {
   label: string;
   /** What this position asks of the card, used in interpretation. */
   meaning: string;
+  /**
+   * What the position is for, so a reading can be composed from it:
+   * the core of the matter, what stands in the way, or where it leads.
+   */
+  role?: 'focus' | 'obstacle' | 'outcome';
   /** Layout coordinates on an abstract grid (1 unit = one card slot). */
   x: number;
   y: number;

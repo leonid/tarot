@@ -1,5 +1,5 @@
 import type { Element } from '../../domain/elements';
-import type { ProviderStrings } from '../../domain/strings';
+import type { KeyCard, ProviderStrings } from '../../domain/strings';
 import type { Modality, Planet, Sign } from '../../domain/zodiac';
 import { cardFormula } from './en-formula';
 import type { LocaleBundle, UiMessages } from './types';
@@ -10,6 +10,8 @@ const and = (items: readonly string[]) =>
   items.length <= 1
     ? items.join('')
     : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]!}`;
+
+const lowerFirst = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
 
 const cardsRead = (n: number) =>
   n === 1 ? 'one card was read' : `${n} cards were read`;
@@ -256,11 +258,40 @@ const provider: ProviderStrings = {
         : `The number ${NUMBER_WORDS[number - 1] ?? number} repeats: ${and(cards)}.`,
   numberFamily: (root, cards) =>
     `${and(cards)} share the number ${NUMBER_WORDS[root - 1] ?? root}.`,
-  summary: (question, cards) =>
-    question
+  summary: (question, cards, parts) => {
+    const opening = question
       ? `For the question "${question}", ${cardsRead(cards)}.`
-      : `${cap(cardsRead(cards))}.`,
-  advice: 'Weigh each card against the position it landed in.',
+      : `${cap(cardsRead(cards))}.`;
+    const key = (k: KeyCard, lead: string) =>
+      `${lead} ${k.card}${k.orientation === 'reversed' ? ' (reversed)' : ''}${k.keywords.length ? `, which speaks of ${and(k.keywords)}` : ''}.`;
+    return [
+      opening,
+      parts.focus &&
+        key(parts.focus, `At the centre (${parts.focus.position}) is`),
+      parts.obstacle &&
+        key(
+          parts.obstacle,
+          `What stands in the way (${parts.obstacle.position}) is`,
+        ),
+      parts.outcome &&
+        key(parts.outcome, `It leads toward (${parts.outcome.position})`),
+      parts.strongest && `The clearest pattern: ${lowerFirst(parts.strongest)}`,
+    ]
+      .filter(Boolean)
+      .join(' ');
+  },
+  advice: (parts) => {
+    const steps = [
+      parts.hinge && `Start with ${parts.hinge}: the other cards lean on it.`,
+      parts.obstacle &&
+        `Name what ${parts.obstacle.card} points to before acting.`,
+      parts.outcome &&
+        `Ask whether where ${parts.outcome.card} leads is where you want to go.`,
+    ].filter(Boolean);
+    return steps.length
+      ? steps.join(' ')
+      : 'Weigh each card against the position it landed in.';
+  },
 
   elementDominates: (element: Element, count, total) =>
     `${cap(element)} dominates (${count} of ${total} cards with an element).`,
