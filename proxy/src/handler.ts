@@ -6,8 +6,16 @@ export interface Env {
   ALLOWED_ORIGINS?: string;
   /** Secret. Set with `wrangler secret put`; never in the repo or the client. */
   ANTHROPIC_API_KEY?: string;
-  /** Cloudflare KV namespace for the reading cache (optional). */
+  /** Cloudflare KV namespace: the reading cache and the daily call counter. */
   CACHE?: CacheStore;
+  /** Paid upstream calls allowed per UTC day (default 1000); see ceiling.ts. */
+  DAILY_CEILING?: string;
+  /**
+   * "true" lets the Worker run without a rate limiter or a counter, for local
+   * work only. Anywhere else a missing limiter refuses requests: a shield that
+   * is absent must not quietly mean no shield.
+   */
+  ALLOW_NO_RATE_LIMIT?: string;
   /**
    * Cloudflare rate-limit binding (optional). Counts are per Cloudflare
    * location and eventually consistent, so this is a soft shield against
@@ -117,14 +125,26 @@ export async function handle(
   const parsed = parseRequest(raw);
   if (!parsed.ok) return json(422, { error: parsed.error }, cors);
 
-  if (env.RATE_LIMITER) {
+  if (!env.RATE_LIMITER) {
+    // Fail closed: production must have the limiter bound.
+    if (env.ALLOW_NO_RATE_LIMIT !== 'true')
+      return json(
+        503,
+        { error: 'The service is not configured.' },
+        { ...cors, 'retry-after': '3600' },
+      );
+  } else {
     const key = request.headers.get('cf-connecting-ip') ?? origin;
-    let ok = true;
+    let ok = false;
     try {
       ok = (await env.RATE_LIMITER.limit({ key })).success;
     } catch {
-      // If the limiter itself fails, let the request through: the spend cap
-      // still bounds cost, and a broken shield should not take the app down.
+      // A limiter that cannot answer is treated as a refusal, not a pass.
+      return json(
+        503,
+        { error: 'The service is unavailable.' },
+        { ...cors, 'retry-after': '60' },
+      );
     }
     if (!ok)
       return json(

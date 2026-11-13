@@ -58,7 +58,11 @@ describe('reading cache', () => {
   it('returns the cached result for the same reading, without a second upstream call', async () => {
     const { store, put } = mapStore();
     const upstream = answer();
-    const env: Env = { ALLOWED_ORIGINS: ORIGIN, CACHE: store };
+    const env: Env = {
+      ALLOWED_ORIGINS: ORIGIN,
+      ALLOW_NO_RATE_LIMIT: 'true',
+      CACHE: store,
+    };
     const first = await handle(post(), env, withCache(upstream));
     expect(first.headers.get('x-cache')).toBe('miss');
     const second = await handle(post(), env, withCache(upstream));
@@ -71,7 +75,11 @@ describe('reading cache', () => {
   it('keys on the question, the cards and their orientation', async () => {
     const { store } = mapStore();
     const upstream = answer();
-    const env: Env = { ALLOWED_ORIGINS: ORIGIN, CACHE: store };
+    const env: Env = {
+      ALLOWED_ORIGINS: ORIGIN,
+      ALLOW_NO_RATE_LIMIT: 'true',
+      CACHE: store,
+    };
     const run = (b: unknown) => handle(post(b), env, withCache(upstream));
     await run(reading);
     await run({ ...reading, question: 'Another?' });
@@ -110,7 +118,11 @@ describe('reading cache', () => {
     const upstream = vi.fn(
       async () => new Response('{"error":"bad-reply"}', { status: 502 }),
     );
-    const env: Env = { ALLOWED_ORIGINS: ORIGIN, CACHE: store };
+    const env: Env = {
+      ALLOWED_ORIGINS: ORIGIN,
+      ALLOW_NO_RATE_LIMIT: 'true',
+      CACHE: store,
+    };
     await handle(post(), env, withCache(upstream));
     await handle(post(), env, withCache(upstream));
     expect(m.size).toBe(0);
@@ -129,12 +141,12 @@ describe('reading cache', () => {
     const upstream = answer();
     const r1 = await handle(
       post(),
-      { ALLOWED_ORIGINS: ORIGIN, CACHE: broken },
+      { ALLOWED_ORIGINS: ORIGIN, ALLOW_NO_RATE_LIMIT: 'true', CACHE: broken },
       withCache(upstream),
     );
     const r2 = await handle(
       post(),
-      { ALLOWED_ORIGINS: ORIGIN },
+      { ALLOWED_ORIGINS: ORIGIN, ALLOW_NO_RATE_LIMIT: 'true' },
       withCache(upstream),
     );
     expect([r1.status, r2.status]).toEqual([200, 200]);
@@ -173,7 +185,7 @@ describe('rate limit shield', () => {
     expect(rl.limit).not.toHaveBeenCalled();
   });
 
-  it('lets requests through if the limiter itself fails', async () => {
+  it('refuses, rather than lets through, if the limiter itself fails (R14)', async () => {
     const rl = {
       limit: async () => {
         throw new Error('down');
@@ -184,6 +196,6 @@ describe('rate limit shield', () => {
       { ALLOWED_ORIGINS: ORIGIN, RATE_LIMITER: rl },
       answer(),
     );
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(503);
   });
 });

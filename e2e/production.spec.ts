@@ -29,3 +29,49 @@ test('no script of the production build carries the pseudo-locale', async ({
     expect(body, url).not.toContain('en-XA');
   }
 });
+
+// R14: the built page carries a policy that allows only its own files, and
+// every screen works under it (no blocked script, style, image or call).
+import { SCREENS } from './screens';
+
+test('the page declares a Content-Security-Policy that allows only itself', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const csp = await page
+    .locator('meta[http-equiv="Content-Security-Policy"]')
+    .getAttribute('content');
+  expect(csp).toContain(`default-src 'self'`);
+  expect(csp).not.toMatch(/script-src[^;]*unsafe/);
+  expect(csp).not.toMatch(/https?:\/\//); // no proxy configured in the test build
+});
+
+for (const [name, open] of SCREENS) {
+  test(`no screen breaks the policy: ${name}`, async ({ page }) => {
+    await page.addInitScript(() => {
+      (window as unknown as { __csp: string[] }).__csp = [];
+      document.addEventListener('securitypolicyviolation', (e) =>
+        (window as unknown as { __csp: string[] }).__csp.push(
+          `${e.violatedDirective} ${e.blockedURI}`,
+        ),
+      );
+    });
+    await open(page);
+    // Theme: the inline script is allowed by its hash, so a saved choice applies.
+    expect(
+      await page.evaluate(
+        () => (window as unknown as { __csp: string[] }).__csp,
+      ),
+    ).toEqual([]);
+  });
+}
+
+test('the saved theme is applied before the app loads, under the policy', async ({
+  page,
+}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem('tarot.theme.v1', 'dark'),
+  );
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});

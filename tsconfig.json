@@ -23,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["src", "e2e", "proxy", "vite.config.ts"]
+  "include": ["src", "e2e", "proxy", "vite.config.ts", "csp.ts", "csp.test.ts"]
 }
