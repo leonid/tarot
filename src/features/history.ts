@@ -1,15 +1,17 @@
-import { z } from 'zod';
 import { migrate } from '../domain/migrate';
 import type { SharedReading } from '../domain/share';
 
 const KEY = 'tarot.history.v1';
 const MAX = 50;
 
-const envelopeSchema = z.object({
-  id: z.string(),
-  savedAt: z.number(),
-  reading: z.unknown(),
-});
+/** An entry's outer shape; the reading inside is checked by `migrate`. */
+function isEnvelope(
+  x: unknown,
+): x is { id: string; savedAt: number; reading: unknown } {
+  if (typeof x !== 'object' || x === null) return false;
+  const e = x as Record<string, unknown>;
+  return typeof e.id === 'string' && typeof e.savedAt === 'number';
+}
 export interface HistoryEntry {
   id: string;
   savedAt: number;
@@ -26,11 +28,10 @@ export function loadHistory(): HistoryEntry[] {
     const raw: unknown = JSON.parse(localStorage.getItem(KEY) ?? '[]');
     if (!Array.isArray(raw)) return [];
     return raw.flatMap((item): HistoryEntry[] => {
-      const env = envelopeSchema.safeParse(item);
-      if (!env.success) return [];
-      const m = migrate(env.data.reading);
+      if (!isEnvelope(item)) return [];
+      const m = migrate(item.reading);
       return m.ok
-        ? [{ id: env.data.id, savedAt: env.data.savedAt, reading: m.reading }]
+        ? [{ id: item.id, savedAt: item.savedAt, reading: m.reading }]
         : [];
     });
   } catch {

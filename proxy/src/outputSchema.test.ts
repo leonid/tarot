@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { interpretationSchema } from '../../src/domain/interpretation';
+import { interpretationSchema } from '../../src/domain/interpretationSchema';
 import { assertStructuredOutputSafe, outputSchema } from './outputSchema';
 
 describe('structured output schema', () => {

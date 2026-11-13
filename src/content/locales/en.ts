@@ -183,6 +183,7 @@ const ui: UiMessages = {
 
   interpretation: 'Interpretation',
   connections: 'Connections',
+  loading: 'Loading…',
   interpreting: 'Reading the cards…',
   interpretationFailed: 'The interpretation could not be made.',
   tryAgain: 'Try again',

@@ -1,6 +1,5 @@
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import './zodConfig'; // before anything that builds a schema
 import { App } from './App';
 import { ErrorBoundary } from './ui/ErrorBoundary';
 import './ui/tokens.css';

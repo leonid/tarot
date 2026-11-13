@@ -1,4 +1,4 @@
-import { interpretationSchema } from '../../src/domain/interpretation';
+import { interpretationSchema } from '../../src/domain/interpretationSchema';
 import type { Env, Interpret } from './handler';
 import { outputSchema } from './outputSchema';
 import { buildPrompt } from './prompt';

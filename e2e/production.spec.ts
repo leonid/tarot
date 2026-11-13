@@ -75,3 +75,34 @@ test('the saved theme is applied before the app loads, under the policy', async 
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 });
+
+test('the Russian text and the other screens load when they are needed (R15)', async ({
+  page,
+}) => {
+  const scripts = new Set<string>();
+  page.on('request', (r) => {
+    if (/\.js(\?|$)/.test(r.url())) scripts.add(r.url().split('/').pop()!);
+  });
+  const names = () => [...scripts];
+  const has = (prefix: string) =>
+    names().some((n) => n.startsWith(prefix + '-'));
+
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 2 }).first()).toBeVisible();
+  // The first screen: no Russian, no drag library, no card library.
+  expect(has('ru')).toBe(false);
+  expect(has('SetupView')).toBe(false);
+  expect(has('Cards')).toBe(false);
+
+  await page.getByLabel('Language').selectOption('ru');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+  expect(has('ru')).toBe(true);
+
+  // A returning Russian reader gets Russian after a reload.
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+
+  await page.goto('/#/cards');
+  await expect(page.locator('.card-link').first()).toBeVisible();
+  expect(has('Cards')).toBe(true);
+});

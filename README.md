@@ -18,7 +18,7 @@ npm run dev
 npm test
 ```
 
-Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`, and `images` (rebuilds the optimised card images from Wikimedia Commons; see `docs/research/sources.md`). CI runs typecheck, lint, test and build, and the end-to-end tests on all three browsers (the Playwright report is attached to a failed run).
+Other scripts: `typecheck`, `lint`, `build`, `format`, `e2e`, and `images` (rebuilds the optimised card images from Wikimedia Commons; see `docs/research/sources.md`). CI runs typecheck, lint, test and build (then a secrets check and a size check: the first download, gzipped, must stay under 100 kB; the Russian text, Setup, the journal, the card library and the reading screen load on demand, so new code for them does not count, but new code in the shared shell does), and the end-to-end tests on all three browsers (the Playwright report is attached to a failed run).
 
 End-to-end tests (Playwright, Chromium, Firefox and WebKit) build the app and serve it on port 4391. First run: `npx playwright install chromium firefox webkit`. Run one browser with `npm run e2e -- --project=chromium`.
 

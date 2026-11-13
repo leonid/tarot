@@ -11,6 +11,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "images": "node scripts/optimise-images.mjs",
+    "check:size": "node scripts/check-bundle-size.mjs dist",
     "check:secrets": "node scripts/check-no-secrets.mjs dist",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

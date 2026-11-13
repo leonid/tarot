@@ -1,4 +1,4 @@
-import { useDroppable } from '@dnd-kit/core';
+import { createContext, useContext, type ComponentType } from 'react';
 import type { Card, PlacedCard, Spread, SpreadPosition } from '../domain/types';
 import { Chip } from './kit';
 import { CardImage } from './CardImage';
@@ -37,6 +37,7 @@ export function SpreadBoard({
   onRemove,
   onCardClick,
 }: Props) {
+  const DropSlot = useContext(DropSlotContext);
   const cols = Math.max(...spread.positions.map((p) => p.x)) + 1;
   // Positions that share a grid cell (the Celtic Cross crossing card): on a
   // board that is only read, the crossing card lies across the lower part of
@@ -79,8 +80,8 @@ export function SpreadBoard({
                 onRemove,
                 onCardClick,
               };
-              return droppable ? (
-                <DroppableSlot key={pos.id} {...props} />
+              return droppable && DropSlot ? (
+                <DropSlot key={pos.id} {...props} />
               ) : (
                 <Slot key={pos.id} {...props} />
               );
@@ -92,7 +93,15 @@ export function SpreadBoard({
   );
 }
 
-interface SlotProps {
+/**
+ * What draws a slot that accepts dropped cards. Setup provides one built on the
+ * drag library, so that library loads with Setup and not with every page.
+ */
+export const DropSlotContext = createContext<ComponentType<SlotProps> | null>(
+  null,
+);
+
+export interface SlotProps {
   deckId: string;
   pos: SpreadPosition;
   card?: Card;
@@ -108,7 +117,7 @@ interface SlotProps {
   onCardClick?: (positionId: string) => void;
 }
 
-function Slot({
+export function Slot({
   deckId,
   pos,
   card,
@@ -208,12 +217,4 @@ function Slot({
       )}
     </div>
   );
-}
-
-function DroppableSlot(props: SlotProps) {
-  const { setNodeRef, isOver } = useDroppable({
-    id: props.pos.id,
-    data: { positionId: props.pos.id },
-  });
-  return <Slot {...props} setRef={setNodeRef} over={isOver} />;
 }
